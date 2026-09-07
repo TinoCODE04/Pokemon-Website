@@ -1,0 +1,75 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Outfit', 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  --color-brand-50: #fdeceb;
+  --color-brand-100: #fad4cf;
+  --color-brand-200: #f5a79d;
+  --color-brand-300: #ef7a6b;
+  --color-brand-400: #ea5743;
+  --color-brand-500: #e3350d;
+  --color-brand-600: #c42c0a;
+  --color-brand-700: #a12408;
+  --color-brand-800: #7d1c06;
+  --color-brand-900: #591304;
+
+  --color-accent-300: #ffe066;
+  --color-accent-400: #ffd133;
+  --color-accent-500: #ffcb05;
+  --color-accent-600: #e0b104;
+
+  --color-night-800: #16203b;
+  --color-night-850: #111a30;
+  --color-night-900: #0d1425;
+  --color-night-950: #0a101f;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-slate-100 font-sans text-slate-900 dark:bg-night-950 dark:text-slate-100;
+  }
+
+  ::selection {
+    @apply bg-brand-500/20;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-slate-300 dark:bg-slate-700;
+  }
+}
+
+@layer components {
+  .container-app {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .card-surface {
+    @apply rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-night-900;
+  }
+
+  .dot-grid {
+    background-image: radial-gradient(circle, rgb(100 116 139 / 0.16) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  .dark .dot-grid {
+    background-image: radial-gradient(circle, rgb(148 163 184 / 0.12) 1px, transparent 1px);
+  }
+}
