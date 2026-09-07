@@ -1,32 +1,188 @@
-# React + TypeScript + Vite
+# Pokémon Explorer
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A clean, responsive Pokémon encyclopedia powered by [PokéAPI](https://pokeapi.co/). Browse the National Pokédex, search by name or number, inspect stats and evolution chains, explore types and generations, compare Pokémon, and save favorites locally.
 
-Currently, two official plugins are available:
+**Live site:** [pokemon-explorer.tinoekalin1234.chatgpt.site](https://pokemon-explorer.tinoekalin1234.chatgpt.site)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- Browse and search the complete Pokédex
+- Filter Pokémon by type and generation
+- Sort results by Pokédex number or name
+- View artwork, types, measurements, abilities, moves, cries, and base stats
+- Explore evolution chains and type effectiveness
+- Browse Pokémon by generation and region
+- Compare up to three Pokémon side by side
+- Save favorite Pokémon on the current device
+- Switch between light and dark themes
+- Use responsive layouts designed for desktop, tablet, and mobile
+- Open global search using the navigation or `/` keyboard shortcut
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech stack
 
-## Expanding the Oxlint configuration
+| Technology | Purpose |
+| --- | --- |
+| [React](https://react.dev/) | Component-based user interface |
+| [TypeScript](https://www.typescriptlang.org/) | Static typing and safer API models |
+| [Vite](https://vite.dev/) | Development server and production bundling |
+| [Tailwind CSS](https://tailwindcss.com/) | Responsive styling and design tokens |
+| [TanStack Query](https://tanstack.com/query/latest) | API requests, caching, and loading/error states |
+| [React Router](https://reactrouter.com/) | Client-side pages and URL routing |
+| [Framer Motion](https://motion.dev/) | Page transitions and interface animations |
+| [Lucide React](https://lucide.dev/) | Interface icons |
+| [PokéAPI](https://pokeapi.co/docs/v2) | Pokémon data and media |
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## How it works
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+The browser communicates directly with PokéAPI through a typed API layer inside `src/api`.
+
+Reusable TanStack Query hooks in `src/hooks/queries.ts` fetch and cache Pokémon, species, evolution, type, generation, and ability data.
+
+The main Pokédex request loads lightweight Pokémon records for searching, filtering, and pagination. Full details are fetched only for the Pokémon cards currently displayed.
+
+Detail pages combine multiple PokéAPI resources. For example, the Pokémon endpoint supplies stats and abilities, while the species endpoint supplies descriptions and evolution information.
+
+Favorites, comparison selections, and the selected color theme are stored in the browser using `localStorage`.
+
+The application does not require an account, database, API key, or `.env` file.
+
+## Getting started
+
+### Requirements
+
+- A current Node.js LTS release
+- npm
+- An internet connection for PokéAPI data and artwork
+
+### Install and run locally
+
+```bash
+git clone https://github.com/TinoCODE04/Pokemon-Website.git
+cd Pokemon-Website
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Vite will display the local development URL in the terminal. It is normally:
+
+```text
+http://localhost:5173
+```
+
+## Build for production
+
+Create an optimized production build:
+
+```bash
+npm run build
+```
+
+This command checks the TypeScript project and generates the production files inside the `dist/` directory.
+
+Preview the production build locally:
+
+```bash
+npm run preview
+```
+
+## Available scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the Vite development server with hot reload |
+| `npm run build` | Type-check and create an optimized production build |
+| `npm run preview` | Serve the generated `dist/` build locally |
+| `npm run lint` | Check the source code using Oxlint |
+
+## Project structure
+
+```text
+src/
+├── api/          # PokéAPI client functions and TypeScript response types
+├── components/   # Layout, filters, charts, search, and Pokémon UI
+├── constants/    # Type colors, icons, and application constants
+├── hooks/        # Query, debounce, and theme hooks
+├── pages/        # Route-level pages
+├── store/        # Favorites and comparison state using localStorage
+├── utils/        # Formatting and class-name helpers
+├── App.tsx       # Routes, application shell, and global search
+└── main.tsx      # React providers and browser entry point
+```
+
+## Main routes
+
+| Route | Screen |
+| --- | --- |
+| `/` | Homepage and quick navigation |
+| `/pokedex` | Searchable and filterable Pokédex |
+| `/pokemon/:id` | Pokémon details, stats, moves, and evolution chain |
+| `/types` | List of all Pokémon types |
+| `/types/:name` | Type effectiveness and related Pokémon |
+| `/generations` | Pokémon generation overview |
+| `/generations/:id` | Generation and region details |
+| `/abilities` | Ability directory |
+| `/abilities/:name` | Ability details and related Pokémon |
+| `/compare` | Side-by-side Pokémon comparison |
+| `/favorites` | Locally saved favorite Pokémon |
+
+## API usage
+
+The PokéAPI base URL is configured in `src/api/pokeapi.ts`:
+
+```text
+https://pokeapi.co/api/v2
+```
+
+API requests are cached for one hour because Pokémon reference data changes infrequently.
+
+Network errors and missing records are converted into readable application error states with retry actions.
+
+## Deployment
+
+This project is a static single-page application.
+
+First, generate the production files:
+
+```bash
+npm run build
+```
+
+You can then deploy the contents of the `dist/` directory to services such as:
+
+- Vercel
+- Netlify
+- Cloudflare Pages
+- GitHub Pages
+- ChatGPT Sites
+
+When configuring your hosting service, add a fallback that serves `index.html` for unknown paths. This allows routes such as `/pokemon/25` to work when opened or refreshed directly.
+
+## Troubleshooting
+
+### Pokémon data does not load
+
+Confirm that your device can access:
+
+```text
+https://pokeapi.co/api/v2/
+```
+
+The application needs an internet connection while running.
+
+### A detail page returns a 404 after refreshing
+
+Configure your hosting service to rewrite unknown routes to `/index.html`. Vite's local development server handles this automatically.
+
+### Favorites disappeared
+
+Favorites are stored only in the current browser's local storage.
+
+Clearing browser data, using private browsing, or switching devices can remove or hide the saved collection.
+
+## Data and trademarks
+
+Pokémon data and artwork are provided by the community-maintained [PokéAPI](https://pokeapi.co/).
+
+Pokémon and Pokémon character names are trademarks of Nintendo, Game Freak, and The Pokémon Company.
+
+This is an unofficial fan-made project and is not affiliated with or endorsed by those companies.
