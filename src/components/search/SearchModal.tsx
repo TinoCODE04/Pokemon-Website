@@ -16,6 +16,8 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
   const [query, setQuery] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const previousFocusRef = useRef<HTMLElement | null>(null)
   const navigate = useNavigate()
   const { data, isLoading } = useAllPokemon()
   const debounced = useDebounce(query, 120)
@@ -45,10 +47,16 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
 
   useEffect(() => {
     if (open) {
+      previousFocusRef.current = document.activeElement as HTMLElement | null
       setQuery('')
       setActiveIndex(0)
+      document.body.style.overflow = 'hidden'
       // wait for mount before focusing
       window.setTimeout(() => inputRef.current?.focus(), 30)
+    }
+    return () => {
+      document.body.style.overflow = ''
+      previousFocusRef.current?.focus()
     }
   }, [open])
 
@@ -58,6 +66,24 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
     if (!open) return
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
+      if (e.key === 'Tab') {
+        const focusable = Array.from(
+          dialogRef.current?.querySelectorAll<HTMLElement>(
+            'button:not([disabled]), input:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
+          ) ?? [],
+        )
+        if (focusable.length > 0) {
+          const first = focusable[0]
+          const last = focusable[focusable.length - 1]
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault()
+            last.focus()
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault()
+            first.focus()
+          }
+        }
+      }
       if (e.key === 'ArrowDown') {
         e.preventDefault()
         setActiveIndex((i) => Math.min(i + 1, results.length - 1))
@@ -91,6 +117,7 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
         >
           <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-sm" onClick={onClose} />
           <motion.div
+            ref={dialogRef}
             initial={{ opacity: 0, scale: 0.96, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -10 }}
@@ -120,6 +147,9 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
             </div>
 
             <div className="max-h-80 overflow-y-auto p-2">
+              <p className="sr-only" aria-live="polite">
+                {query.trim() ? `${results.length} search results` : 'Enter a name or number to search'}
+              </p>
               {query.trim() === '' && (
                 <p className="px-3 py-6 text-center text-sm text-slate-400">
                   Start typing to search across every Pokémon.
@@ -148,6 +178,9 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
                       if (!el.dataset.fallback) {
                         el.dataset.fallback = '1'
                         el.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${entry.id}.png`
+                      } else {
+                        el.onerror = null
+                        el.src = '/favicon.svg'
                       }
                     }}
                     className="h-10 w-10 shrink-0 rounded-lg bg-slate-100 object-contain p-0.5 dark:bg-white/5"

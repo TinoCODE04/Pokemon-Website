@@ -10,9 +10,9 @@ import {
   Volume2,
   Weight,
 } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { extractId } from '../api/pokeapi'
+import { extractId, PokeApiError } from '../api/pokeapi'
 import { EvolutionChainView } from '../components/pokemon/EvolutionChain'
 import { TypeBadge } from '../components/pokemon/TypeBadge'
 import { StatBars } from '../components/charts/StatBars'
@@ -20,7 +20,8 @@ import { StatRadarChart, pokemonToRadarSeries } from '../components/charts/StatR
 import { ErrorState, Skeleton, Spinner } from '../components/ui/Feedback'
 import { useEvolutionChain, usePokemon, usePokemonSpecies } from '../hooks/queries'
 import { useCompare, useFavorites } from '../store/AppContext'
-import { typeStyle } from '../constants/types'
+import { RECENT_KEY, typeStyle } from '../constants/types'
+import { useLocalStorage } from '../store/useLocalStorage'
 import { cn } from '../utils/cn'
 import {
   bestArtwork,
@@ -49,13 +50,22 @@ export default function PokemonDetailPage() {
   const { inCompare, toggleCompare, isFull } = useCompare()
   const [showShiny, setShowShiny] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const [, setRecentlyViewed] = useLocalStorage<number[]>(RECENT_KEY, [])
+
+  useEffect(() => {
+    if (!pokemon) return
+    setRecentlyViewed((previous) => [pokemon.id, ...previous.filter((item) => item !== pokemon.id)].slice(0, 6))
+  }, [pokemon, setRecentlyViewed])
 
   if (pokemonQuery.isError) {
+    const isMissing = pokemonQuery.error instanceof PokeApiError && pokemonQuery.error.status === 404
     return (
       <div className="container-app py-10">
         <ErrorState
-          title="Pokémon not found"
-          message="We couldn't load this Pokémon. It may not exist, or PokéAPI may be unavailable."
+          title={isMissing ? 'Pokémon not found' : 'Could not load this Pokémon'}
+          message={isMissing
+            ? 'This Pokémon does not exist. Check the name or Pokédex number and try again.'
+            : 'The connection to PokéAPI failed. Check your connection and try again.'}
           onRetry={() => pokemonQuery.refetch()}
         />
         <div className="mt-4 text-center">
@@ -161,19 +171,25 @@ export default function PokemonDetailPage() {
                 style={{ background: style.soft.replace('0.16', '0.6').replace('0.14', '0.55').replace('0.18', '0.6').replace('0.2', '0.65') }}
               />
               <div className="card-surface relative overflow-hidden p-6">
-                <div className="dot-grid absolute inset-0 opacity-60" />
-                <img
-                  src={image}
-                  alt={formatName(pokemon.name)}
-                  className="relative mx-auto h-64 w-64 object-contain drop-shadow-xl sm:h-80 sm:w-80"
-                  onError={(e) => {
-                    const el = e.currentTarget
-                    if (!el.dataset.fallback) {
-                      el.dataset.fallback = '1'
-                      el.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`
-                    }
-                  }}
-                />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.5),transparent_62%)] dark:bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06),transparent_62%)]" />
+                <div className="pokemon-stage relative mx-auto h-64 w-64 sm:h-80 sm:w-80">
+                  <span className="pokemon-shadow absolute bottom-4 left-1/2 h-5 w-36 -translate-x-1/2 rounded-full bg-slate-950/30 blur-lg dark:bg-black/60" />
+                  <img
+                    src={image}
+                    alt={formatName(pokemon.name)}
+                    className="pokemon-float relative h-full w-full object-contain drop-shadow-[0_24px_20px_rgba(15,23,42,0.32)]"
+                    onError={(e) => {
+                      const el = e.currentTarget
+                      if (!el.dataset.fallback) {
+                        el.dataset.fallback = '1'
+                        el.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`
+                      } else {
+                        el.onerror = null
+                        el.src = '/favicon.svg'
+                      }
+                    }}
+                  />
+                </div>
                 <div className="relative mt-2 flex items-center justify-center gap-2">
                   {pokemon.sprites.other?.['official-artwork']?.front_shiny && (
                     <button

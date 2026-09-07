@@ -33,11 +33,11 @@ export function Navbar({ onOpenSearch }: { onOpenSearch: () => void }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/80 backdrop-blur-xl dark:border-white/10 dark:bg-night-950/80">
-      <nav className="container-app flex h-16 items-center justify-between gap-3">
-        <Link to="/" className="flex items-center gap-2.5" onClick={() => setMobileOpen(false)}>
-          <PokeballMark className="h-7 w-7" />
-          <span className="font-display text-lg font-bold tracking-tight">
-            Pokémon <span className="text-brand-500">Explorer</span>
+      <nav className="container-app flex h-16 min-w-0 items-center justify-between gap-2 sm:gap-3">
+        <Link to="/" className="flex min-w-0 items-center gap-2 sm:gap-2.5" onClick={() => setMobileOpen(false)}>
+          <PokeballMark className="h-7 w-7 shrink-0" />
+          <span className="truncate font-display text-base font-bold tracking-tight sm:text-lg">
+            Pokémon <span className="text-brand-500 max-sm:hidden">Explorer</span>
           </span>
         </Link>
 
@@ -72,7 +72,7 @@ export function Navbar({ onOpenSearch }: { onOpenSearch: () => void }) {
           ))}
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-1.5">
           <button
             onClick={onOpenSearch}
             className="hidden h-9 items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3.5 text-sm text-slate-500 transition hover:border-slate-300 hover:text-slate-700 sm:flex dark:border-white/10 dark:bg-white/5 dark:text-slate-400 dark:hover:border-white/20 dark:hover:text-slate-200"
@@ -113,7 +113,7 @@ export function Navbar({ onOpenSearch }: { onOpenSearch: () => void }) {
 
           <Link
             to="/favorites"
-            className="relative flex h-9 w-9 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10"
+            className="relative hidden h-9 w-9 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-100 sm:flex dark:text-slate-300 dark:hover:bg-white/10"
             aria-label="Favorites"
           >
             <Heart className="h-5 w-5" />

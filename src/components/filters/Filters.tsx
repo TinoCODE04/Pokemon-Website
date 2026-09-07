@@ -1,4 +1,4 @@
-import { ArrowDownAZ, ArrowDownWideNarrow, ArrowUpNarrowWide, RotateCcw } from 'lucide-react'
+import { ArrowDownAZ, ArrowDownWideNarrow, ArrowUpNarrowWide, Crown, RotateCcw } from 'lucide-react'
 import { TYPE_ORDER, typeStyle } from '../../constants/types'
 import { cn } from '../../utils/cn'
 
@@ -10,6 +10,26 @@ export const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: 'name-asc', label: 'Name (A → Z)' },
   { value: 'name-desc', label: 'Name (Z → A)' },
 ]
+
+export function LegendaryFilter({ active, onToggle }: { active: boolean; onToggle: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-pressed={active}
+      className={cn(
+        'group relative inline-flex min-h-10 items-center gap-2 overflow-hidden rounded-full border px-4 text-sm font-extrabold transition-all',
+        active
+          ? 'border-amber-300 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 text-slate-950 shadow-lg shadow-amber-500/20'
+          : 'border-amber-400/40 bg-amber-400/10 text-amber-700 hover:-translate-y-0.5 hover:border-amber-400 hover:bg-amber-400/20 hover:shadow-md dark:text-amber-300',
+      )}
+    >
+      <span className="absolute -left-5 top-0 h-full w-8 -skew-x-12 bg-white/25 blur-sm transition-transform duration-500 group-hover:translate-x-40" />
+      <Crown className={cn('relative h-4 w-4', active && 'fill-current')} />
+      <span className="relative">Legendary Pokémon</span>
+    </button>
+  )
+}
 
 export function TypeFilter({
   selected,

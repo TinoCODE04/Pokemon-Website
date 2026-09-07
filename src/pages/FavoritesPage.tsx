@@ -1,5 +1,6 @@
 import { useQueries } from '@tanstack/react-query'
 import { ArrowRight, Heart, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getPokemon } from '../api/pokemon'
 import { PokemonCard, PokemonCardSkeleton, toCardPokemon } from '../components/pokemon/PokemonCard'
@@ -9,6 +10,7 @@ import { useFavorites } from '../store/AppContext'
 
 export default function FavoritesPage() {
   const { favorites, clearFavorites } = useFavorites()
+  const [confirmingClear, setConfirmingClear] = useState(false)
 
   const queries = useQueries({
     queries: favorites.map((id) => ({
@@ -28,18 +30,36 @@ export default function FavoritesPage() {
           </h1>
           <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
             {favorites.length === 0
-              ? 'Pokémon you favorite will live here, saved on this device.'
+              ? 'Pokémon you mark as favorites will live here, saved on this device.'
               : `${favorites.length} Pokémon in your collection.`}
           </p>
         </div>
         {favorites.length > 0 && (
-          <button
-            onClick={clearFavorites}
-            className="inline-flex items-center gap-2 rounded-full border border-red-200 px-4 py-2 text-sm font-bold text-red-500 transition hover:bg-red-50 dark:border-red-500/30 dark:hover:bg-red-500/10"
-          >
-            <Trash2 className="h-4 w-4" />
-            Clear all
-          </button>
+          confirmingClear ? (
+            <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Confirm clearing favorites">
+              <span className="text-sm text-slate-500 dark:text-slate-400">Remove every favorite?</span>
+              <button
+                onClick={() => setConfirmingClear(false)}
+                className="min-h-10 rounded-full border border-slate-300 px-4 text-sm font-bold text-slate-600 dark:border-white/15 dark:text-slate-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => { clearFavorites(); setConfirmingClear(false) }}
+                className="min-h-10 rounded-full bg-red-500 px-4 text-sm font-bold text-white transition hover:bg-red-600"
+              >
+                Remove all
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setConfirmingClear(true)}
+              className="inline-flex min-h-10 items-center gap-2 rounded-full border border-red-200 px-4 text-sm font-bold text-red-500 transition hover:bg-red-50 dark:border-red-500/30 dark:hover:bg-red-500/10"
+            >
+              <Trash2 className="h-4 w-4" />
+              Clear all
+            </button>
+          )
         )}
       </div>
 

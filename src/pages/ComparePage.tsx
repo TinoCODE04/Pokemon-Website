@@ -1,7 +1,9 @@
 import { useQueries } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
-import { ArrowRight, GitCompareArrows, Plus, Trash2, Trophy, X } from 'lucide-react'
+import { GitCompareArrows, Plus, Search, Trash2, Trophy, X } from 'lucide-react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { extractId } from '../api/pokeapi'
 import { getPokemon } from '../api/pokemon'
 import type { Pokemon } from '../api/types'
 import { StatRadarChart, pokemonToRadarSeries } from '../components/charts/StatRadarChart'
@@ -9,6 +11,8 @@ import { TypeBadge } from '../components/pokemon/TypeBadge'
 import { EmptyState, SectionHeading } from '../components/ui/Feedback'
 import { MAX_COMPARE, typeStyle } from '../constants/types'
 import { useCompare } from '../store/AppContext'
+import { useAllPokemon } from '../hooks/queries'
+import { useDebounce } from '../hooks/useDebounce'
 import { cn } from '../utils/cn'
 import {
   artworkUrl,
@@ -25,6 +29,7 @@ const SERIES_COLORS = ['#e3350d', '#6390f0', '#e6b800']
 
 export default function ComparePage() {
   const { compare, removeFromCompare, clearCompare } = useCompare()
+  const [confirmingClear, setConfirmingClear] = useState(false)
 
   const queries = useQueries({
     queries: compare.map((id) => ({
@@ -55,19 +60,15 @@ export default function ComparePage() {
           title="Compare Pokémon"
           subtitle={`Pick up to ${MAX_COMPARE} Pokémon to compare their stats side by side.`}
         />
+        <div className="card-surface mb-5 p-4 sm:p-5">
+          <p className="mb-3 text-sm font-bold">Add your first Pokémon</p>
+          <ComparePicker />
+        </div>
         <EmptyState
           icon={<GitCompareArrows className="h-6 w-6" />}
           title="Your compare list is empty"
           message="Tap the compare icon on any Pokémon card, or start from the Pokédex."
-          action={
-            <Link
-              to="/pokedex"
-              className="mt-2 inline-flex items-center gap-2 rounded-full bg-brand-500 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-brand-600"
-            >
-              Browse Pokédex
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          }
+          action={<Link to="/pokedex" className="mt-2 text-sm font-bold text-brand-500 hover:underline">Or browse the full Pokédex</Link>}
         />
       </div>
     )
@@ -85,29 +86,47 @@ export default function ComparePage() {
           </p>
         </div>
         <div className="flex gap-2">
-          {compare.length < MAX_COMPARE && (
-            <Link
-              to="/pokedex"
-              className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-sm font-bold text-slate-600 transition hover:border-brand-400 hover:text-brand-500 dark:border-white/15 dark:text-slate-300"
+          {confirmingClear ? (
+            <div className="flex items-center gap-2" role="group" aria-label="Confirm clearing comparison">
+              <button
+                onClick={() => setConfirmingClear(false)}
+                className="min-h-10 rounded-full border border-slate-300 px-4 text-sm font-bold text-slate-600 dark:border-white/15 dark:text-slate-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => { clearCompare(); setConfirmingClear(false) }}
+                className="min-h-10 rounded-full bg-red-500 px-4 text-sm font-bold text-white transition hover:bg-red-600"
+              >
+                Clear all
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setConfirmingClear(true)}
+              className="inline-flex min-h-10 items-center gap-2 rounded-full border border-red-200 px-4 text-sm font-bold text-red-500 transition hover:bg-red-50 dark:border-red-500/30 dark:hover:bg-red-500/10"
             >
-              <Plus className="h-4 w-4" />
-              Add another
-            </Link>
+              <Trash2 className="h-4 w-4" />
+              Clear
+            </button>
           )}
-          <button
-            onClick={clearCompare}
-            className="inline-flex items-center gap-2 rounded-full border border-red-200 px-4 py-2 text-sm font-bold text-red-500 transition hover:bg-red-50 dark:border-red-500/30 dark:hover:bg-red-500/10"
-          >
-            <Trash2 className="h-4 w-4" />
-            Clear
-          </button>
         </div>
       </div>
 
+      {compare.length < MAX_COMPARE && (
+        <div className="card-surface mb-5 flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:p-5">
+          <div className="shrink-0">
+            <p className="text-sm font-bold">Add another Pokémon</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Search without leaving this page.</p>
+          </div>
+          <ComparePicker />
+        </div>
+      )}
+
       {/* Headers */}
       <div
-        className="grid gap-4"
-        style={{ gridTemplateColumns: `repeat(${Math.max(pokemon.length, 2)}, minmax(0, 1fr))` }}
+        className="grid gap-4 overflow-x-auto pb-2"
+        style={{ gridTemplateColumns: `repeat(${Math.max(pokemon.length, 2)}, minmax(220px, 1fr))` }}
       >
         {queries.map((q, i) => {
           const p = q.data
@@ -175,13 +194,10 @@ export default function ComparePage() {
           )
         })}
         {pokemon.length > 0 && pokemon.length < MAX_COMPARE && (
-          <Link
-            to="/pokedex"
-            className="flex min-h-48 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-200 p-5 text-sm font-semibold text-slate-400 transition hover:border-brand-400 hover:text-brand-500 dark:border-white/10"
-          >
+          <div className="flex min-h-48 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-200 p-5 text-sm font-semibold text-slate-400 dark:border-white/10">
             <Plus className="h-6 w-6" />
-            Add a Pokémon
-          </Link>
+            Open slot
+          </div>
         )}
       </div>
 
@@ -276,6 +292,66 @@ export default function ComparePage() {
             </table>
           </section>
         </>
+      )}
+    </div>
+  )
+}
+
+function ComparePicker() {
+  const { compare, toggleCompare, isFull } = useCompare()
+  const { data, isLoading, isError } = useAllPokemon()
+  const [query, setQuery] = useState('')
+  const debounced = useDebounce(query, 120)
+
+  const results = useMemo(() => {
+    const value = debounced.trim().toLowerCase()
+    if (!value || !data) return []
+    const numeric = /^\d+$/.test(value) ? Number(value) : null
+    return data.results
+      .map((entry) => ({ id: extractId(entry), name: entry.name }))
+      .filter((entry) => !compare.includes(entry.id))
+      .filter((entry) => entry.name.includes(value) || (numeric !== null && entry.id === numeric))
+      .slice(0, 6)
+  }, [compare, data, debounced])
+
+  return (
+    <div className="relative w-full sm:ml-auto sm:max-w-xl">
+      <Search className="pointer-events-none absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
+      <input
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+        disabled={isFull}
+        placeholder="Search by name or Pokédex number"
+        aria-label="Search Pokémon to compare"
+        className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm outline-none transition focus:border-brand-400 focus:bg-white focus:ring-2 focus:ring-brand-500/20 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:focus:bg-night-850"
+      />
+      {query.trim() && (
+        <div className="absolute left-0 right-0 top-12 z-30 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-white/10 dark:bg-night-900" role="listbox">
+          {isLoading && <p className="px-3 py-4 text-sm text-slate-500">Loading Pokémon…</p>}
+          {isError && <p className="px-3 py-4 text-sm text-red-500">Search is unavailable right now.</p>}
+          {!isLoading && !isError && results.length === 0 && (
+            <p className="px-3 py-4 text-sm text-slate-500">No available Pokémon found.</p>
+          )}
+          {results.map((entry) => (
+            <button
+              key={entry.id}
+              type="button"
+              role="option"
+              aria-selected="false"
+              onClick={() => { toggleCompare(entry.id); setQuery('') }}
+              className="flex min-h-11 w-full items-center gap-3 rounded-lg px-3 text-left text-sm transition hover:bg-brand-500/10 focus:bg-brand-500/10"
+            >
+              <img
+                src={artworkUrl(entry.id)}
+                alt=""
+                className="h-9 w-9 object-contain"
+                onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = '/favicon.svg' }}
+              />
+              <span className="flex-1 font-semibold capitalize">{formatName(entry.name)}</span>
+              <span className="font-mono text-xs text-slate-400">{formatDexNumber(entry.id)}</span>
+            </button>
+          ))}
+        </div>
       )}
     </div>
   )

@@ -36,7 +36,31 @@
   }
 
   body {
-    @apply bg-slate-100 font-sans text-slate-900 dark:bg-night-950 dark:text-slate-100;
+    @apply overflow-x-hidden bg-slate-100 font-sans text-slate-900 dark:bg-night-950 dark:text-slate-100;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-500;
+  }
+
+  select {
+    color-scheme: light;
+  }
+
+  select option,
+  select optgroup {
+    background-color: #ffffff;
+    color: #0f172a;
+  }
+
+  .dark select {
+    color-scheme: dark;
+  }
+
+  .dark select option,
+  .dark select optgroup {
+    background-color: #111a30;
+    color: #f8fafc;
   }
 
   ::selection {
@@ -71,5 +95,53 @@
 
   .dark .dot-grid {
     background-image: radial-gradient(circle, rgb(148 163 184 / 0.12) 1px, transparent 1px);
+  }
+
+  .hero-atmosphere {
+    background:
+      radial-gradient(circle at 78% 34%, rgb(227 53 13 / 0.12), transparent 27rem),
+      radial-gradient(circle at 88% 78%, rgb(14 165 233 / 0.1), transparent 23rem),
+      linear-gradient(135deg, #ffffff 0%, #f8fafc 58%, #eef2ff 100%);
+  }
+
+  .dark .hero-atmosphere {
+    background:
+      radial-gradient(circle at 78% 34%, rgb(227 53 13 / 0.2), transparent 27rem),
+      radial-gradient(circle at 88% 78%, rgb(14 165 233 / 0.15), transparent 23rem),
+      linear-gradient(135deg, #0d1425 0%, #0a101f 58%, #0d1830 100%);
+  }
+
+  .pokemon-stage {
+    perspective: 800px;
+    transform-style: preserve-3d;
+  }
+
+  .pokemon-float {
+    animation: pokemon-float 4.6s ease-in-out infinite;
+    transform-origin: center bottom;
+  }
+
+  .pokemon-shadow {
+    animation: pokemon-shadow 4.6s ease-in-out infinite;
+  }
+}
+
+@keyframes pokemon-float {
+  0%, 100% { transform: translate3d(0, 0, 24px) rotateY(-2deg); }
+  50% { transform: translate3d(0, -10px, 34px) rotateY(2deg); }
+}
+
+@keyframes pokemon-shadow {
+  0%, 100% { opacity: 0.32; transform: translateX(-50%) scale(1); }
+  50% { opacity: 0.18; transform: translateX(-50%) scale(0.82); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }

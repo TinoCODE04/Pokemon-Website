@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useType } from '../hooks/queries'
 import { TYPE_ORDER, typeStyle } from '../constants/types'
 
 export default function TypesPage() {
@@ -42,7 +41,7 @@ export default function TypesPage() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <h2 className="font-display text-lg font-bold capitalize">{type}</h2>
-                  <TypeCounts type={type} />
+                  <p className="text-sm text-slate-500 dark:text-slate-400">View matchups</p>
                 </div>
                 <ArrowRight className="h-5 w-5 shrink-0 text-slate-300 transition group-hover:translate-x-1 group-hover:text-brand-500 dark:text-slate-600" />
               </Link>
@@ -51,15 +50,5 @@ export default function TypesPage() {
         })}
       </div>
     </div>
-  )
-}
-
-function TypeCounts({ type }: { type: string }) {
-  const { data } = useType(type)
-  if (!data) return <p className="text-xs text-slate-400">Loading…</p>
-  return (
-    <p className="text-xs text-slate-500 dark:text-slate-400">
-      {data.pokemon.length} Pokémon · {data.moves.length} moves
-    </p>
   )
 }

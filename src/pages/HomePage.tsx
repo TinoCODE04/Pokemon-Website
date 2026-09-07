@@ -1,6 +1,8 @@
-import { motion } from 'framer-motion'
+import { motion, useAnimation } from 'framer-motion'
+import { useQueries } from '@tanstack/react-query'
 import {
   ArrowRight,
+  Crown,
   Dices,
   GitCompareArrows,
   Grid3X3,
@@ -10,18 +12,36 @@ import {
   Sparkles,
   Swords,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { extractId } from '../api/pokeapi'
+import { getPokemon } from '../api/pokemon'
 import { useAllPokemon, useGenerations, usePokemonCount } from '../hooks/queries'
-import { TYPE_ORDER, typeStyle } from '../constants/types'
+import { RECENT_KEY, TYPE_ORDER, typeStyle } from '../constants/types'
 import { artworkUrl } from '../utils/format'
+import { useLocalStorage } from '../store/useLocalStorage'
+import { PokemonCard, PokemonCardSkeleton, toCardPokemon } from '../components/pokemon/PokemonCard'
+import { PokemonGrid } from '../components/pokemon/PokemonGrid'
 
-const HERO_POKEMON = [
-  { id: 6, className: 'right-[6%] top-8 h-40 w-40 sm:h-52 sm:w-52 lg:h-64 lg:w-64', delay: 0.1, float: 12 },
-  { id: 25, className: 'right-[24%] bottom-10 h-28 w-28 sm:h-36 sm:w-36 lg:h-44 lg:w-44', delay: 0.25, float: 16 },
-  { id: 448, className: 'right-[38%] top-16 hidden h-24 w-24 md:block lg:h-32 lg:w-32', delay: 0.4, float: 10 },
-  { id: 94, className: 'right-[14%] bottom-[8%] hidden h-20 w-20 lg:block', delay: 0.55, float: 14 },
+type HeroTrick = 'roar' | 'bounce' | 'spin' | 'levitate' | 'dash-right' | 'dash-left'
+
+interface HeroPokemonConfig {
+  id: number
+  name: string
+  action: string
+  trick: HeroTrick
+  className: string
+  delay: number
+  float: number
+}
+
+const HERO_POKEMON: HeroPokemonConfig[] = [
+  { id: 6, name: 'Charizard', action: 'roar', trick: 'roar', className: 'right-[17%] top-[17%] z-20 h-52 w-52 lg:h-72 lg:w-72', delay: 0.1, float: 8 },
+  { id: 25, name: 'Pikachu', action: 'double-jump', trick: 'bounce', className: 'bottom-[7%] left-[29%] z-20 h-32 w-32 lg:h-44 lg:w-44', delay: 0.22, float: 10 },
+  { id: 448, name: 'Lucario', action: 'spin-kick', trick: 'spin', className: 'left-[4%] top-[10%] z-10 h-28 w-28 lg:h-36 lg:w-36', delay: 0.34, float: 7 },
+  { id: 150, name: 'Mewtwo', action: 'levitate', trick: 'levitate', className: 'right-0 top-[2%] z-10 h-28 w-28 lg:h-36 lg:w-36', delay: 0.46, float: 12 },
+  { id: 381, name: 'Latios', action: 'dash', trick: 'dash-right', className: 'bottom-[3%] left-0 z-10 h-24 w-24 lg:h-32 lg:w-32', delay: 0.58, float: 8 },
+  { id: 380, name: 'Latias', action: 'dash', trick: 'dash-left', className: 'bottom-[5%] right-0 z-10 h-24 w-24 lg:h-32 lg:w-32', delay: 0.7, float: 9 },
 ]
 
 const FEATURE_TILES = [
@@ -61,6 +81,15 @@ export default function HomePage() {
   const { data: generations } = useGenerations()
   const { data: speciesCount } = usePokemonCount()
   const [randomizing, setRandomizing] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [recentlyViewed] = useLocalStorage<number[]>(RECENT_KEY, [])
+  const recentQueries = useQueries({
+    queries: recentlyViewed.map((id) => ({
+      queryKey: ['pokemon', 'detail', String(id)],
+      queryFn: () => getPokemon(id),
+      staleTime: 1000 * 60 * 60,
+    })),
+  })
 
   const totalSpecies = speciesCount ?? 1025
   const genCount = generations?.count ?? 9
@@ -72,12 +101,22 @@ export default function HomePage() {
     window.setTimeout(() => navigate(`/pokemon/${extractId(pick)}`), 250)
   }
 
+  const searchPokedex = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const query = searchQuery.trim()
+    navigate(query ? `/pokedex?q=${encodeURIComponent(query)}` : '/pokedex')
+  }
+
   return (
     <div>
       {/* Hero */}
-      <section className="dot-grid relative overflow-hidden border-b border-slate-200 bg-gradient-to-b from-white to-slate-100 dark:border-white/10 dark:from-night-900 dark:to-night-950">
-        <div className="container-app relative grid min-h-[520px] items-center gap-8 py-16 lg:grid-cols-2 lg:py-20">
-          <div className="relative z-10 max-w-xl">
+      <section className="hero-atmosphere relative overflow-hidden border-b border-slate-200 dark:border-white/10">
+        <div className="pointer-events-none absolute inset-0 opacity-40" aria-hidden>
+          <div className="absolute -right-24 -top-32 h-96 w-96 rounded-full border border-brand-500/15" />
+          <div className="absolute -right-8 -top-16 h-72 w-72 rounded-full border border-sky-400/10" />
+        </div>
+        <div className="container-app relative grid min-h-[480px] items-center gap-8 py-12 lg:grid-cols-2 lg:py-16">
+          <div className="relative z-10 min-w-0 max-w-xl">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -110,29 +149,61 @@ export default function HomePage() {
               evolutions, master type matchups, and compare your favorites side by side.
             </motion.p>
 
+            <motion.form
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.22 }}
+              onSubmit={searchPokedex}
+              className="mt-7 flex max-w-xl items-center gap-2 rounded-2xl border border-slate-200 bg-white/90 p-2 shadow-xl shadow-slate-900/5 backdrop-blur dark:border-white/15 dark:bg-white/8 dark:shadow-black/20"
+            >
+              <Search className="ml-2 h-5 w-5 shrink-0 text-slate-400" />
+              <input
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search by name or Pokédex number"
+                aria-label="Search the Pokédex"
+                className="h-11 min-w-0 flex-1 bg-transparent px-1 text-base outline-none placeholder:text-slate-400"
+              />
+              <button
+                type="submit"
+                className="inline-flex h-11 w-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-brand-500 px-3 text-sm font-bold text-white shadow-md shadow-brand-500/25 transition hover:bg-brand-600 sm:w-auto sm:px-5"
+              >
+                <span className="hidden sm:inline">Search</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </motion.form>
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.24 }}
-              className="mt-8 flex flex-wrap items-center gap-3"
+              transition={{ duration: 0.55, delay: 0.3 }}
+              className="mt-4 flex flex-wrap items-center gap-2 sm:gap-3"
             >
               <Link
                 to="/pokedex"
-                className="inline-flex items-center gap-2 rounded-full bg-brand-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-brand-500/30 transition hover:bg-brand-600 hover:shadow-xl hover:shadow-brand-500/40"
+                className="inline-flex min-h-11 items-center gap-2 rounded-full border border-slate-300 bg-white/70 px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:border-brand-400 hover:text-brand-500 dark:border-white/15 dark:bg-white/5 dark:text-slate-200"
               >
                 <Grid3X3 className="h-4 w-4" />
-                Open the Pokédex
+                Browse all
+              </Link>
+              <Link
+                to="/pokedex?legendary=1"
+                className="group relative inline-flex min-h-11 items-center gap-2 overflow-hidden rounded-full border border-amber-400/40 bg-amber-400/10 px-5 py-2.5 text-sm font-extrabold text-amber-700 shadow-sm transition hover:-translate-y-0.5 hover:border-amber-400 hover:bg-amber-400/20 hover:shadow-lg hover:shadow-amber-500/10 dark:text-amber-300"
+              >
+                <span className="absolute -left-5 top-0 h-full w-8 -skew-x-12 bg-white/25 blur-sm transition-transform duration-500 group-hover:translate-x-48" />
+                <Crown className="relative h-4 w-4" />
+                <span className="relative">Legendary Pokémon</span>
               </Link>
               <button
                 onClick={surprise}
-                className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-bold text-slate-700 transition hover:border-slate-400 hover:shadow-md dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:hover:border-white/30"
+                className="inline-flex min-h-11 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-bold text-slate-600 transition hover:bg-white/70 hover:text-brand-500 dark:text-slate-300 dark:hover:bg-white/8"
               >
                 <Dices className={randomizing ? 'h-4 w-4 animate-spin' : 'h-4 w-4'} />
                 Surprise me
               </button>
               <Link
                 to="/compare"
-                className="inline-flex items-center gap-2 px-2 py-3 text-sm font-semibold text-slate-500 transition hover:text-brand-500 dark:text-slate-400"
+                className="inline-flex min-h-11 items-center gap-2 px-2 py-2.5 text-sm font-semibold text-slate-500 transition hover:text-brand-500 dark:text-slate-400"
               >
                 Compare Pokémon
                 <ArrowRight className="h-4 w-4" />
@@ -143,7 +214,7 @@ export default function HomePage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="mt-10 flex flex-wrap gap-6 text-sm"
+              className="mt-7 flex flex-wrap gap-5 text-sm sm:gap-6"
             >
               {[
                 [totalSpecies.toLocaleString(), 'Species'],
@@ -157,26 +228,30 @@ export default function HomePage() {
                 </div>
               ))}
             </motion.div>
+
+            <div className="mt-7 grid grid-cols-3 gap-2 sm:hidden" role="group" aria-label="Interactive Pokémon team">
+              <p className="col-span-3 flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                <Sparkles className="h-3.5 w-3.5 text-accent-500" />
+                Tap a Pokémon
+              </p>
+              {HERO_POKEMON.map((pokemon) => (
+                <InteractiveHeroPokemon key={pokemon.id} pokemon={pokemon} compact />
+              ))}
+            </div>
           </div>
 
           {/* Hero artwork cluster */}
-          <div className="relative hidden h-[420px] sm:block lg:h-[480px]" aria-hidden>
+          <div className="relative hidden h-[410px] sm:block lg:h-[450px]" role="group" aria-label="Interactive Pokémon team">
             <div className="absolute right-[10%] top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-gradient-to-br from-brand-500/20 via-amber-400/15 to-sky-400/20 blur-3xl" />
             {HERO_POKEMON.map((p) => (
-              <motion.img
-                key={p.id}
-                src={artworkUrl(p.id)}
-                alt=""
-                initial={{ opacity: 0, y: 24, scale: 0.9 }}
-                animate={{ opacity: 1, y: [0, -p.float, 0], scale: 1 }}
-                transition={{
-                  opacity: { duration: 0.5, delay: p.delay },
-                  scale: { duration: 0.5, delay: p.delay },
-                  y: { duration: 4 + p.delay * 2, repeat: Infinity, ease: 'easeInOut', delay: p.delay },
-                }}
-                className={`absolute object-contain drop-shadow-2xl ${p.className}`}
-              />
+              <InteractiveHeroPokemon key={p.id} pokemon={p} />
             ))}
+            <div className="pointer-events-none absolute left-1/2 top-1 -translate-x-1/2 rounded-full border border-white/10 bg-slate-950/35 px-3 py-1.5 text-xs font-semibold text-slate-500 backdrop-blur dark:text-slate-400">
+              <span className="flex items-center gap-1.5 whitespace-nowrap">
+                <Sparkles className="h-3.5 w-3.5 text-accent-500" />
+                Click a Pokémon
+              </span>
+            </div>
           </div>
         </div>
       </section>
@@ -211,6 +286,23 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {recentlyViewed.length > 0 && (
+        <section className="container-app pb-4">
+          <div className="mb-5 flex items-end justify-between gap-3">
+            <div>
+              <h2 className="font-display text-xl font-bold tracking-tight sm:text-2xl">Recently viewed</h2>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Continue exploring where you left off.</p>
+            </div>
+            <Link to="/pokedex" className="text-sm font-bold text-brand-500 hover:underline">Browse all</Link>
+          </div>
+          <PokemonGrid>
+            {recentQueries.map((query, index) => query.data
+              ? <PokemonCard key={recentlyViewed[index]} pokemon={toCardPokemon(query.data)} index={index} />
+              : <PokemonCardSkeleton key={recentlyViewed[index]} />)}
+          </PokemonGrid>
+        </section>
+      )}
 
       {/* Types overview */}
       <section className="border-y border-slate-200 bg-white py-14 dark:border-white/10 dark:bg-night-900">
@@ -310,6 +402,96 @@ export default function HomePage() {
         </div>
       </section>
     </div>
+  )
+}
+
+function InteractiveHeroPokemon({ pokemon, compact = false }: { pokemon: HeroPokemonConfig; compact?: boolean }) {
+  const controls = useAnimation()
+  const [burst, setBurst] = useState(0)
+
+  const playTrick = () => {
+    controls.stop()
+    setBurst((value) => value + 1)
+
+    const animations = {
+      roar: {
+        y: [0, -16, 0],
+        rotate: [0, -4, 4, 0],
+        scale: [1, 1.13, 1],
+        transition: { duration: 0.72, ease: 'easeOut' as const },
+      },
+      bounce: {
+        y: [0, -38, 0, -18, 0],
+        rotate: [0, -7, 6, -3, 0],
+        scale: [1, 1.06, 1, 1.03, 1],
+        transition: { duration: 0.85, ease: 'easeOut' as const },
+      },
+      spin: {
+        y: [0, -18, 0],
+        rotate: [0, -18, 360],
+        scale: [1, 1.1, 1],
+        transition: { duration: 0.75, ease: 'easeInOut' as const },
+      },
+      levitate: {
+        y: [0, -34, -26, 0],
+        rotate: [0, -5, 5, 0],
+        scale: [1, 1.12, 1.08, 1],
+        transition: { duration: 1, ease: 'easeInOut' as const },
+      },
+      'dash-right': {
+        x: [0, 42, -12, 0],
+        y: [0, -10, 0],
+        rotate: [0, -10, 4, 0],
+        scale: [1, 1.08, 1],
+        transition: { duration: 0.62, ease: 'easeOut' as const },
+      },
+      'dash-left': {
+        x: [0, -42, 12, 0],
+        y: [0, -10, 0],
+        rotate: [0, 10, -4, 0],
+        scale: [1, 1.08, 1],
+        transition: { duration: 0.62, ease: 'easeOut' as const },
+      },
+    }
+
+    void controls.start(animations[pokemon.trick])
+  }
+
+  return (
+    <motion.button
+      type="button"
+      initial={{ opacity: 0, scale: 0.88 }}
+      animate={{ opacity: 1, y: [0, -pokemon.float, 0], scale: 1 }}
+      transition={{
+        opacity: { duration: 0.45, delay: pokemon.delay },
+        scale: { duration: 0.45, delay: pokemon.delay },
+        y: { duration: 4.2 + pokemon.delay, repeat: Infinity, ease: 'easeInOut', delay: pokemon.delay },
+      }}
+      whileHover={{ scale: 1.07 }}
+      whileTap={{ scale: 0.94 }}
+      onClick={playTrick}
+      aria-label={`Make ${pokemon.name} ${pokemon.action}`}
+      title={`Click ${pokemon.name}`}
+      className={`${compact ? 'relative mx-auto h-20 w-20' : `absolute ${pokemon.className}`} touch-manipulation rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-400`}
+    >
+      {burst > 0 && (
+        <motion.span
+          key={burst}
+          className="pointer-events-none absolute inset-[18%] rounded-full border-2 border-accent-400/80"
+          initial={{ opacity: 0.9, scale: 0.35 }}
+          animate={{ opacity: 0, scale: 1.45 }}
+          transition={{ duration: 0.55, ease: 'easeOut' }}
+        />
+      )}
+      <motion.img
+        animate={controls}
+        src={artworkUrl(pokemon.id)}
+        alt=""
+        draggable={false}
+        onError={(event) => { event.currentTarget.style.display = 'none' }}
+        className="pointer-events-none h-full w-full select-none object-contain drop-shadow-2xl"
+      />
+    </motion.button>
   )
 }
 

@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 /** useState synced to localStorage. */
 export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((prev: T) => T)) => void] {
+  const initialValueRef = useRef(initialValue)
   const [stored, setStored] = useState<T>(() => {
     try {
       const item = window.localStorage.getItem(key)
@@ -25,6 +26,23 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
     },
     [key],
   )
+
+  useEffect(() => {
+    const syncFromAnotherTab = (event: StorageEvent) => {
+      if (event.key !== key) return
+      if (event.newValue === null) {
+        setStored(initialValueRef.current)
+        return
+      }
+      try {
+        setStored(JSON.parse(event.newValue) as T)
+      } catch {
+        // Ignore malformed values written outside the app.
+      }
+    }
+    window.addEventListener('storage', syncFromAnotherTab)
+    return () => window.removeEventListener('storage', syncFromAnotherTab)
+  }, [key])
 
   return [stored, setValue]
 }

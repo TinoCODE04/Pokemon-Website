@@ -14,10 +14,17 @@ export async function apiFetch<T>(endpoint: string): Promise<T> {
   const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}/${endpoint.replace(/^\//, '')}`
 
   let response: Response
+  const controller = new AbortController()
+  const timeout = window.setTimeout(() => controller.abort(), 12000)
   try {
-    response = await fetch(url)
-  } catch {
+    response = await fetch(url, { signal: controller.signal })
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      throw new PokeApiError('The request timed out. Try again in a moment.')
+    }
     throw new PokeApiError('Network error. Check your connection and try again.')
+  } finally {
+    window.clearTimeout(timeout)
   }
 
   if (!response.ok) {
