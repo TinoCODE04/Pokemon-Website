@@ -5,6 +5,8 @@
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display: 'Outfit', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-game: 'Pixelify Sans', 'Trebuchet MS', sans-serif;
+  --font-pixel: 'Press Start 2P', ui-monospace, monospace;
 
   --color-brand-50: #fdeceb;
   --color-brand-100: #fad4cf;
@@ -123,6 +125,56 @@
 
   .pokemon-shadow {
     animation: pokemon-shadow 4.6s ease-in-out infinite;
+  }
+
+  .battle-stage {
+    background: #14223b;
+  }
+
+  .game-shell {
+    font-family: var(--font-game);
+    background:
+      radial-gradient(circle at 10% 10%, rgb(56 189 248 / 0.08), transparent 22rem),
+      radial-gradient(circle at 90% 20%, rgb(251 191 36 / 0.08), transparent 24rem),
+      #08101f;
+  }
+
+  .game-logo-title {
+    font-family: var(--font-game);
+    letter-spacing: -0.035em;
+    text-shadow: 3px 3px 0 rgb(227 53 13 / 0.6), 6px 6px 0 rgb(15 23 42 / 0.8);
+  }
+
+  .pixel-label {
+    font-family: var(--font-pixel);
+    letter-spacing: 0.08em;
+  }
+
+  .pixel-panel {
+    box-shadow:
+      inset 0 0 0 2px rgb(255 255 255 / 0.06),
+      0 6px 0 rgb(2 6 23 / 0.45);
+  }
+
+  .pixel-sprite {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  .game-dialog {
+    border: 4px solid #18213a;
+    background: #fff9dc;
+    color: #18213a;
+    box-shadow: inset 0 0 0 3px #ffffff, 0 6px 0 rgb(2 6 23 / 0.35);
+  }
+
+  .game-button-shadow {
+    box-shadow: inset 0 -4px 0 rgb(15 23 42 / 0.28), 0 4px 0 rgb(2 6 23 / 0.35);
+  }
+
+  .game-button-shadow:active {
+    transform: translateY(3px);
+    box-shadow: inset 0 -1px 0 rgb(15 23 42 / 0.25), 0 1px 0 rgb(2 6 23 / 0.35);
   }
 }
 

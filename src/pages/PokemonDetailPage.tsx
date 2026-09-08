@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Dna,
+  Gamepad2,
   GitCompareArrows,
   Heart,
   Ruler,
@@ -317,6 +318,13 @@ export default function PokemonDetailPage() {
                   <GitCompareArrows className="h-4 w-4" />
                   {compared ? 'In compare list' : isFull ? 'Compare list full' : 'Add to compare'}
                 </button>
+                <Link
+                  to={`/games?mode=quick&pokemon=${pokemon.id}`}
+                  className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-brand-500 to-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-sm shadow-brand-500/25 transition hover:-translate-y-0.5 hover:shadow-md"
+                >
+                  <Gamepad2 className="h-4 w-4" />
+                  Battle with this Pokémon
+                </Link>
               </div>
             </motion.div>
           </div>

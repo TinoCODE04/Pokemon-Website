@@ -10,6 +10,7 @@ const AbilityDetailPage = lazy(() => import('./pages/AbilityDetailPage'))
 const AbilitiesPage = lazy(() => import('./pages/AbilitiesPage'))
 const ComparePage = lazy(() => import('./pages/ComparePage'))
 const FavoritesPage = lazy(() => import('./pages/FavoritesPage'))
+const GamesPage = lazy(() => import('./pages/GamesPage'))
 const GenerationDetailPage = lazy(() => import('./pages/GenerationDetailPage'))
 const GenerationsPage = lazy(() => import('./pages/GenerationsPage'))
 const HomePage = lazy(() => import('./pages/HomePage'))
@@ -83,6 +84,7 @@ export default function App() {
               <Route path="/abilities" element={<AbilitiesPage />} />
               <Route path="/abilities/:name" element={<AbilityDetailPage />} />
               <Route path="/compare" element={<ComparePage />} />
+              <Route path="/games" element={<GamesPage />} />
               <Route path="/favorites" element={<FavoritesPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>

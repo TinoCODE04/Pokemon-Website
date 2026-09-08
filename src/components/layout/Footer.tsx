@@ -30,6 +30,7 @@ export function Footer() {
           <Link className="transition hover:text-brand-500" to="/generations">Generations</Link>
           <Link className="transition hover:text-brand-500" to="/abilities">Abilities</Link>
           <Link className="transition hover:text-brand-500" to="/compare">Compare</Link>
+          <Link className="transition hover:text-brand-500" to="/games">Games</Link>
           <Link className="transition hover:text-brand-500" to="/favorites">Favorites</Link>
         </nav>
 

@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { to: '/generations', label: 'Generations' },
   { to: '/abilities', label: 'Abilities' },
   { to: '/compare', label: 'Compare' },
+  { to: '/games', label: 'Games' },
   { to: '/favorites', label: 'Favorites' },
 ]
 
@@ -41,7 +42,7 @@ export function Navbar({ onOpenSearch }: { onOpenSearch: () => void }) {
           </span>
         </Link>
 
-        <div className="hidden items-center gap-1 lg:flex">
+        <div className="hidden items-center gap-1 xl:flex">
           {NAV_LINKS.map((link) => (
             <NavLink
               key={link.to}
@@ -134,7 +135,7 @@ export function Navbar({ onOpenSearch }: { onOpenSearch: () => void }) {
 
           <button
             onClick={() => setMobileOpen((v) => !v)}
-            className="flex h-9 w-9 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-100 lg:hidden dark:text-slate-300 dark:hover:bg-white/10"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-100 xl:hidden dark:text-slate-300 dark:hover:bg-white/10"
             aria-label="Menu"
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -149,7 +150,7 @@ export function Navbar({ onOpenSearch }: { onOpenSearch: () => void }) {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="overflow-hidden border-t border-slate-200 bg-white lg:hidden dark:border-white/10 dark:bg-night-950"
+            className="overflow-hidden border-t border-slate-200 bg-white xl:hidden dark:border-white/10 dark:bg-night-950"
           >
             <div className="container-app grid gap-1 py-3">
               {NAV_LINKS.map((link) => (

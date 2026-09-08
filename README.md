@@ -14,6 +14,7 @@ A clean, responsive Pokémon encyclopedia powered by [PokéAPI](https://pokeapi.
 - Browse Pokémon by generation and region
 - Compare up to three Pokémon side by side
 - Save favorite Pokémon on the current device
+- Play Quick Battle and challenge powerful Legendary Pokémon
 - Switch between light and dark themes
 - Use responsive layouts designed for desktop, tablet, and mobile
 - Open global search using the navigation or `/` keyboard shortcut
@@ -123,6 +124,7 @@ src/
 | `/abilities` | Ability directory |
 | `/abilities/:name` | Ability details and related Pokémon |
 | `/compare` | Side-by-side Pokémon comparison |
+| `/games` | Quick Battle and Legendary Challenge |
 | `/favorites` | Locally saved favorite Pokémon |
 
 ## API usage
