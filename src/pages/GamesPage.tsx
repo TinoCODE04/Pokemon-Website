@@ -299,20 +299,20 @@ export default function GamesPage() {
   }
 
   return (
-    <div className="game-shell min-h-[calc(100vh-4rem)] text-slate-100">
+    <div className="game-shell min-h-[calc(100vh-4rem)] text-slate-900 transition-colors dark:text-slate-100">
       <div className="container-app py-8 sm:py-10">
         <header className="mb-8 flex flex-wrap items-end justify-between gap-5">
           <div className="flex items-center gap-4">
-            <span className="pixel-panel flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border-2 border-sky-300/40 bg-slate-900 sm:h-16 sm:w-16">
+            <span className="pixel-panel flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border-2 border-sky-300 bg-white sm:h-16 sm:w-16 dark:border-sky-300/40 dark:bg-slate-900">
               <PokeballMark className="h-9 w-9 sm:h-10 sm:w-10" />
             </span>
             <div>
-              <span className="pixel-label mb-2 inline-flex items-center gap-2 text-[8px] font-bold uppercase text-sky-300 sm:text-[9px]">
+              <span className="pixel-label mb-2 inline-flex items-center gap-2 text-[8px] font-bold uppercase text-sky-700 sm:text-[9px] dark:text-sky-300">
                 <Gamepad2 className="h-3.5 w-3.5" />
                 Pokémon Battle System
               </span>
-              <h1 className="game-logo-title text-4xl font-bold uppercase leading-none text-white sm:text-5xl">Battle Arena</h1>
-              <p className="mt-2 max-w-xl font-game text-base text-sky-100/75 sm:text-lg">
+              <h1 className="game-logo-title text-4xl font-bold uppercase leading-none text-slate-950 sm:text-5xl dark:text-white">Battle Arena</h1>
+              <p className="mt-2 max-w-xl font-game text-base text-slate-600 sm:text-lg dark:text-sky-100/75">
                 Choose your partner. Read the matchup. Win the turn.
               </p>
             </div>
@@ -341,7 +341,7 @@ export default function GamesPage() {
             />
           )}
           {view === 'loading' && (
-            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="pixel-panel rounded-lg border-4 border-sky-400/40 bg-[#121e35] py-16">
+            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="pixel-panel rounded-lg border-4 border-sky-300 bg-white py-16 dark:border-sky-400/40 dark:bg-[#121e35]">
               <Spinner label={mode === 'legendary' ? 'Summoning a legendary opponent…' : 'Finding an opponent…'} />
             </motion.div>
           )}
@@ -386,9 +386,9 @@ function BattleRecordStrip({ record }: { record: BattleRecord }) {
         ['Best', record.bestStreak],
         ['Legendaries', record.legendaryWins],
       ].map(([label, value]) => (
-        <div key={label} className="pixel-panel min-w-16 rounded-md border-2 border-slate-600 bg-[#18233a] px-3 py-2.5 text-center">
-          <p className="font-game text-2xl font-bold leading-none text-white">{value}</p>
-          <p className="pixel-label mt-1.5 text-[7px] uppercase text-sky-200/70">{label}</p>
+        <div key={label} className="pixel-panel min-w-16 rounded-md border-2 border-slate-300 bg-white px-3 py-2.5 text-center dark:border-slate-600 dark:bg-[#18233a]">
+          <p className="font-game text-2xl font-bold leading-none text-slate-900 dark:text-white">{value}</p>
+          <p className="pixel-label mt-1.5 text-[7px] uppercase text-sky-700 dark:text-sky-200/70">{label}</p>
         </div>
       ))}
     </div>
@@ -401,7 +401,7 @@ function ModeSelection({ onChoose }: { onChoose: (mode: GameMode) => void }) {
       <div className="grid gap-5 lg:grid-cols-2">
         <button
           onClick={() => onChoose('quick')}
-          className="pixel-panel group relative min-h-80 overflow-hidden rounded-xl border-4 border-sky-400/45 bg-gradient-to-br from-[#101c38] via-[#102b4d] to-[#0a5671] p-6 text-left text-white transition hover:-translate-y-1 hover:border-sky-300 sm:p-8"
+          className="pixel-panel group relative min-h-80 overflow-hidden rounded-xl border-4 border-sky-400/60 bg-gradient-to-br from-sky-50 via-cyan-100 to-sky-200 p-6 text-left text-slate-900 transition hover:-translate-y-1 hover:border-sky-500 sm:p-8 dark:border-sky-400/45 dark:from-[#101c38] dark:via-[#102b4d] dark:to-[#0a5671] dark:text-white dark:hover:border-sky-300"
         >
           <div className="absolute inset-0 opacity-15 [background-image:linear-gradient(90deg,transparent_50%,rgba(255,255,255,.12)_50%)] [background-size:12px_12px]" />
           <div className="pointer-events-none absolute bottom-2 right-3 flex items-end -space-x-4 opacity-90 transition group-hover:-translate-y-2">
@@ -409,15 +409,15 @@ function ModeSelection({ onChoose }: { onChoose: (mode: GameMode) => void }) {
             <img src={spriteUrl(94)} alt="" className="pixel-sprite h-32 w-32 object-contain" onError={(event) => { event.currentTarget.style.display = 'none' }} />
           </div>
           <div className="relative flex h-full max-w-[68%] flex-col">
-            <span className="pixel-panel flex h-12 w-12 items-center justify-center rounded-md border-2 border-sky-200/50 bg-sky-950/60 text-sky-200">
+            <span className="pixel-panel flex h-12 w-12 items-center justify-center rounded-md border-2 border-sky-300 bg-white/80 text-sky-700 dark:border-sky-200/50 dark:bg-sky-950/60 dark:text-sky-200">
               <Swords className="h-7 w-7" />
             </span>
-            <p className="pixel-label mt-7 text-[8px] uppercase text-sky-200">Classic mode</p>
+            <p className="pixel-label mt-7 text-[8px] uppercase text-sky-700 dark:text-sky-200">Classic mode</p>
             <h2 className="mt-2 font-game text-4xl font-bold leading-none">Quick Battle</h2>
-            <p className="mt-4 max-w-md font-game text-lg leading-snug text-sky-50/85">
+            <p className="mt-4 max-w-md font-game text-lg leading-snug text-slate-700 dark:text-sky-50/85">
               Face a balanced random opponent. Type matchups, move priority, and speed decide every turn.
             </p>
-            <span className="pixel-label mt-auto inline-flex items-center gap-2 pt-6 text-[8px] text-yellow-300">
+            <span className="pixel-label mt-auto inline-flex items-center gap-2 pt-6 text-[8px] text-amber-700 dark:text-yellow-300">
               Press A / Click <Zap className="h-3.5 w-3.5" />
             </span>
           </div>
@@ -425,24 +425,24 @@ function ModeSelection({ onChoose }: { onChoose: (mode: GameMode) => void }) {
 
         <button
           onClick={() => onChoose('legendary')}
-          className="pixel-panel group relative min-h-80 overflow-hidden rounded-xl border-4 border-amber-400/50 bg-gradient-to-br from-[#231439] via-[#4b2445] to-[#744313] p-6 text-left text-white transition hover:-translate-y-1 hover:border-amber-300 sm:p-8"
+          className="pixel-panel group relative min-h-80 overflow-hidden rounded-xl border-4 border-amber-400/70 bg-gradient-to-br from-amber-50 via-orange-100 to-rose-200 p-6 text-left text-slate-900 transition hover:-translate-y-1 hover:border-amber-500 sm:p-8 dark:border-amber-400/50 dark:from-[#231439] dark:via-[#4b2445] dark:to-[#744313] dark:text-white dark:hover:border-amber-300"
         >
           <div className="absolute inset-0 opacity-15 [background-image:linear-gradient(90deg,transparent_50%,rgba(255,255,255,.12)_50%)] [background-size:12px_12px]" />
           <div className="pointer-events-none absolute bottom-1 right-1 flex items-end -space-x-5 opacity-90 transition group-hover:-translate-y-2">
             <img src={spriteUrl(150)} alt="" className="pixel-sprite h-28 w-28 object-contain" onError={(event) => { event.currentTarget.style.display = 'none' }} />
             <img src={spriteUrl(384)} alt="" className="pixel-sprite h-36 w-36 object-contain" onError={(event) => { event.currentTarget.style.display = 'none' }} />
           </div>
-          <Sparkles className="absolute right-7 top-7 h-7 w-7 text-amber-300/70" />
+          <Sparkles className="absolute right-7 top-7 h-7 w-7 text-amber-600/80 dark:text-amber-300/70" />
           <div className="relative flex h-full max-w-[68%] flex-col">
-            <span className="pixel-panel flex h-12 w-12 items-center justify-center rounded-md border-2 border-amber-200/50 bg-amber-950/50 text-amber-200">
+            <span className="pixel-panel flex h-12 w-12 items-center justify-center rounded-md border-2 border-amber-300 bg-white/80 text-amber-700 dark:border-amber-200/50 dark:bg-amber-950/50 dark:text-amber-200">
               <Crown className="h-7 w-7 fill-current" />
             </span>
-            <p className="pixel-label mt-7 text-[8px] uppercase text-amber-200">Boss challenge</p>
+            <p className="pixel-label mt-7 text-[8px] uppercase text-amber-700 dark:text-amber-200">Boss challenge</p>
             <h2 className="mt-2 font-game text-4xl font-bold leading-none">Legendary Challenge</h2>
-            <p className="mt-4 max-w-md font-game text-lg leading-snug text-amber-50/85">
+            <p className="mt-4 max-w-md font-game text-lg leading-snug text-slate-700 dark:text-amber-50/85">
               Battle a random Legendary Pokémon with boosted HP and sharper AI. Build your legendary win count.
             </p>
-            <span className="pixel-label mt-auto inline-flex items-center gap-2 pt-6 text-[8px] text-yellow-300">
+            <span className="pixel-label mt-auto inline-flex items-center gap-2 pt-6 text-[8px] text-amber-700 dark:text-yellow-300">
               Press A / Click <Crown className="h-3.5 w-3.5" />
             </span>
           </div>
@@ -457,11 +457,11 @@ function ModeSelection({ onChoose }: { onChoose: (mode: GameMode) => void }) {
         ].map(([Icon, title, text]) => {
           const FeatureIcon = Icon as typeof Shield
           return (
-            <div key={title as string} className="pixel-panel flex gap-3 rounded-md border-2 border-slate-600 bg-[#141f35] p-4">
-              <FeatureIcon className="mt-0.5 h-5 w-5 shrink-0 text-yellow-300" />
+            <div key={title as string} className="pixel-panel flex gap-3 rounded-md border-2 border-slate-300 bg-white p-4 dark:border-slate-600 dark:bg-[#141f35]">
+              <FeatureIcon className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-yellow-300" />
               <div>
-                <p className="font-game text-lg font-bold text-white">{title as string}</p>
-                <p className="mt-1 font-game text-base leading-snug text-sky-100/65">{text as string}</p>
+                <p className="font-game text-lg font-bold text-slate-900 dark:text-white">{title as string}</p>
+                <p className="mt-1 font-game text-base leading-snug text-slate-600 dark:text-sky-100/65">{text as string}</p>
               </div>
             </div>
           )
@@ -504,7 +504,7 @@ function FighterSelection(props: FighterSelectionProps) {
 
   return (
     <motion.div className="pb-20 sm:pb-0" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-      <button onClick={props.onBack} className="mb-5 inline-flex min-h-10 items-center gap-2 rounded-md border-2 border-transparent px-3 font-game text-base font-bold text-sky-200/70 transition hover:border-sky-300/30 hover:bg-white/5 hover:text-white">
+      <button onClick={props.onBack} className="mb-5 inline-flex min-h-10 items-center gap-2 rounded-md border-2 border-transparent px-3 font-game text-base font-bold text-sky-700 transition hover:border-sky-300 hover:bg-sky-50 hover:text-sky-900 dark:text-sky-200/70 dark:hover:border-sky-300/30 dark:hover:bg-white/5 dark:hover:text-white">
         <ArrowLeft className="h-4 w-4" />
         Change mode
       </button>
@@ -512,19 +512,19 @@ function FighterSelection(props: FighterSelectionProps) {
       <div className={cn(
         'pixel-panel relative overflow-hidden rounded-lg border-4 p-6 sm:p-8',
         props.mode === 'legendary'
-          ? 'border-amber-400/30 bg-gradient-to-r from-amber-400/10 via-transparent to-violet-500/10'
-          : 'border-sky-400/25 bg-gradient-to-r from-sky-400/10 via-transparent to-brand-500/5',
+          ? 'border-amber-300 bg-gradient-to-r from-amber-100/80 via-white/80 to-violet-100/70 dark:border-amber-400/30 dark:from-amber-400/10 dark:via-transparent dark:to-violet-500/10'
+          : 'border-sky-300 bg-gradient-to-r from-sky-100/80 via-white/80 to-red-50/70 dark:border-sky-400/25 dark:from-sky-400/10 dark:via-transparent dark:to-brand-500/5',
       )}>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className={cn('pixel-label text-[8px] font-bold uppercase', props.mode === 'legendary' ? 'text-amber-300' : 'text-sky-300')}>
+            <p className={cn('pixel-label text-[8px] font-bold uppercase', props.mode === 'legendary' ? 'text-amber-700 dark:text-amber-300' : 'text-sky-700 dark:text-sky-300')}>
               {props.mode === 'legendary' ? 'Legendary Challenge' : 'Quick Battle'}
             </p>
             <h2 className="mt-2 font-game text-3xl font-extrabold sm:text-4xl">Choose your fighter</h2>
-            <p className="mt-2 font-game text-lg text-sky-100/70">Search the full Pokédex or pick a familiar favorite.</p>
+            <p className="mt-2 font-game text-lg text-slate-600 dark:text-sky-100/70">Search the full Pokédex or pick a familiar favorite.</p>
           </div>
-          <div className="pixel-panel flex min-w-40 flex-col items-center rounded-md border-2 border-yellow-300/60 bg-[#162139] px-4 py-3 text-center" aria-live="polite">
-            <p className="pixel-label text-[7px] uppercase text-yellow-300">Selected</p>
+          <div className="pixel-panel flex min-w-40 flex-col items-center rounded-md border-2 border-amber-400 bg-white/90 px-4 py-3 text-center dark:border-yellow-300/60 dark:bg-[#162139]" aria-live="polite">
+            <p className="pixel-label text-[7px] uppercase text-amber-700 dark:text-yellow-300">Selected</p>
             <p className="mt-1 font-game text-xl font-extrabold">{selectedName}</p>
             <motion.div
               key={props.selectedId}
@@ -550,7 +550,7 @@ function FighterSelection(props: FighterSelectionProps) {
                 }}
               />
             </motion.div>
-            <p className="pixel-label mt-1 text-[6px] text-sky-200/55">{formatDexNumber(props.selectedId)}</p>
+            <p className="pixel-label mt-1 text-[6px] text-sky-700 dark:text-sky-200/55">{formatDexNumber(props.selectedId)}</p>
           </div>
         </div>
 
@@ -561,15 +561,15 @@ function FighterSelection(props: FighterSelectionProps) {
             onChange={(event) => props.onSearch(event.target.value)}
             placeholder="Search by name or Pokédex number"
             aria-label="Search for your fighter"
-            className="pixel-panel h-14 w-full rounded-md border-2 border-slate-500 bg-[#111b30] pl-12 pr-4 font-game text-lg text-white outline-none transition placeholder:text-sky-100/35 focus:border-yellow-300 focus:ring-2 focus:ring-yellow-300/20"
+            className="pixel-panel h-14 w-full rounded-md border-2 border-slate-300 bg-white pl-12 pr-4 font-game text-lg text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-300/30 dark:border-slate-500 dark:bg-[#111b30] dark:text-white dark:placeholder:text-sky-100/35 dark:focus:border-yellow-300 dark:focus:ring-yellow-300/20"
           />
         </div>
 
         {!props.search.trim() && recentChoices.length > 0 && (
-          <div className="mt-4 border-t-2 border-slate-600/70 pt-4">
+          <div className="mt-4 border-t-2 border-slate-300 pt-4 dark:border-slate-600/70">
             <div className="mb-3 flex items-center justify-between gap-3">
-              <p className="pixel-label text-[7px] uppercase text-yellow-300">Recently selected</p>
-              <p className="font-game text-sm text-sky-100/45">Choose again with one click</p>
+              <p className="pixel-label text-[7px] uppercase text-amber-700 dark:text-yellow-300">Recently selected</p>
+              <p className="font-game text-sm text-slate-500 dark:text-sky-100/45">Choose again with one click</p>
             </div>
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
               {recentChoices.map((item) => (
@@ -598,7 +598,7 @@ function FighterSelection(props: FighterSelectionProps) {
 
       {favoriteChoices.length > 0 && !props.search.trim() && (
         <section className="mt-7">
-          <h3 className="mb-3 flex items-center gap-2 font-game text-2xl font-bold text-white"><Heart className="h-4 w-4 fill-brand-500 text-brand-500" /> Your favorites</h3>
+          <h3 className="mb-3 flex items-center gap-2 font-game text-2xl font-bold text-slate-900 dark:text-white"><Heart className="h-4 w-4 fill-brand-500 text-brand-500" /> Your favorites</h3>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
             {favoriteChoices.map((item) => <FighterChoice key={item.id} {...item} selected={props.selectedId === item.id} onSelect={props.onSelect} />)}
           </div>
@@ -607,7 +607,7 @@ function FighterSelection(props: FighterSelectionProps) {
 
       {!props.search.trim() && (
         <section className="mt-7">
-          <h3 className="mb-3 font-game text-2xl font-bold text-white">Featured fighters</h3>
+          <h3 className="mb-3 font-game text-2xl font-bold text-slate-900 dark:text-white">Featured fighters</h3>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
             {FEATURED_FIGHTERS.map((item) => <FighterChoice key={item.id} {...item} selected={props.selectedId === item.id} onSelect={props.onSelect} />)}
           </div>
@@ -616,7 +616,7 @@ function FighterSelection(props: FighterSelectionProps) {
 
       {props.error && <p className="mt-5 rounded-xl border border-red-300 bg-red-50 p-4 text-sm font-semibold text-red-600 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300" role="alert">{props.error}</p>}
 
-      <div className="fixed inset-x-4 bottom-4 z-30 flex justify-end rounded-2xl border border-white/10 bg-night-950/85 p-2 shadow-2xl backdrop-blur-xl sm:static sm:mt-8 sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
+      <div className="fixed inset-x-4 bottom-4 z-30 flex justify-end rounded-2xl border border-slate-200 bg-white/90 p-2 shadow-2xl backdrop-blur-xl sm:static sm:mt-8 sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none dark:border-white/10 dark:bg-night-950/85 dark:sm:bg-transparent">
         <button
           onClick={props.onStart}
           className={cn(
@@ -640,14 +640,14 @@ function FighterChoice({ id, name, selected, onSelect, compact = false }: { id: 
       onClick={() => onSelect(id)}
       aria-pressed={selected}
       className={cn(
-        'pixel-panel group relative flex items-center rounded-md border-2 bg-[#131e34] text-left text-white transition hover:-translate-y-0.5 hover:border-yellow-300',
+        'pixel-panel group relative flex items-center rounded-md border-2 bg-white text-left text-slate-900 transition hover:-translate-y-0.5 hover:border-amber-400 dark:bg-[#131e34] dark:text-white dark:hover:border-yellow-300',
         compact ? 'gap-3 p-2.5' : 'flex-col p-3 text-center',
         selected
-          ? 'border-yellow-300 bg-[#23304b] ring-2 ring-yellow-300/25'
-          : 'border-slate-600',
+          ? 'border-amber-400 bg-amber-50 ring-2 ring-amber-300/30 dark:border-yellow-300 dark:bg-[#23304b] dark:ring-yellow-300/25'
+          : 'border-slate-300 dark:border-slate-600',
       )}
     >
-      {selected && <span className="pixel-label absolute right-2 top-2 text-[10px] text-yellow-300">▶</span>}
+      {selected && <span className="pixel-label absolute right-2 top-2 text-[10px] text-amber-600 dark:text-yellow-300">▶</span>}
       <img
         src={spriteUrl(id)}
         alt=""
@@ -657,7 +657,7 @@ function FighterChoice({ id, name, selected, onSelect, compact = false }: { id: 
       />
       <div className={cn('min-w-0', !compact && 'mt-1 w-full')}>
         <p className="truncate font-game text-lg font-bold leading-tight">{name}</p>
-        <p className="pixel-label mt-1 text-[6px] text-sky-200/55">{formatDexNumber(id)}</p>
+        <p className="pixel-label mt-1 text-[6px] text-sky-700 dark:text-sky-200/55">{formatDexNumber(id)}</p>
       </div>
     </button>
   )
@@ -713,15 +713,15 @@ function BattleArena(props: BattleArenaProps) {
   return (
     <motion.div initial={{ opacity: 0, scale: 0.985 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <button disabled={props.busy} onClick={props.onExit} className="inline-flex min-h-10 items-center gap-2 rounded-md border-2 border-transparent px-3 font-game text-base font-bold text-sky-200/70 hover:border-sky-300/30 hover:bg-white/5 hover:text-white disabled:cursor-wait disabled:opacity-40">
+        <button disabled={props.busy} onClick={props.onExit} className="inline-flex min-h-10 items-center gap-2 rounded-md border-2 border-transparent px-3 font-game text-base font-bold text-sky-700 hover:border-sky-300 hover:bg-sky-50 hover:text-sky-900 disabled:cursor-wait disabled:opacity-40 dark:text-sky-200/70 dark:hover:border-sky-300/30 dark:hover:bg-white/5 dark:hover:text-white">
           <ArrowLeft className="h-4 w-4" /> Exit battle
         </button>
         <div className="flex items-center gap-2">
-          <span className={cn('pixel-label rounded-md border-2 px-3 py-2 text-[7px]', boss ? 'border-amber-400/50 bg-amber-400/15 text-amber-300' : 'border-sky-400/40 bg-sky-400/15 text-sky-300')}>
+          <span className={cn('pixel-label rounded-md border-2 px-3 py-2 text-[7px]', boss ? 'border-amber-400/60 bg-amber-100 text-amber-800 dark:bg-amber-400/15 dark:text-amber-300' : 'border-sky-400/60 bg-sky-100 text-sky-800 dark:bg-sky-400/15 dark:text-sky-300')}>
             {boss ? 'Legendary Challenge' : 'Quick Battle'}
           </span>
-          <span className="pixel-label rounded-md border-2 border-emerald-400/40 bg-emerald-400/10 px-3 py-2 text-[7px] text-emerald-300">Streak {props.streak}</span>
-          <button onClick={props.onToggleSound} className="pixel-panel flex h-10 w-10 items-center justify-center rounded-md border-2 border-slate-600 bg-[#18233a] text-sky-100" aria-label={props.soundEnabled ? 'Mute battle sounds' : 'Enable battle sounds'}>
+          <span className="pixel-label rounded-md border-2 border-emerald-400/60 bg-emerald-100 px-3 py-2 text-[7px] text-emerald-800 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300">Streak {props.streak}</span>
+          <button onClick={props.onToggleSound} className="pixel-panel flex h-10 w-10 items-center justify-center rounded-md border-2 border-slate-300 bg-white text-sky-700 dark:border-slate-600 dark:bg-[#18233a] dark:text-sky-100" aria-label={props.soundEnabled ? 'Mute battle sounds' : 'Enable battle sounds'}>
             {props.soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
           </button>
         </div>
@@ -788,14 +788,14 @@ function BattleArena(props: BattleArenaProps) {
                 <span className={cn('pixel-panel mx-auto flex h-16 w-16 items-center justify-center rounded-md border-2', props.outcome === 'won' ? 'border-amber-500 bg-amber-300 text-amber-900' : 'border-slate-500 bg-slate-300 text-slate-700')}>
                   {props.outcome === 'won' ? <Trophy className="h-8 w-8" /> : <Shield className="h-8 w-8" />}
                 </span>
-                <p className="pixel-label mt-5 text-[8px] uppercase text-slate-500">Battle complete</p>
+                <p className="pixel-label mt-5 text-[8px] uppercase text-slate-500 dark:text-slate-400">Battle complete</p>
                 <h2 className="mt-2 font-game text-4xl font-extrabold">{props.outcome === 'won' ? 'Victory!' : 'Defeated'}</h2>
-                <p className="mt-3 font-game text-lg text-slate-600">{props.outcome === 'won' ? `${formatName(props.player.name)} won the battle.` : `${formatName(props.opponent.name)} controlled the arena.`}</p>
+                <p className="mt-3 font-game text-lg text-slate-600 dark:text-slate-300">{props.outcome === 'won' ? `${formatName(props.player.name)} won the battle.` : `${formatName(props.opponent.name)} controlled the arena.`}</p>
                 <div className="mt-7 grid gap-2 sm:grid-cols-2">
                   <button onClick={props.onRematch} className="game-button-shadow inline-flex min-h-11 items-center justify-center gap-2 rounded-md border-2 border-red-800 bg-brand-500 px-5 font-game text-lg font-extrabold text-white hover:bg-brand-600"><RotateCcw className="h-4 w-4" /> Battle again</button>
                   <button onClick={props.onChooseAnother} className="game-button-shadow min-h-11 rounded-md border-2 border-slate-600 bg-slate-700 px-5 font-game text-lg font-bold text-white hover:bg-slate-600">Choose another</button>
                 </div>
-                <button onClick={props.onExit} className="mt-4 font-game text-base font-bold text-slate-500 hover:text-slate-900">Back to games</button>
+                <button onClick={props.onExit} className="mt-4 font-game text-base font-bold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">Back to games</button>
               </motion.div>
             </motion.div>
           )}
@@ -806,21 +806,21 @@ function BattleArena(props: BattleArenaProps) {
         <section className="game-dialog flex min-h-52 flex-col rounded-lg p-5 sm:p-6" aria-live="polite">
           <p className="pixel-label text-[8px] uppercase text-brand-600">Battle message</p>
           <p className="mt-3 font-game text-2xl font-bold leading-snug">{props.message}</p>
-          <div className="mt-4 space-y-1.5 border-t-2 border-slate-300 pt-4">
+          <div className="mt-4 space-y-1.5 border-t-2 border-slate-300 pt-4 dark:border-slate-600">
             {props.battleLog.length === 0
-              ? <p className="font-game text-base text-slate-500">The battle log will appear here.</p>
-              : props.battleLog.slice(0, 3).map((line, index) => <p key={`${line}-${index}`} className={cn('font-game text-base', index === 0 ? 'font-bold text-slate-700' : 'text-slate-500')}>{line}</p>)}
+              ? <p className="font-game text-base text-slate-500 dark:text-slate-400">The battle log will appear here.</p>
+              : props.battleLog.slice(0, 3).map((line, index) => <p key={`${line}-${index}`} className={cn('font-game text-base', index === 0 ? 'font-bold text-slate-700 dark:text-slate-200' : 'text-slate-500 dark:text-slate-400')}>{line}</p>)}
           </div>
         </section>
 
         <section className="game-dialog rounded-lg p-5 sm:p-6">
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
-              <p className="pixel-label text-[8px] uppercase text-sky-700">Command</p>
+              <p className="pixel-label text-[8px] uppercase text-sky-700 dark:text-sky-300">Command</p>
               <h2 className="mt-1 font-game text-2xl font-bold">Choose a move</h2>
-              <p className="mt-1 font-game text-sm text-slate-500">Hover or focus a move to inspect it.</p>
+              <p className="mt-1 font-game text-sm text-slate-500 dark:text-slate-400">Hover or focus a move to inspect it.</p>
             </div>
-            {props.busy && <span className="inline-flex items-center gap-2 font-game text-base font-semibold text-slate-500"><span className="h-2 w-2 animate-pulse bg-brand-500" /> Resolving turn</span>}
+            {props.busy && <span className="inline-flex items-center gap-2 font-game text-base font-semibold text-slate-500 dark:text-slate-400"><span className="h-2 w-2 animate-pulse bg-brand-500" /> Resolving turn</span>}
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {props.moves.map((move, index) => (
@@ -853,12 +853,12 @@ function CombatantPanel({ pokemon, hp, maxHp, player = false, boss = false }: { 
           </div>
           <div className="mt-1 flex flex-wrap gap-1"><TypeBadge type={pokemon.types[0]?.type.name ?? 'normal'} size="sm" />{pokemon.types[1] && <TypeBadge type={pokemon.types[1].type.name} size="sm" />}</div>
         </div>
-        <span className="pixel-label text-[7px] uppercase text-slate-500">{player ? 'You' : boss ? 'Boss' : 'Rival'}</span>
+        <span className="pixel-label text-[7px] uppercase text-slate-500 dark:text-slate-400">{player ? 'You' : boss ? 'Boss' : 'Rival'}</span>
       </div>
-      <div className="mt-3 h-3 overflow-hidden border-2 border-slate-700 bg-slate-300">
+      <div className="mt-3 h-3 overflow-hidden border-2 border-slate-700 bg-slate-300 dark:bg-slate-600">
         <motion.div className={cn('h-full', color)} animate={{ width: `${percentage}%` }} transition={{ type: 'spring', stiffness: 120, damping: 20 }} />
       </div>
-      <div className="pixel-label mt-2 flex justify-between text-[7px] text-slate-600"><span>HP</span><span>{hp} / {maxHp}</span></div>
+      <div className="pixel-label mt-2 flex justify-between text-[7px] text-slate-600 dark:text-slate-300"><span>HP</span><span>{hp} / {maxHp}</span></div>
     </div>
   )
 }
@@ -879,20 +879,20 @@ function MoveButton({ move, index, effectiveness, disabled, onClick }: { move: B
         onClick={onClick}
         disabled={disabled}
         aria-describedby={tooltipId}
-        className="game-button-shadow relative min-h-20 w-full overflow-hidden rounded-md border-2 border-slate-800 bg-[#24314b] p-4 text-left text-white transition hover:-translate-y-0.5 hover:border-yellow-300 focus-visible:border-yellow-300 disabled:cursor-wait disabled:opacity-50"
+        className="game-button-shadow relative min-h-20 w-full overflow-hidden rounded-md border-2 border-slate-300 bg-white p-4 text-left text-slate-900 transition hover:-translate-y-0.5 hover:border-amber-400 focus-visible:border-amber-400 disabled:cursor-wait disabled:opacity-50 dark:border-slate-800 dark:bg-[#24314b] dark:text-white dark:hover:border-yellow-300 dark:focus-visible:border-yellow-300"
         style={{ '--move-color': color } as React.CSSProperties}
       >
         <span className="absolute inset-y-0 left-0 w-2 bg-[var(--move-color)]" />
         <span className="absolute -right-8 -top-10 h-24 w-24 rounded-full bg-[var(--move-color)] opacity-10 blur-2xl transition group-hover:opacity-20" />
         <span className="relative flex items-center justify-between gap-3">
           <span className="flex items-center gap-3">
-            <span className="pixel-label flex h-7 w-7 shrink-0 items-center justify-center rounded-sm border border-white/25 bg-black/20 text-[8px] text-yellow-200">{index + 1}</span>
+            <span className="pixel-label flex h-7 w-7 shrink-0 items-center justify-center rounded-sm border border-slate-300 bg-slate-100 text-[8px] text-amber-700 dark:border-white/25 dark:bg-black/20 dark:text-yellow-200">{index + 1}</span>
             <span>
               <span className="block font-game text-xl font-extrabold leading-none">{move.name}</span>
-              <span className="mt-1.5 block font-game text-sm font-semibold capitalize text-sky-100/65">{move.type} · {move.category}</span>
+              <span className="mt-1.5 block font-game text-sm font-semibold capitalize text-slate-600 dark:text-sky-100/65">{move.type} · {move.category}</span>
             </span>
           </span>
-          <span className="pixel-label text-right text-[7px] text-sky-100/60"><span className="mb-1 block text-[9px] text-white">{move.power}</span>{move.accuracy}%</span>
+          <span className="pixel-label text-right text-[7px] text-slate-600 dark:text-sky-100/60"><span className="mb-1 block text-[9px] text-slate-900 dark:text-white">{move.power}</span>{move.accuracy}%</span>
         </span>
       </button>
 

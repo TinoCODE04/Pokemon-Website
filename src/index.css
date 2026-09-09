@@ -134,6 +134,13 @@
   .game-shell {
     font-family: var(--font-game);
     background:
+      radial-gradient(circle at 10% 10%, rgb(56 189 248 / 0.14), transparent 22rem),
+      radial-gradient(circle at 90% 20%, rgb(251 191 36 / 0.13), transparent 24rem),
+      #f8fafc;
+  }
+
+  .dark .game-shell {
+    background:
       radial-gradient(circle at 10% 10%, rgb(56 189 248 / 0.08), transparent 22rem),
       radial-gradient(circle at 90% 20%, rgb(251 191 36 / 0.08), transparent 24rem),
       #08101f;
@@ -142,6 +149,10 @@
   .game-logo-title {
     font-family: var(--font-game);
     letter-spacing: -0.035em;
+    text-shadow: 3px 3px 0 rgb(227 53 13 / 0.45), 6px 6px 0 rgb(148 163 184 / 0.35);
+  }
+
+  .dark .game-logo-title {
     text-shadow: 3px 3px 0 rgb(227 53 13 / 0.6), 6px 6px 0 rgb(15 23 42 / 0.8);
   }
 
@@ -151,6 +162,12 @@
   }
 
   .pixel-panel {
+    box-shadow:
+      inset 0 0 0 2px rgb(255 255 255 / 0.65),
+      0 6px 0 rgb(148 163 184 / 0.35);
+  }
+
+  .dark .pixel-panel {
     box-shadow:
       inset 0 0 0 2px rgb(255 255 255 / 0.06),
       0 6px 0 rgb(2 6 23 / 0.45);
@@ -166,6 +183,13 @@
     background: #fff9dc;
     color: #18213a;
     box-shadow: inset 0 0 0 3px #ffffff, 0 6px 0 rgb(2 6 23 / 0.35);
+  }
+
+  .dark .game-dialog {
+    border-color: #475569;
+    background: #111a30;
+    color: #f8fafc;
+    box-shadow: inset 0 0 0 3px #1e293b, 0 6px 0 rgb(2 6 23 / 0.45);
   }
 
   .game-button-shadow {
