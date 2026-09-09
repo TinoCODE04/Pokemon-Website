@@ -9,6 +9,7 @@ import { cn } from '../../utils/cn'
 const NAV_LINKS = [
   { to: '/', label: 'Home' },
   { to: '/pokedex', label: 'Pokédex' },
+  { to: '/rankings', label: 'Top Rank' },
   { to: '/types', label: 'Types' },
   { to: '/generations', label: 'Generations' },
   { to: '/abilities', label: 'Abilities' },
@@ -35,10 +36,10 @@ export function Navbar({ onOpenSearch }: { onOpenSearch: () => void }) {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/80 backdrop-blur-xl dark:border-white/10 dark:bg-night-950/80">
       <nav className="container-app flex h-16 min-w-0 items-center justify-between gap-2 sm:gap-3">
-        <Link to="/" className="flex min-w-0 items-center gap-2 sm:gap-2.5" onClick={() => setMobileOpen(false)}>
+        <Link to="/" className="flex shrink-0 items-center gap-2 sm:gap-2.5" onClick={() => setMobileOpen(false)}>
           <PokeballMark className="h-7 w-7 shrink-0" />
           <span className="truncate font-display text-base font-bold tracking-tight sm:text-lg">
-            Pokémon <span className="text-brand-500 max-sm:hidden">Explorer</span>
+            Pokémon <span className="text-brand-500 max-[1450px]:hidden">Explorer</span>
           </span>
         </Link>
 
@@ -50,7 +51,7 @@ export function Navbar({ onOpenSearch }: { onOpenSearch: () => void }) {
               end={link.to === '/'}
               className={({ isActive }) =>
                 cn(
-                  'relative rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors',
+                  'relative whitespace-nowrap rounded-full px-2.5 py-1.5 text-sm font-medium transition-colors',
                   isActive
                     ? 'text-brand-600 dark:text-brand-300'
                     : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white',
@@ -76,12 +77,12 @@ export function Navbar({ onOpenSearch }: { onOpenSearch: () => void }) {
         <div className="flex shrink-0 items-center gap-1 sm:gap-1.5">
           <button
             onClick={onOpenSearch}
-            className="hidden h-9 items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3.5 text-sm text-slate-500 transition hover:border-slate-300 hover:text-slate-700 sm:flex dark:border-white/10 dark:bg-white/5 dark:text-slate-400 dark:hover:border-white/20 dark:hover:text-slate-200"
+            className="hidden h-9 items-center justify-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3.5 text-sm text-slate-500 transition hover:border-slate-300 hover:text-slate-700 sm:flex max-2xl:w-9 max-2xl:px-0 dark:border-white/10 dark:bg-white/5 dark:text-slate-400 dark:hover:border-white/20 dark:hover:text-slate-200"
             aria-label="Search Pokémon"
           >
             <Search className="h-4 w-4" />
-            <span className="hidden md:inline">Search</span>
-            <kbd className="hidden rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 md:inline dark:border-white/10 dark:bg-white/10 dark:text-slate-500">
+            <span className="hidden 2xl:inline">Search</span>
+            <kbd className="hidden rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 2xl:inline dark:border-white/10 dark:bg-white/10 dark:text-slate-500">
               /
             </kbd>
           </button>

@@ -26,6 +26,7 @@ export function Footer() {
 
         <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
           <Link className="transition hover:text-brand-500" to="/pokedex">Pokédex</Link>
+          <Link className="transition hover:text-brand-500" to="/rankings">Top Rank</Link>
           <Link className="transition hover:text-brand-500" to="/types">Types</Link>
           <Link className="transition hover:text-brand-500" to="/generations">Generations</Link>
           <Link className="transition hover:text-brand-500" to="/abilities">Abilities</Link>

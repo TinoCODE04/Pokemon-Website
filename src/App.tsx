@@ -16,6 +16,7 @@ const GenerationsPage = lazy(() => import('./pages/GenerationsPage'))
 const HomePage = lazy(() => import('./pages/HomePage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 const PokedexPage = lazy(() => import('./pages/PokedexPage'))
+const TopRankPage = lazy(() => import('./pages/TopRankPage'))
 const PokemonDetailPage = lazy(() => import('./pages/PokemonDetailPage'))
 const TypeDetailPage = lazy(() => import('./pages/TypeDetailPage'))
 const TypesPage = lazy(() => import('./pages/TypesPage'))
@@ -76,6 +77,7 @@ export default function App() {
             <Routes location={location}>
               <Route path="/" element={<HomePage />} />
               <Route path="/pokedex" element={<PokedexPage />} />
+              <Route path="/rankings" element={<TopRankPage />} />
               <Route path="/pokemon/:id" element={<PokemonDetailPage />} />
               <Route path="/types" element={<TypesPage />} />
               <Route path="/types/:name" element={<TypeDetailPage />} />

@@ -7,6 +7,7 @@ A clean, responsive Pokémon encyclopedia powered by [PokéAPI](https://pokeapi.
 ## Features
 
 - Browse and search the complete Pokédex
+- Explore Top 50, Top 100, and Top 200 Pokémon power rankings
 - Filter Pokémon by type and generation
 - Sort results by Pokédex number or name
 - View artwork, types, measurements, abilities, moves, cries, and base stats
@@ -116,6 +117,7 @@ src/
 | --- | --- |
 | `/` | Homepage and quick navigation |
 | `/pokedex` | Searchable and filterable Pokédex |
+| `/rankings` | Base Stat Total rankings for Pokémon and forms |
 | `/pokemon/:id` | Pokémon details, stats, moves, and evolution chain |
 | `/types` | List of all Pokémon types |
 | `/types/:name` | Type effectiveness and related Pokémon |

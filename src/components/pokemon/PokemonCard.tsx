@@ -31,7 +31,7 @@ export function resourceToCardPokemon(resource: { name: string; url: string }): 
   return { id, name: resource.name, image: artworkUrl(id) }
 }
 
-export function PokemonCard({ pokemon, index = 0 }: { pokemon: CardPokemon; index?: number }) {
+export function PokemonCard({ pokemon, index = 0, rank, score }: { pokemon: CardPokemon; index?: number; rank?: number; score?: number }) {
   const { isFavorite, toggleFavorite } = useFavorites()
   const { inCompare, toggleCompare, isFull } = useCompare()
   const primary = pokemon.types?.[0]
@@ -58,6 +58,20 @@ export function PokemonCard({ pokemon, index = 0 }: { pokemon: CardPokemon; inde
     >
       <div className="relative z-10 flex items-start justify-between">
         <div className="flex items-center gap-1.5 pt-2">
+          {rank !== undefined && (
+            <span className={cn(
+              'rounded-full px-2 py-0.5 font-display text-xs font-extrabold',
+              rank === 1
+                ? 'bg-amber-400 text-amber-950'
+                : rank === 2
+                  ? 'bg-slate-300 text-slate-800'
+                  : rank === 3
+                    ? 'bg-orange-300 text-orange-950'
+                    : 'bg-slate-900/8 text-slate-600 dark:bg-white/8 dark:text-slate-300',
+            )}>
+              #{rank}
+            </span>
+          )}
           <span className="font-mono text-xs font-semibold text-slate-400 dark:text-slate-500">
             {formatDexNumber(pokemon.id)}
           </span>
@@ -146,10 +160,16 @@ export function PokemonCard({ pokemon, index = 0 }: { pokemon: CardPokemon; inde
         </h3>
 
         {pokemon.types && (
-          <div className="mt-2 flex flex-wrap justify-center gap-1.5">
+          <div className="mt-2 flex flex-nowrap justify-center gap-1">
             {pokemon.types.map((t) => (
-              <TypeBadge key={t} type={t} size="sm" />
+              <TypeBadge key={t} type={t} size="sm" className="shrink-0 gap-1 px-1.5" />
             ))}
+          </div>
+        )}
+        {score !== undefined && (
+          <div className="mt-3 flex items-center justify-center gap-1.5 rounded-xl bg-slate-900/5 px-3 py-2 dark:bg-white/5">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Base stat total</span>
+            <span className="font-display text-sm font-extrabold text-brand-500">{score}</span>
           </div>
         )}
       </Link>
