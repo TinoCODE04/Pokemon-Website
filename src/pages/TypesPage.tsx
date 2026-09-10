@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { TYPE_MASCOTS, TYPE_ORDER, typeStyle } from '../constants/types'
-import { spriteUrl } from '../utils/format'
+import { artworkUrl } from '../utils/format'
 
 export default function TypesPage() {
   return (
@@ -37,12 +37,13 @@ export default function TypesPage() {
                 <span className="relative flex h-20 w-20 shrink-0 items-center justify-center">
                   <span className="absolute inset-x-3 bottom-1 h-3 rounded-full bg-slate-900/15 blur-sm dark:bg-black/30" />
                   <img
-                    src={spriteUrl(mascot.id)}
+                    src={artworkUrl(mascot.id)}
                     alt=""
                     width="80"
                     height="80"
                     loading="lazy"
-                    className="pixel-sprite relative h-20 w-20 object-contain drop-shadow-lg transition duration-200 group-hover:scale-110"
+                    decoding="async"
+                    className="relative h-20 w-20 object-contain drop-shadow-lg transition duration-200 group-hover:scale-110"
                     onError={(event) => { event.currentTarget.style.display = 'none' }}
                   />
                 </span>

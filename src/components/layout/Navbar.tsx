@@ -39,7 +39,7 @@ export function Navbar({ onOpenSearch }: { onOpenSearch: () => void }) {
         <Link to="/" className="flex shrink-0 items-center gap-2 sm:gap-2.5" onClick={() => setMobileOpen(false)}>
           <PokeballMark className="h-7 w-7 shrink-0" />
           <span className="truncate font-display text-base font-bold tracking-tight sm:text-lg">
-            Pokémon <span className="text-brand-500 max-[1450px]:hidden">Explorer</span>
+            Pokémon <span className="hidden text-brand-500 sm:inline">Explorer</span>
           </span>
         </Link>
 
@@ -136,13 +136,42 @@ export function Navbar({ onOpenSearch }: { onOpenSearch: () => void }) {
 
           <button
             onClick={() => setMobileOpen((v) => !v)}
-            className="flex h-9 w-9 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-100 xl:hidden dark:text-slate-300 dark:hover:bg-white/10"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-100 md:hidden dark:text-slate-300 dark:hover:bg-white/10"
             aria-label="Menu"
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
       </nav>
+
+      <div className="hidden border-t border-slate-200/70 md:block xl:hidden dark:border-white/10">
+        <div className="container-app overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <nav className="flex h-11 min-w-[640px] items-center justify-between gap-1" aria-label="Primary navigation">
+            {NAV_LINKS.map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                end={link.to === '/'}
+                className={({ isActive }) =>
+                  cn(
+                    'relative whitespace-nowrap rounded-full px-2.5 py-1.5 text-[13px] font-medium transition-colors',
+                    isActive
+                      ? 'text-brand-600 dark:text-brand-300'
+                      : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white',
+                  )
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    {link.label}
+                    {isActive && <span className="absolute inset-0 -z-10 rounded-full bg-brand-500/10 dark:bg-brand-500/20" />}
+                  </>
+                )}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
+      </div>
 
       <AnimatePresence>
         {mobileOpen && (
@@ -151,7 +180,7 @@ export function Navbar({ onOpenSearch }: { onOpenSearch: () => void }) {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="overflow-hidden border-t border-slate-200 bg-white xl:hidden dark:border-white/10 dark:bg-night-950"
+            className="overflow-hidden border-t border-slate-200 bg-white md:hidden dark:border-white/10 dark:bg-night-950"
           >
             <div className="container-app grid gap-1 py-3">
               {NAV_LINKS.map((link) => (

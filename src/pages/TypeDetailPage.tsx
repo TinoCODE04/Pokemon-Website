@@ -7,7 +7,7 @@ import { ErrorState, SectionHeading } from '../components/ui/Feedback'
 import { useType } from '../hooks/queries'
 import { TYPE_ORDER, typeMascot, typeStyle } from '../constants/types'
 import { cn } from '../utils/cn'
-import { spriteUrl } from '../utils/format'
+import { artworkUrl } from '../utils/format'
 import { useState } from 'react'
 
 const PAGE_SIZE = 24
@@ -61,11 +61,14 @@ export default function TypeDetailPage() {
           <span className="relative flex h-24 w-24 shrink-0 items-center justify-center">
             <span className="absolute inset-x-4 bottom-2 h-3 rounded-full bg-slate-900/15 blur-sm dark:bg-black/30" />
             <img
-              src={spriteUrl(mascot.id)}
+              src={artworkUrl(mascot.id)}
               alt=""
               width="96"
               height="96"
-              className="pixel-sprite relative h-24 w-24 object-contain drop-shadow-lg"
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              className="relative h-24 w-24 object-contain drop-shadow-lg"
               onError={(event) => { event.currentTarget.style.display = 'none' }}
             />
           </span>

@@ -18,7 +18,7 @@ import { extractId } from '../api/pokeapi'
 import { getPokemon } from '../api/pokemon'
 import { useAllPokemon, useGenerations, usePokemonCount } from '../hooks/queries'
 import { RECENT_KEY, TYPE_MASCOTS, TYPE_ORDER } from '../constants/types'
-import { artworkUrl, spriteUrl } from '../utils/format'
+import { artworkUrl } from '../utils/format'
 import { useLocalStorage } from '../store/useLocalStorage'
 import { PokemonCard, PokemonCardSkeleton, toCardPokemon } from '../components/pokemon/PokemonCard'
 import { PokemonGrid } from '../components/pokemon/PokemonGrid'
@@ -36,12 +36,12 @@ interface HeroPokemonConfig {
 }
 
 const HERO_POKEMON: HeroPokemonConfig[] = [
-  { id: 6, name: 'Charizard', action: 'roar', trick: 'roar', className: 'right-[17%] top-[17%] z-20 h-52 w-52 lg:h-72 lg:w-72', delay: 0.1, float: 8 },
-  { id: 25, name: 'Pikachu', action: 'double-jump', trick: 'bounce', className: 'bottom-[7%] left-[29%] z-20 h-32 w-32 lg:h-44 lg:w-44', delay: 0.22, float: 10 },
-  { id: 448, name: 'Lucario', action: 'spin-kick', trick: 'spin', className: 'left-[4%] top-[10%] z-10 h-28 w-28 lg:h-36 lg:w-36', delay: 0.34, float: 7 },
-  { id: 150, name: 'Mewtwo', action: 'levitate', trick: 'levitate', className: 'right-0 top-[2%] z-10 h-28 w-28 lg:h-36 lg:w-36', delay: 0.46, float: 12 },
-  { id: 381, name: 'Latios', action: 'dash', trick: 'dash-right', className: 'bottom-[3%] left-0 z-10 h-24 w-24 lg:h-32 lg:w-32', delay: 0.58, float: 8 },
-  { id: 380, name: 'Latias', action: 'dash', trick: 'dash-left', className: 'bottom-[5%] right-0 z-10 h-24 w-24 lg:h-32 lg:w-32', delay: 0.7, float: 9 },
+  { id: 6, name: 'Charizard', action: 'roar', trick: 'roar', className: 'right-[17%] top-[17%] z-20 h-52 w-52 xl:h-72 xl:w-72', delay: 0.1, float: 8 },
+  { id: 25, name: 'Pikachu', action: 'double-jump', trick: 'bounce', className: 'bottom-[7%] left-[29%] z-20 h-32 w-32 xl:h-44 xl:w-44', delay: 0.22, float: 10 },
+  { id: 448, name: 'Lucario', action: 'spin-kick', trick: 'spin', className: 'left-[4%] top-[10%] z-10 h-28 w-28 xl:h-36 xl:w-36', delay: 0.34, float: 7 },
+  { id: 150, name: 'Mewtwo', action: 'levitate', trick: 'levitate', className: 'right-0 top-[2%] z-10 h-28 w-28 xl:h-36 xl:w-36', delay: 0.46, float: 12 },
+  { id: 381, name: 'Latios', action: 'dash', trick: 'dash-right', className: 'bottom-[3%] left-0 z-10 h-24 w-24 xl:h-32 xl:w-32', delay: 0.58, float: 8 },
+  { id: 380, name: 'Latias', action: 'dash', trick: 'dash-left', className: 'bottom-[5%] right-0 z-10 h-24 w-24 xl:h-32 xl:w-32', delay: 0.7, float: 9 },
 ]
 
 const FEATURE_TILES = [
@@ -136,7 +136,7 @@ export default function HomePage() {
           <div className="absolute -right-24 -top-32 h-96 w-96 rounded-full border border-brand-500/15" />
           <div className="absolute -right-8 -top-16 h-72 w-72 rounded-full border border-sky-400/10" />
         </div>
-        <div className="container-app relative grid min-h-[480px] items-center gap-8 py-12 lg:grid-cols-2 lg:py-16">
+        <div className="container-app relative grid min-h-[480px] items-center gap-8 py-10 md:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)] md:gap-4 md:py-12 xl:grid-cols-2 xl:gap-8 xl:py-16">
           <div className="relative z-10 min-w-0 max-w-xl">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -152,7 +152,7 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.08 }}
-              className="mt-5 font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl"
+              className="mt-5 font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl xl:text-6xl"
             >
               Explore the world of{' '}
               <span className="bg-gradient-to-r from-brand-500 via-amber-500 to-sky-500 bg-clip-text text-transparent">
@@ -258,7 +258,7 @@ export default function HomePage() {
               ))}
             </motion.div>
 
-            <div className="mt-7 grid grid-cols-3 gap-2 sm:hidden" role="group" aria-label="Interactive Pokémon team">
+            <div className="mt-7 grid grid-cols-3 gap-2 md:hidden" role="group" aria-label="Interactive Pokémon team">
               <p className="col-span-3 flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
                 <Sparkles className="h-3.5 w-3.5 text-accent-500" />
                 Tap a Pokémon
@@ -270,7 +270,7 @@ export default function HomePage() {
           </div>
 
           {/* Hero artwork cluster */}
-          <div className="relative hidden h-[410px] sm:block lg:h-[450px]" role="group" aria-label="Interactive Pokémon team">
+          <div className="relative hidden h-[390px] md:block xl:h-[450px]" role="group" aria-label="Interactive Pokémon team">
             <div className="absolute right-[10%] top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-gradient-to-br from-brand-500/20 via-amber-400/15 to-sky-400/20 blur-3xl" />
             {HERO_POKEMON.map((p) => (
               <InteractiveHeroPokemon key={p.id} pokemon={p} />
@@ -325,7 +325,7 @@ export default function HomePage() {
             </div>
             <Link to="/pokedex" className="text-sm font-bold text-brand-500 hover:underline">Browse all</Link>
           </div>
-          <PokemonGrid>
+          <PokemonGrid className="lg:grid-cols-6">
             {recentQueries.map((query, index) => query.data
               ? <PokemonCard key={recentlyViewed[index]} pokemon={toCardPokemon(query.data)} index={index} />
               : <PokemonCardSkeleton key={recentlyViewed[index]} />)}
@@ -371,12 +371,13 @@ export default function HomePage() {
                     <span className="relative flex h-14 w-14 items-center justify-center">
                       <span className="absolute inset-x-2 bottom-0 h-2.5 rounded-full bg-slate-900/15 blur-sm dark:bg-black/30" />
                       <img
-                        src={spriteUrl(mascot.id)}
+                        src={artworkUrl(mascot.id)}
                         alt=""
                         width="56"
                         height="56"
                         loading="lazy"
-                        className="pixel-sprite relative h-14 w-14 object-contain drop-shadow-md transition-transform group-hover:scale-110"
+                        decoding="async"
+                        className="relative h-14 w-14 object-contain drop-shadow-md transition-transform group-hover:scale-110"
                         onError={(event) => { event.currentTarget.style.display = 'none' }}
                       />
                     </span>
@@ -452,17 +453,15 @@ export default function HomePage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Follow Tino on ${platform.name}`}
-                  className="group relative flex min-h-24 items-center gap-4 p-6 pr-12 transition-colors hover:bg-slate-50 focus-visible:bg-slate-50 dark:hover:bg-white/[0.04] dark:focus-visible:bg-white/[0.04] sm:min-h-48"
+                  className="group relative flex min-h-24 items-center gap-3.5 p-6 pr-12 transition-colors hover:bg-slate-50 focus-visible:bg-slate-50 dark:hover:bg-white/[0.04] dark:focus-visible:bg-white/[0.04] sm:min-h-48"
                 >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100 ring-1 ring-slate-200 transition group-hover:bg-white group-hover:shadow-md dark:bg-white/5 dark:ring-white/10 dark:group-hover:bg-white/10">
-                    <img
-                      src={platform.icon}
-                      alt=""
-                      width="24"
-                      height="24"
-                      className="h-6 w-6 opacity-75 transition duration-200 group-hover:scale-110 group-hover:opacity-100 dark:invert"
-                    />
-                  </span>
+                  <img
+                    src={platform.icon}
+                    alt=""
+                    width="28"
+                    height="28"
+                    className="h-7 w-7 shrink-0 opacity-75 transition duration-200 group-hover:scale-110 group-hover:opacity-100 dark:invert"
+                  />
                   <span className="min-w-0">
                     <span className="block font-display text-base font-bold">{platform.name}</span>
                     <span className="mt-0.5 block truncate text-sm text-slate-500 dark:text-slate-400">{platform.handle}</span>
