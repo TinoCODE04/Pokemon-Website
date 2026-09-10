@@ -7,7 +7,7 @@ import {
   GitCompareArrows,
   Grid3X3,
   Heart,
-  Layers,
+  ArrowUpRight,
   Search,
   Sparkles,
   Swords,
@@ -17,8 +17,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { extractId } from '../api/pokeapi'
 import { getPokemon } from '../api/pokemon'
 import { useAllPokemon, useGenerations, usePokemonCount } from '../hooks/queries'
-import { RECENT_KEY, TYPE_ORDER, typeStyle } from '../constants/types'
-import { artworkUrl } from '../utils/format'
+import { RECENT_KEY, TYPE_MASCOTS, TYPE_ORDER } from '../constants/types'
+import { artworkUrl, spriteUrl } from '../utils/format'
 import { useLocalStorage } from '../store/useLocalStorage'
 import { PokemonCard, PokemonCardSkeleton, toCardPokemon } from '../components/pokemon/PokemonCard'
 import { PokemonGrid } from '../components/pokemon/PokemonGrid'
@@ -74,6 +74,27 @@ const FEATURE_TILES = [
     accent: 'from-rose-500/15 to-rose-500/5 text-rose-500',
   },
 ]
+
+const SOCIAL_LINKS = [
+  {
+    name: 'GitHub',
+    handle: '@TinoCODE04',
+    href: 'https://github.com/TinoCODE04',
+    icon: '/github.svg',
+  },
+  {
+    name: 'Instagram',
+    handle: '@ttino.oo',
+    href: 'https://www.instagram.com/ttino.oo/',
+    icon: '/instagram.svg',
+  },
+  {
+    name: 'Facebook',
+    handle: 'Follow on Facebook',
+    href: 'https://www.facebook.com/share/1PXBpgBois/',
+    icon: '/facebook.svg',
+  },
+] as const
 
 export default function HomePage() {
   const navigate = useNavigate()
@@ -202,11 +223,19 @@ export default function HomePage() {
                 Surprise me
               </button>
               <Link
-                to="/compare"
-                className="inline-flex min-h-11 items-center gap-2 px-2 py-2.5 text-sm font-semibold text-slate-500 transition hover:text-brand-500 dark:text-slate-400"
+                to="/games"
+                aria-label="Open Pokémon Battle Arena"
+                className="game-button-shadow pixel-panel group relative isolate flex min-h-14 w-full items-center gap-3 overflow-hidden rounded-lg border-2 border-sky-400/70 bg-gradient-to-r from-sky-50 to-cyan-100 px-3.5 py-2 text-left text-slate-900 transition hover:-translate-y-0.5 hover:border-sky-500 sm:w-auto sm:min-w-56 dark:border-sky-400/60 dark:from-[#101c38] dark:to-[#0a5671] dark:text-white dark:hover:border-sky-300"
               >
-                Compare Pokémon
-                <ArrowRight className="h-4 w-4" />
+                <span className="pointer-events-none absolute inset-0 opacity-10 [background-image:linear-gradient(90deg,transparent_50%,rgba(255,255,255,.7)_50%)] [background-size:8px_8px]" aria-hidden />
+                <span className="pixel-panel relative flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-sky-400/40 bg-white/70 text-sky-700 dark:bg-sky-950/60 dark:text-sky-200">
+                  <Swords className="h-5 w-5" />
+                </span>
+                <span className="relative min-w-0 flex-1">
+                  <span className="pixel-label block text-xs font-bold uppercase text-sky-700 dark:text-sky-200">Pokémon Battle</span>
+                  <span className="mt-0.5 block font-game text-lg font-extrabold leading-none">Battle Arena</span>
+                </span>
+                <ArrowRight className="relative h-4 w-4 shrink-0 text-sky-600 transition group-hover:translate-x-1 dark:text-sky-200" />
               </Link>
             </motion.div>
 
@@ -325,8 +354,7 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-6 lg:grid-cols-9">
             {TYPE_ORDER.map((type, i) => {
-              const style = typeStyle(type)
-              const Icon = style.icon
+              const mascot = TYPE_MASCOTS[type]
               return (
                 <motion.div
                   key={type}
@@ -337,17 +365,25 @@ export default function HomePage() {
                 >
                   <Link
                     to={`/types/${type}`}
-                    className="group flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-2 py-4 transition hover:-translate-y-1 hover:shadow-md dark:border-white/10 dark:bg-white/5"
+                    title={`${type} — ${mascot.name}`}
+                    className="group flex min-h-28 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 px-2 py-3 transition hover:-translate-y-1 hover:border-brand-500/25 hover:shadow-md dark:border-white/10 dark:bg-white/5"
                   >
-                    <span
-                      className="flex h-10 w-10 items-center justify-center rounded-full text-white shadow-sm transition-transform group-hover:scale-110"
-                      style={{ background: `linear-gradient(135deg, ${style.gradient[0]}, ${style.gradient[1]})` }}
-                    >
-                      <Icon className="h-5 w-5" />
+                    <span className="relative flex h-14 w-14 items-center justify-center">
+                      <span className="absolute inset-x-2 bottom-0 h-2.5 rounded-full bg-slate-900/15 blur-sm dark:bg-black/30" />
+                      <img
+                        src={spriteUrl(mascot.id)}
+                        alt=""
+                        width="56"
+                        height="56"
+                        loading="lazy"
+                        className="pixel-sprite relative h-14 w-14 object-contain drop-shadow-md transition-transform group-hover:scale-110"
+                        onError={(event) => { event.currentTarget.style.display = 'none' }}
+                      />
                     </span>
-                    <span className="text-xs font-semibold capitalize text-slate-600 dark:text-slate-300">
+                    <span className="mt-1 text-sm font-bold capitalize text-slate-700 dark:text-slate-200">
                       {type}
                     </span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500">{mascot.name}</span>
                   </Link>
                 </motion.div>
               )
@@ -377,27 +413,64 @@ export default function HomePage() {
         <GenerationPreview />
       </section>
 
-      {/* CTA band */}
-      <section className="container-app pb-16">
-        <div className="dot-grid relative overflow-hidden rounded-3xl bg-gradient-to-br from-night-900 to-night-950 px-6 py-12 text-center text-white sm:px-12 dark:border dark:border-white/10">
-          <div className="absolute -left-16 -top-16 h-56 w-56 rounded-full bg-brand-500/25 blur-3xl" />
-          <div className="absolute -bottom-16 -right-16 h-56 w-56 rounded-full bg-sky-500/20 blur-3xl" />
-          <Layers className="mx-auto h-8 w-8 text-accent-500" />
-          <h2 className="mt-4 font-display text-2xl font-extrabold sm:text-3xl">
-            Ready to catch up on every Pokémon?
-          </h2>
-          <p className="mx-auto mt-3 max-w-lg text-sm text-slate-300">
-            Search over one thousand species instantly, or browse the full National Pokédex with
-            filters for type, generation and more.
-          </p>
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              to="/pokedex"
-              className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-slate-900 shadow-lg transition hover:bg-slate-100"
-            >
-              <Search className="h-4 w-4" />
-              Start exploring
-            </Link>
+      {/* Social links */}
+      <section className="container-app pb-12" aria-labelledby="social-links-title">
+        <div className="card-surface overflow-hidden">
+          <div className="grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+            <div className="relative flex flex-col justify-between gap-8 overflow-hidden border-b border-slate-200 bg-gradient-to-br from-brand-500/10 via-transparent to-sky-500/10 p-7 dark:border-white/10 lg:border-b-0 lg:border-r lg:p-9">
+              <div className="pointer-events-none absolute -right-12 -top-16 h-44 w-44 rounded-full border border-brand-500/15" aria-hidden />
+              <div className="relative">
+              <h2 id="social-links-title" className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">
+                Follow More About Me
+              </h2>
+              <p className="mt-2 text-base font-medium text-slate-600 dark:text-slate-400">
+                Student &amp; Developer
+              </p>
+              </div>
+
+              <a
+                href="https://github.com/TinoCODE04/Pokemon-Website"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View the Pokémon Explorer website source code on GitHub"
+                className="group relative inline-flex min-h-12 w-fit items-center gap-3 rounded-xl border border-slate-300 bg-white/75 px-4 py-2.5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-brand-400 hover:shadow-md dark:border-white/15 dark:bg-white/5 dark:hover:border-brand-400"
+              >
+                <img src="/github.svg" alt="" width="20" height="20" className="h-5 w-5 opacity-75 dark:invert" />
+                <span>
+                  <span className="block text-sm font-bold">Website Source Code</span>
+                  <span className="block text-xs text-slate-500 dark:text-slate-400">View repository</span>
+                </span>
+                <ArrowUpRight className="h-4 w-4 text-slate-400 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand-500" />
+              </a>
+            </div>
+
+            <div className="grid divide-y divide-slate-200 dark:divide-white/10 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+              {SOCIAL_LINKS.map((platform) => (
+                <a
+                  key={platform.name}
+                  href={platform.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Follow Tino on ${platform.name}`}
+                  className="group relative flex min-h-24 items-center gap-4 p-6 pr-12 transition-colors hover:bg-slate-50 focus-visible:bg-slate-50 dark:hover:bg-white/[0.04] dark:focus-visible:bg-white/[0.04] sm:min-h-48"
+                >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100 ring-1 ring-slate-200 transition group-hover:bg-white group-hover:shadow-md dark:bg-white/5 dark:ring-white/10 dark:group-hover:bg-white/10">
+                    <img
+                      src={platform.icon}
+                      alt=""
+                      width="24"
+                      height="24"
+                      className="h-6 w-6 opacity-75 transition duration-200 group-hover:scale-110 group-hover:opacity-100 dark:invert"
+                    />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block font-display text-base font-bold">{platform.name}</span>
+                    <span className="mt-0.5 block truncate text-sm text-slate-500 dark:text-slate-400">{platform.handle}</span>
+                  </span>
+                  <ArrowUpRight className="absolute right-5 top-5 h-4 w-4 text-slate-400 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand-500" />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </section>

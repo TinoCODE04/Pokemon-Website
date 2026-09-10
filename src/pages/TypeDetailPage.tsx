@@ -5,8 +5,9 @@ import { PokemonCard, PokemonCardSkeleton, resourceToCardPokemon } from '../comp
 import { PokemonGrid } from '../components/pokemon/PokemonGrid'
 import { ErrorState, SectionHeading } from '../components/ui/Feedback'
 import { useType } from '../hooks/queries'
-import { TYPE_ORDER, typeStyle } from '../constants/types'
+import { TYPE_ORDER, typeMascot, typeStyle } from '../constants/types'
 import { cn } from '../utils/cn'
+import { spriteUrl } from '../utils/format'
 import { useState } from 'react'
 
 const PAGE_SIZE = 24
@@ -30,7 +31,7 @@ export default function TypeDetailPage() {
 
   const type = typeQuery.data
   const style = typeStyle(name ?? 'normal')
-  const Icon = style.icon
+  const mascot = typeMascot(name ?? 'normal')
 
   const totalPages = type ? Math.ceil(type.pokemon.length / PAGE_SIZE) : 0
   const pagePokemon = type
@@ -57,11 +58,16 @@ export default function TypeDetailPage() {
           style={{ background: style.color }}
         />
         <div className="flex flex-wrap items-center gap-5">
-          <span
-            className="flex h-16 w-16 items-center justify-center rounded-2xl text-white shadow-lg"
-            style={{ background: `linear-gradient(135deg, ${style.gradient[0]}, ${style.gradient[1]})` }}
-          >
-            <Icon className="h-8 w-8" />
+          <span className="relative flex h-24 w-24 shrink-0 items-center justify-center">
+            <span className="absolute inset-x-4 bottom-2 h-3 rounded-full bg-slate-900/15 blur-sm dark:bg-black/30" />
+            <img
+              src={spriteUrl(mascot.id)}
+              alt=""
+              width="96"
+              height="96"
+              className="pixel-sprite relative h-24 w-24 object-contain drop-shadow-lg"
+              onError={(event) => { event.currentTarget.style.display = 'none' }}
+            />
           </span>
           <div>
             <h1 className="font-display text-3xl font-extrabold capitalize tracking-tight sm:text-4xl">

@@ -1,4 +1,4 @@
-import { ArrowLeft, EyeOff, Info, Users, Zap } from 'lucide-react'
+import { ArrowLeft, EyeOff, Info, Users } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Pagination } from '../components/filters/Pagination'
@@ -6,7 +6,8 @@ import { PokemonCard, PokemonCardSkeleton, resourceToCardPokemon } from '../comp
 import { PokemonGrid } from '../components/pokemon/PokemonGrid'
 import { ErrorState, SectionHeading, Skeleton } from '../components/ui/Feedback'
 import { useAbility } from '../hooks/queries'
-import { cleanFlavorText, formatName, longEffect } from '../utils/format'
+import { extractId } from '../api/pokeapi'
+import { cleanFlavorText, formatName, longEffect, spriteUrl } from '../utils/format'
 
 const PAGE_SIZE = 24
 
@@ -32,6 +33,7 @@ export default function AbilityDetailPage() {
     ? ability.pokemon.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
     : []
   const hiddenCount = ability ? ability.pokemon.filter((p) => p.is_hidden).length : 0
+  const featuredPokemon = ability?.pokemon.slice(0, 3) ?? []
 
   return (
     <div className="container-app py-10">
@@ -55,19 +57,41 @@ export default function AbilityDetailPage() {
       ) : (
         <>
           <div className="card-surface mb-8 p-6 sm:p-8">
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500/10 text-brand-500">
-                <Zap className="h-6 w-6" />
-              </span>
+            <div className="flex flex-wrap items-center justify-between gap-6">
               <div>
                 <h1 className="font-display text-3xl font-extrabold capitalize tracking-tight">
                   {formatName(ability.name)}
                 </h1>
-                <p className="text-xs font-medium text-slate-400">
+                <p className="mt-1 text-sm font-medium text-slate-500 dark:text-slate-400">
                   Introduced in {formatName(ability.generation.name)}
                   {!ability.is_main_series && ' · spin-off games only'}
                 </p>
               </div>
+              {featuredPokemon.length > 0 && (
+                <div className="flex items-end -space-x-3" aria-label="Pokémon with this ability">
+                  {featuredPokemon.map((entry) => {
+                    const id = extractId(entry.pokemon)
+                    return (
+                      <Link
+                        key={entry.pokemon.name}
+                        to={`/pokemon/${id}`}
+                        title={formatName(entry.pokemon.name)}
+                        className="relative flex h-20 w-20 items-center justify-center rounded-full transition hover:z-10 hover:-translate-y-1 focus-visible:z-10"
+                      >
+                        <span className="absolute inset-x-3 bottom-2 h-3 rounded-full bg-slate-900/15 blur-sm dark:bg-black/30" />
+                        <img
+                          src={spriteUrl(id)}
+                          alt={formatName(entry.pokemon.name)}
+                          width="80"
+                          height="80"
+                          className="pixel-sprite relative h-20 w-20 object-contain drop-shadow-lg"
+                          onError={(event) => { event.currentTarget.style.display = 'none' }}
+                        />
+                      </Link>
+                    )
+                  })}
+                </div>
+              )}
             </div>
 
             <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">

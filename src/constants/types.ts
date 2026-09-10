@@ -53,6 +53,31 @@ export const TYPE_ORDER = [
 
 export type TypeName = (typeof TYPE_ORDER)[number]
 
+export const TYPE_MASCOTS: Record<TypeName, { id: number; name: string }> = {
+  normal: { id: 143, name: 'Snorlax' },
+  fire: { id: 6, name: 'Charizard' },
+  water: { id: 9, name: 'Blastoise' },
+  electric: { id: 25, name: 'Pikachu' },
+  grass: { id: 3, name: 'Venusaur' },
+  ice: { id: 144, name: 'Articuno' },
+  fighting: { id: 68, name: 'Machamp' },
+  poison: { id: 24, name: 'Arbok' },
+  ground: { id: 383, name: 'Groudon' },
+  flying: { id: 18, name: 'Pidgeot' },
+  psychic: { id: 150, name: 'Mewtwo' },
+  bug: { id: 12, name: 'Butterfree' },
+  rock: { id: 248, name: 'Tyranitar' },
+  ghost: { id: 94, name: 'Gengar' },
+  dragon: { id: 149, name: 'Dragonite' },
+  dark: { id: 197, name: 'Umbreon' },
+  steel: { id: 376, name: 'Metagross' },
+  fairy: { id: 700, name: 'Sylveon' },
+}
+
+export function typeMascot(name: string) {
+  return TYPE_MASCOTS[name as TypeName] ?? TYPE_MASCOTS.normal
+}
+
 export const TYPE_STYLES: Record<TypeName, TypeStyle> = {
   normal: { color: '#8a8a7a', soft: 'rgba(168,167,122,0.16)', gradient: ['#a8a77a', '#c6c6a7'], icon: Circle },
   fire: { color: '#ee8130', soft: 'rgba(238,129,48,0.16)', gradient: ['#ee8130', '#f7a26b'], icon: Flame },

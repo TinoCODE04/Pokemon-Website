@@ -12,7 +12,6 @@ export class PokeApiError extends Error {
 
 export async function apiFetch<T>(endpoint: string): Promise<T> {
   const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}/${endpoint.replace(/^\//, '')}`
-
   let response: Response
   const controller = new AbortController()
   const timeout = window.setTimeout(() => controller.abort(), 12000)
@@ -31,7 +30,6 @@ export async function apiFetch<T>(endpoint: string): Promise<T> {
     if (response.status === 404) throw new PokeApiError('Requested resource was not found.', 404)
     throw new PokeApiError(`PokeAPI request failed (${response.status}). Try again in a moment.`, response.status)
   }
-
   return response.json() as Promise<T>
 }
 
