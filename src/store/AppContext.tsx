@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, type ReactNode } from 'react'
 import { COMPARE_KEY, FAVORITES_KEY, MAX_COMPARE } from '../constants/types'
+import { addPokemonToCompare } from '../utils/compare'
 import { useLocalStorage } from './useLocalStorage'
 
 interface FavoritesContextValue {
@@ -39,6 +40,7 @@ export function useFavorites(): FavoritesContextValue {
 interface CompareContextValue {
   compare: number[]
   inCompare: (id: number) => boolean
+  addToCompare: (id: number) => void
   toggleCompare: (id: number) => void
   removeFromCompare: (id: number) => void
   clearCompare: () => void
@@ -51,12 +53,15 @@ export function CompareProvider({ children }: { children: ReactNode }) {
   const [compare, setCompare] = useLocalStorage<number[]>(COMPARE_KEY, [])
 
   const inCompare = useCallback((id: number) => compare.includes(id), [compare])
+  const addToCompare = useCallback(
+    (id: number) => setCompare((prev) => addPokemonToCompare(prev, id, MAX_COMPARE)),
+    [setCompare],
+  )
   const toggleCompare = useCallback(
     (id: number) => {
       setCompare((prev) => {
         if (prev.includes(id)) return prev.filter((c) => c !== id)
-        if (prev.length >= MAX_COMPARE) return prev
-        return [...prev, id]
+        return addPokemonToCompare(prev, id, MAX_COMPARE)
       })
     },
     [setCompare],
@@ -68,8 +73,8 @@ export function CompareProvider({ children }: { children: ReactNode }) {
   const clearCompare = useCallback(() => setCompare([]), [setCompare])
 
   const value = useMemo(
-    () => ({ compare, inCompare, toggleCompare, removeFromCompare, clearCompare, isFull: compare.length >= MAX_COMPARE }),
-    [compare, inCompare, toggleCompare, removeFromCompare, clearCompare],
+    () => ({ compare, inCompare, addToCompare, toggleCompare, removeFromCompare, clearCompare, isFull: compare.length >= MAX_COMPARE }),
+    [compare, inCompare, addToCompare, toggleCompare, removeFromCompare, clearCompare],
   )
   return <CompareContext.Provider value={value}>{children}</CompareContext.Provider>
 }
