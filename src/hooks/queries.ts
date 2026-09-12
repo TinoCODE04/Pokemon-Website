@@ -4,6 +4,8 @@ import { getEvolutionChain, getPokemonSpecies } from '../api/species'
 import { getType } from '../api/types'
 import { getGeneration, getGenerations } from '../api/generations'
 import { getAbility, getAbilityList } from '../api/abilities'
+import { getTmdbMovie, mergeTmdbMovie } from '../api/movies'
+import type { PokemonMovie } from '../data/movies'
 
 const STATIC_STALE = 1000 * 60 * 60 // 1h - PokéAPI data is effectively static
 
@@ -92,5 +94,23 @@ export function useAbility(nameOrId: string | number | undefined) {
     queryFn: () => getAbility(nameOrId!),
     enabled: nameOrId !== undefined && nameOrId !== '',
     staleTime: STATIC_STALE,
+  })
+}
+
+export function useMovieEnrichment(movie: PokemonMovie | undefined) {
+  const token = import.meta.env.VITE_TMDB_ACCESS_TOKEN?.trim()
+  return useQuery({
+    queryKey: ['movies', 'tmdb', movie?.tmdb?.mediaType ?? 'movie', movie?.tmdb?.id],
+    queryFn: async () => {
+      const remote = await getTmdbMovie(
+        movie!.tmdb!.id,
+        token!,
+        movie!.tmdb!.mediaType ?? 'movie',
+      )
+      return mergeTmdbMovie(movie!, remote, new Date().toISOString().slice(0, 10))
+    },
+    enabled: Boolean(movie?.tmdb?.id && token),
+    staleTime: STATIC_STALE,
+    retry: 1,
   })
 }
