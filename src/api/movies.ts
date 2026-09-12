@@ -58,9 +58,9 @@ export function mergeTmdbMovie(
     throw new TmdbApiError('TMDB id mismatch for curated movie record.')
   }
 
-  const remoteRuntime = validPositive(remote.runtime)
+  const remoteRuntime = (movie.tmdb.mediaType ?? 'movie') === 'movie' && validPositive(remote.runtime)
     ? remote.runtime
-    : remote.episode_run_time?.find(validPositive)
+    : undefined
   const snapshot: TmdbSnapshot = {
     id: movie.tmdb.id,
     mediaType: movie.tmdb.mediaType ?? 'movie',

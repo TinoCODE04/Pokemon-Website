@@ -39,3 +39,11 @@ test('has unique identities, valid dates, source URLs, and verification dates', 
   assert.equal(new Set(MOVIES.map((movie) => movie.id)).size, MOVIES.length)
   assert.equal(new Set(MOVIES.map((movie) => movie.slug)).size, MOVIES.length)
 })
+
+test('uses a title-specific Bulbapedia source for every released record', () => {
+  for (const movie of MOVIES.filter((item) => item.category !== 'upcoming')) {
+    const source = movie.sources.find((item) => item.kind === 'bulbapedia')
+    assert.ok(source, `${movie.slug} has a Bulbapedia source`)
+    assert.notEqual(source.url, 'https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_movie')
+  }
+})

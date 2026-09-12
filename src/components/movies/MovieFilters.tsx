@@ -65,10 +65,10 @@ export function MovieFilters({
           value={query}
           onChange={(event) => onQueryChange(event.target.value)}
           placeholder="Search title, year, or Pokémon…"
-          className={`${inputClass} w-full pl-10 pr-10`}
+          className={`${inputClass} w-full pl-10 pr-12`}
         />
         {query && (
-          <button type="button" onClick={() => onQueryChange('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-white/10" aria-label="Clear movie search">
+          <button type="button" onClick={() => onQueryChange('')} className="absolute right-0.5 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-white/10" aria-label="Clear movie search">
             <X className="h-4 w-4" />
           </button>
         )}

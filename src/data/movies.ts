@@ -55,6 +55,14 @@ const bulbapediaMoviesSource: MovieSource = {
   kind: 'bulbapedia',
 }
 
+function bulbapediaTitleSource(page: string): MovieSource {
+  return {
+    label: 'Bulbapedia title record',
+    url: `https://bulbapedia.bulbagarden.net/wiki/${encodeURIComponent(page).replace(/%2F/g, '/')}`,
+    kind: 'bulbapedia',
+  }
+}
+
 function tmdbSource(id: number, mediaType: 'movie' | 'tv' = 'movie'): MovieSource {
   return {
     label: 'The Movie Database (TMDB)',
@@ -63,10 +71,8 @@ function tmdbSource(id: number, mediaType: 'movie' | 'tv' = 'movie'): MovieSourc
   }
 }
 
-function sources(tmdbId?: number, mediaType: 'movie' | 'tv' = 'movie'): readonly MovieSource[] {
-  return tmdbId
-    ? [officialMoviesSource, bulbapediaMoviesSource, tmdbSource(tmdbId, mediaType)]
-    : [officialMoviesSource, bulbapediaMoviesSource]
+function sources(bulbapediaPage: string, tmdbId: number, mediaType: 'movie' | 'tv' = 'movie'): readonly MovieSource[] {
+  return [officialMoviesSource, bulbapediaTitleSource(bulbapediaPage), tmdbSource(tmdbId, mediaType)]
 }
 
 function tmdb(
@@ -97,7 +103,7 @@ export const MOVIES = [
     distributor: 'Warner Bros.',
     officialUrl: 'https://www.pokemon.com/us/animation/movies/pokemon-the-first-movie',
     tmdb: tmdb(10228, 7.0, '/6YPzBcMH0aPNTvdXNCDLY0zdE1g.jpg', '/eA0qc5ihjSKG05tdJO4QPgYPAwY.jpg'),
-    sources: sources(10228),
+    sources: sources('M01', 10228),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -117,7 +123,7 @@ export const MOVIES = [
     distributor: 'Warner Bros.',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(12599, 6.7, '/6u65C8aG4krAVyHsTjAMF7ucTDH.jpg', '/bS93S5uEVZng4qmDhmDMXTSEuay.jpg'),
-    sources: sources(12599),
+    sources: sources('M02', 12599),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -137,7 +143,7 @@ export const MOVIES = [
     distributor: 'Warner Bros.',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(10991, 6.6, '/hrBWiMWnD7mheMx846ycUWA3ohs.jpg', '/dLGQo5Xq6H18vPx00Czot8VHi3K.jpg'),
-    sources: sources(10991),
+    sources: sources('M03', 10991),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -157,7 +163,7 @@ export const MOVIES = [
     distributor: 'Miramax Films',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(12600, 6.5, '/thz83PS9twtVBEEAM59J1bh75nU.jpg', '/lnwNzJdU4gMlgoQlaT8HgSI2OpD.jpg'),
-    sources: sources(12600),
+    sources: sources('M04', 12600),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -177,7 +183,7 @@ export const MOVIES = [
     distributor: 'Miramax Films',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(33875, 6.7, '/eySv5rdYLW1k6LxepxCNl8ND26R.jpg', '/6nfEmbfWMuMBenYMOY6Vdho3Ycg.jpg'),
-    sources: sources(33875),
+    sources: sources('M05', 33875),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -196,7 +202,7 @@ export const MOVIES = [
     distributor: 'Miramax Films',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(36218, 6.6, '/jbH0tIEymhyd6uk4xV4vrS6qybV.jpg', '/bGU8DD03FfsEPtUpu8zgu4TTHNf.jpg'),
-    sources: sources(36218),
+    sources: sources('M06', 36218),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -215,7 +221,7 @@ export const MOVIES = [
     distributor: 'Miramax Films',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(34065, 6.6, '/3UV4evNh70gvPZB9KJEoh3a9B6I.jpg', '/86qE9M3TL5sb6kBhPnrmeHlj1gY.jpg'),
-    sources: sources(34065),
+    sources: sources('M07', 34065),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -234,7 +240,7 @@ export const MOVIES = [
     distributor: 'VIZ Media',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(34067, 7.0, '/3A3WiPXPmWVhXC7bGSiqtsYY9z6.jpg', '/7qzuPx3ukGxCyLR9j0Ahg3fFI7r.jpg'),
-    sources: sources(34067),
+    sources: sources('M08', 34067),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -252,7 +258,7 @@ export const MOVIES = [
     studio: 'OLM',
     distributor: '4Kids Entertainment',
     tmdb: tmdb(36897, 6.8, '/zIYljUBF2rXzB0yYZVEPY1l8zHp.jpg', '/pJszL2mPl084IDSzLDPH8NqIq0r.jpg'),
-    sources: sources(36897),
+    sources: sources('Pokémon_Mewtwo_Returns', 36897),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -271,7 +277,7 @@ export const MOVIES = [
     distributor: 'VIZ Media',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(16808, 6.5, '/jZOi06xHjsG1VqbiIwS8GkyrAOn.jpg', '/y9I6h1NrGdzX99QKcoqLhsFfVWO.jpg'),
-    sources: sources(16808),
+    sources: sources('M09', 16808),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -288,7 +294,7 @@ export const MOVIES = [
     director: 'Kunihiko Yuyama',
     studio: 'OLM',
     tmdb: tmdb(137773, 6.7, '/hJU76t41sf5BoKVHT3L3TtQP9xs.jpg', '/isnRO0gqBRSaUJyBULOQSZ8T6nU.jpg'),
-    sources: sources(137773),
+    sources: sources('The_Mastermind_of_Mirage_Pokémon', 137773),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -306,7 +312,7 @@ export const MOVIES = [
     director: 'Kunihiko Yuyama',
     studio: 'OLM',
     tmdb: tmdb(295613, 5.9, '/5V4RQvyYlz8HY9piw1ctsXiUKdc.jpg', '/ndoVM8A80W8GQ4ODxcbze2hjj7I.jpg'),
-    sources: sources(295613),
+    sources: sources('The_Legend_of_Thunder!', 295613),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -325,7 +331,7 @@ export const MOVIES = [
     distributor: 'VIZ Media',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(25961, 7.0, '/yElGG6lxLtQXcgBVzF7Xxq7YRa2.jpg', '/dGulOAB9N4qJlafWxI4YczXDA4I.jpg'),
-    sources: sources(25961),
+    sources: sources('M10', 25961),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -344,7 +350,7 @@ export const MOVIES = [
     distributor: 'VIZ Media',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(47292, 6.8, '/e3T08IL68EVcrUPiJLVN9KSGlXs.jpg', '/b5NH2rjQFATYfkd1XYbGQWeyevx.jpg'),
-    sources: sources(47292),
+    sources: sources('M11', 47292),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -363,7 +369,7 @@ export const MOVIES = [
     distributor: 'VIZ Media',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(39057, 7.1, '/tpqguVMKyPbINe0GYmMwduoaUar.jpg', '/1WygXLVPO4wNYm6WUgUi7PNAvkU.jpg'),
-    sources: sources(39057),
+    sources: sources('M12', 39057),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -383,7 +389,7 @@ export const MOVIES = [
     distributor: 'VIZ Media',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(50087, 6.8, '/tWgH64RZmm2rIHtO2DNnfN3DZa8.jpg', '/7fC65V10NQ2lhHHQ0KA1KNA1PvO.jpg'),
-    sources: sources(50087),
+    sources: sources('M13', 50087),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -402,7 +408,7 @@ export const MOVIES = [
     distributor: 'VIZ Media',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(88557, 6.5, '/J5AsLGUAqMgq0MjoyWldqqMPs1.jpg', '/zpD9VRmZ1Zv7ZMsrNmutRrt0LZU.jpg'),
-    sources: sources(88557),
+    sources: sources('M14', 88557),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -421,7 +427,7 @@ export const MOVIES = [
     distributor: 'VIZ Media',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(115223, 6.6, '/SuIAXmxlbImWHobCkCWCHAeg03.jpg', '/2cpTYNwiC7RH5pLsZs7HIL6dBWB.jpg'),
-    sources: sources(115223),
+    sources: sources('M14', 115223),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -440,7 +446,7 @@ export const MOVIES = [
     distributor: 'VIZ Media',
     officialUrl: 'https://www.pokemon.com/us/animation/movies/pokemon-the-movie-kyurem-vs-the-sword-of-justice',
     tmdb: tmdb(150213, 6.4, '/7gQEAR8aaCQRtJi7wq26ST5hukn.jpg', '/9AFWONBBVKyDiUtD89kXNnKnG4b.jpg'),
-    sources: sources(150213),
+    sources: sources('M15', 150213),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -459,7 +465,7 @@ export const MOVIES = [
     distributor: 'VIZ Media',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(227679, 6.4, '/l921PT8ZDeAD4YWDaB5Uke89r9b.jpg', '/k1Tt4Pa6DM2PBt3Qr9TROqUzsH9.jpg'),
-    sources: sources(227679),
+    sources: sources('M16', 227679),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -475,7 +481,7 @@ export const MOVIES = [
     featuredPokemon: ['Charizard', 'Mewtwo', 'Bulbasaur'],
     studio: 'Production I.G / Xebec / OLM',
     tmdb: tmdb(61295, 7.3, '/yuuwDjFgCHHz39f0i7zI6WERG0Y.jpg', '/zVpsLulhjz1RoW4LWQjYP3wmhtg.jpg', 'tv'),
-    sources: sources(61295, 'tv'),
+    sources: sources('Pokémon_Origins', 61295, 'tv'),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -494,7 +500,7 @@ export const MOVIES = [
     distributor: 'VIZ Media',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(303903, 6.7, '/rA0KbJZbBt2fMmZs8bwPZnzFfDc.jpg', '/k5OFuW1NdI1Lt57nzXEjxwd8zGv.jpg'),
-    sources: sources(303903),
+    sources: sources('M17', 303903),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -513,7 +519,7 @@ export const MOVIES = [
     distributor: 'VIZ Media',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(350499, 6.8, '/6kXRevMC1XSywmxqqRHuBcZlROT.jpg', '/crFk9m8DK9lNqlOa7AGTvYsO6Qn.jpg'),
-    sources: sources(350499),
+    sources: sources('M18', 350499),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -532,7 +538,7 @@ export const MOVIES = [
     distributor: 'VIZ Media',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(382190, 6.7, '/4hdbuM6qBrHH0hX4sD8pNsXmalm.jpg', '/bQl46uhGPTu9jnIRE9Ip2xOMc9M.jpg'),
-    sources: sources(382190),
+    sources: sources('M19', 382190),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -551,7 +557,7 @@ export const MOVIES = [
     distributor: 'Fathom Events',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(436931, 7.1, '/7vWiCtO1pa0oSG6QTyVKd8eyLLk.jpg', '/dyDxxLRTwqGFNOCtLbpxD1QLlfJ.jpg'),
-    sources: sources(436931),
+    sources: sources('M20', 436931),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -570,7 +576,7 @@ export const MOVIES = [
     distributor: 'Fathom Events',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(494407, 7.2, '/5oXKbOQOsPaLscHCqHjvi7hegOJ.jpg', '/b1EKIjZWYAoC3WUk14012DX46Cb.jpg'),
-    sources: sources(494407),
+    sources: sources('M21', 494407),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -589,7 +595,7 @@ export const MOVIES = [
     studio: 'Legendary Entertainment',
     distributor: 'Warner Bros.',
     tmdb: tmdb(447404, 6.9, '/uhWvnFgg3BNlcUz0Re1HfQqIcCD.jpg', '/yXybBEC45p84D0Ky7GmQQYrclVr.jpg'),
-    sources: sources(447404),
+    sources: sources('POKÉMON_Detective_Pikachu', 447404),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -608,7 +614,7 @@ export const MOVIES = [
     distributor: 'Netflix',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(571891, 6.7, '/rtlyO2oIMcCx2DbOM52XO2rAcgn.jpg', '/xHyX5zQIdu13w708J4lYhmwEqNp.jpg'),
-    sources: sources(571891),
+    sources: sources('M22', 571891),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -627,7 +633,7 @@ export const MOVIES = [
     distributor: 'Netflix',
     officialUrl: OFFICIAL_MOVIES_URL,
     tmdb: tmdb(662708, 7.2, '/9Ow7PJcAHMMxgSIjCW6RnRqE9OA.jpg', '/4KpNHvQIjyg1YFovRAoUXoFrGnR.jpg'),
-    sources: sources(662708),
+    sources: sources('M23', 662708),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -644,7 +650,7 @@ export const MOVIES = [
     studio: 'OLM',
     distributor: 'Netflix',
     tmdb: tmdb(207567, 7.3, '/aGH8biv7gRGeLyxg5Sn4WPcskxV.jpg', '/5X77Ep0wZLuxVuDhh5g7xJr3R9d.jpg', 'tv'),
-    sources: sources(207567, 'tv'),
+    sources: sources('The_Arceus_Chronicles', 207567, 'tv'),
     verifiedAt: VERIFIED_AT,
   },
   {
@@ -690,6 +696,12 @@ export function validateMovieCatalog(movies: readonly PokemonMovie[]): string[] 
     if (!movie.sources.length) errors.push(`Missing sources: ${movie.slug}`)
     if (!movie.sources.every((source) => /^https:\/\//.test(source.url))) {
       errors.push(`Invalid source URL: ${movie.slug}`)
+    }
+    if (movie.category !== 'upcoming') {
+      const titleSource = movie.sources.find((source) => source.kind === 'bulbapedia')
+      if (!titleSource || titleSource.url === BULBAPEDIA_MOVIES_URL) {
+        errors.push(`Missing title-specific source: ${movie.slug}`)
+      }
     }
     if (!movie.synopsis.trim()) errors.push(`Missing synopsis: ${movie.slug}`)
   }

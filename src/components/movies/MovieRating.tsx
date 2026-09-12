@@ -12,14 +12,14 @@ export function MovieRating({
   compact?: boolean
 }) {
   if (rating === undefined) {
-    return <span className="text-sm font-medium text-slate-400">Not yet rated</span>
+    return <span className="text-sm font-medium text-slate-400">Not rated</span>
   }
 
   return (
     <span className="inline-flex flex-wrap items-center gap-1.5" aria-label={`TMDB rating ${rating.toFixed(1)} out of 10`}>
       <Star className={compact ? 'h-4 w-4 fill-amber-400 text-amber-400' : 'h-5 w-5 fill-amber-400 text-amber-400'} />
       <strong className={compact ? 'text-sm' : 'text-lg'}>{rating.toFixed(1)} TMDB</strong>
-      {!compact && voteCount !== undefined && <span className="text-xs text-slate-400">· {voteCount.toLocaleString()} votes</span>}
+      {voteCount !== undefined && <span className="text-xs text-slate-400">· {voteCount.toLocaleString()} votes</span>}
       {!compact && capturedAt && <span className="text-xs text-slate-400">· Snapshot {capturedAt}</span>}
     </span>
   )

@@ -72,6 +72,21 @@ test('ignores malformed optional TMDB fields', () => {
   assert.equal(result.tmdb?.posterPath, '/old.jpg')
 })
 
+test('keeps curated total runtime when enriching a TV feature', () => {
+  const tvMovie: PokemonMovie = {
+    ...local,
+    id: 'special-tv',
+    runtimeMinutes: 96,
+    tmdb: { ...local.tmdb, mediaType: 'tv' },
+  }
+  const result = mergeTmdbMovie(tvMovie, {
+    id: 1094,
+    runtime: 24,
+    episode_run_time: [24],
+  }, '2026-09-13')
+  assert.equal(result.runtimeMinutes, 96)
+})
+
 test('rejects a TMDB response whose id does not match the curated record', () => {
   assert.throws(() => mergeTmdbMovie(local, { id: 999 }, '2026-09-13'), /TMDB id mismatch/)
 })

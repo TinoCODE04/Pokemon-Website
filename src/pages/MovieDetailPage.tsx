@@ -75,7 +75,7 @@ export default function MovieDetailPage() {
         </div>
       </header>
 
-      <main className="container-app mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="container-app mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
         <div className="space-y-8">
           <section className="card-surface p-6 sm:p-8">
             <h2 className="font-display text-2xl font-bold">The story</h2>
@@ -129,7 +129,7 @@ export default function MovieDetailPage() {
             {movie.tmdb && <div className="mt-5 border-t border-slate-200 pt-5 dark:border-white/10"><TmdbAttribution /></div>}
           </section>
         </aside>
-      </main>
+      </div>
 
       <nav className="container-app mt-10 grid gap-3 sm:grid-cols-2" aria-label="Chronological movie navigation">
         {previous ? (

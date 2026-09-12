@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowUpRight, CalendarDays, Film } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -20,13 +20,14 @@ export function MovieCategoryBadge({ category }: { category: MovieCategory }) {
 }
 
 export function MoviePoster({ movie, className }: { movie: PokemonMovie; className?: string }) {
-  const [failed, setFailed] = useState(false)
+  const [failedPoster, setFailedPoster] = useState<string>()
   const poster = tmdbImageUrl(movie.tmdb?.posterPath, 'w500')
+  const failed = poster !== undefined && failedPoster === poster
 
   return (
     <div className={cn('relative overflow-hidden bg-gradient-to-br from-night-800 via-night-900 to-slate-950', className)}>
       {poster && !failed ? (
-        <img src={poster} alt={`${movie.title} poster`} className="h-full w-full object-cover" loading="lazy" onError={() => setFailed(true)} />
+        <img src={poster} alt={`${movie.title} poster`} className="h-full w-full object-cover" loading="lazy" onError={() => setFailedPoster(poster)} />
       ) : (
         <div className="flex h-full flex-col items-center justify-center gap-4 p-6 text-center text-white/80">
           <span className="absolute -right-12 -top-12 h-40 w-40 rounded-full border-[24px] border-white/5" />
@@ -40,8 +41,15 @@ export function MoviePoster({ movie, className }: { movie: PokemonMovie; classNa
 }
 
 export function MovieCard({ movie, index = 0 }: { movie: PokemonMovie; index?: number }) {
+  const reduceMotion = useReducedMotion()
   return (
-    <motion.article initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -5 }} transition={{ duration: 0.24, delay: Math.min(index, 8) * 0.035 }} className="group h-full">
+    <motion.article
+      initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={reduceMotion ? undefined : { y: -5 }}
+      transition={reduceMotion ? { duration: 0 } : { duration: 0.24, delay: Math.min(index, 8) * 0.035 }}
+      className="group h-full"
+    >
       <Link
         to={`/movies/${movie.slug}`}
         className="flex h-full flex-col overflow-hidden rounded-[1.4rem] border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-500 dark:border-white/10 dark:bg-night-900 dark:hover:shadow-black/30"
