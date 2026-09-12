@@ -55,7 +55,7 @@ No scraping happens in the user's browser. The app ships a reviewed TypeScript/J
 
 ### Catalogue page
 
-The page begins with a cinematic hero containing the title `Pokémon Movies`, a short description, the number of matching titles, and a featured visual. Below it is a single filter toolbar followed by a responsive card grid and the existing shared pagination component.
+The page begins with a cinematic hero containing the title `Pokémon Movies`, a short description, the number of matching titles, and a featured visual. Below it is a single filter toolbar followed by a responsive card grid. All matching titles render in one continuous page without catalogue pagination.
 
 The toolbar contains:
 
@@ -68,11 +68,13 @@ The toolbar contains:
   - `Rating: High → Low` (`rating-desc`)
   - `Title: A → Z` (`title-asc`)
 
-The default sort is `release-asc`, presenting the franchise chronologically. Search, category, sort, and page are reflected in URL query parameters. Changing search, category, or sort resets the page to 1. Invalid URL values fall back to defaults. Upcoming titles without a final date sort after dated titles in ascending order and before them in descending order. Unrated titles sort after rated titles. Title ties use release date, then stable catalogue ID.
+The default sort is `release-asc`, presenting the franchise chronologically. Search, category, and sort are reflected in URL query parameters; legacy `page` parameters are removed. Invalid URL values fall back to defaults. Upcoming titles without a final date sort after dated titles in ascending order and before them in descending order. Unrated titles sort after rated titles. Title ties use release date, then stable catalogue ID.
 
-Cards show a 2:3 poster area, title, release year or `Coming soon`, category badge, TMDB rating with vote context when available, and up to three featured Pokémon. Missing posters use a polished branded placeholder rather than a broken image. Each card is one accessible link with a visible keyboard focus state.
+Cards show a 2:3 poster area, title, release year or `Coming soon`, category badge, TMDB rating with vote context when available, up to three featured Pokémon, and a `Play Trailer` button. Missing posters use a polished branded placeholder rather than a broken image. Poster and title link to details while the trailer remains a separate accessible action.
 
-The catalogue uses 12 items per page and the shared expanded pagination window already used by Pokédex and Compare. Empty searches provide a reset action. Loading, optional enrichment failure, and invalid page states do not remove bundled content.
+Verified YouTube trailers open in a responsive 16:9 dialog with Escape, backdrop, and close-button handling. When configured, TMDB Videos supplies an official YouTube trailer on demand. If no verified direct video is available, the action opens a title-and-year-specific YouTube trailer search rather than guessing an upload or embedding copyrighted full-length content.
+
+Empty searches provide a reset action. Loading and optional enrichment failure do not remove bundled content.
 
 ### Detail page
 
@@ -173,7 +175,7 @@ Component-level confidence comes from TypeScript and production builds plus focu
 - The complete agreed catalogue is present and categorized, with source links and verification dates.
 - The list works without an API key and remains usable when TMDB fails.
 - All four requested sort options produce deterministic results and remain shareable through the URL.
-- Search, category filters, 12-item pagination, reset behaviour, and responsive cards work together.
+- Search, category filters, continuous scrolling, reset behaviour, responsive cards, and trailer actions work together.
 - Every movie opens a useful detail page with facts, synopsis, featured Pokémon, sources, and chronological navigation.
 - Missing media and metadata have intentional fallback states.
 - No secrets are committed, source attribution is visible, and README configuration is accurate.

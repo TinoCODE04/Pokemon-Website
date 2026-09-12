@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion'
-import { ArrowUpRight, CalendarDays, Film } from 'lucide-react'
+import { ArrowUpRight, CalendarDays, Film, Play } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { tmdbImageUrl } from '../../api/movies'
@@ -40,7 +40,15 @@ export function MoviePoster({ movie, className }: { movie: PokemonMovie; classNa
   )
 }
 
-export function MovieCard({ movie, index = 0 }: { movie: PokemonMovie; index?: number }) {
+export function MovieCard({
+  movie,
+  index = 0,
+  onPlayTrailer,
+}: {
+  movie: PokemonMovie
+  index?: number
+  onPlayTrailer: (movie: PokemonMovie, opener: HTMLButtonElement) => void
+}) {
   const reduceMotion = useReducedMotion()
   return (
     <motion.article
@@ -50,14 +58,13 @@ export function MovieCard({ movie, index = 0 }: { movie: PokemonMovie; index?: n
       transition={reduceMotion ? { duration: 0 } : { duration: 0.24, delay: Math.min(index, 8) * 0.035 }}
       className="group h-full"
     >
-      <Link
-        to={`/movies/${movie.slug}`}
-        className="flex h-full flex-col overflow-hidden rounded-[1.4rem] border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-500 dark:border-white/10 dark:bg-night-900 dark:hover:shadow-black/30"
-      >
+      <div className="flex h-full flex-col overflow-hidden rounded-[1.4rem] border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-xl dark:border-white/10 dark:bg-night-900 dark:hover:shadow-black/30">
         <div className="relative aspect-[2/3] overflow-hidden">
-          <MoviePoster movie={movie} className="h-full w-full transition duration-500 group-hover:scale-[1.035]" />
+          <Link to={`/movies/${movie.slug}`} aria-label={`View details for ${movie.title}`} className="block h-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-brand-500">
+            <MoviePoster movie={movie} className="h-full w-full transition duration-500 group-hover:scale-[1.035]" />
+          </Link>
           <div className="absolute left-3 top-3"><MovieCategoryBadge category={movie.category} /></div>
-          <span className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-slate-900 opacity-0 shadow-md transition group-hover:opacity-100 dark:bg-night-950/90 dark:text-white">
+          <span className="pointer-events-none absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-slate-900 opacity-0 shadow-md transition group-hover:opacity-100 dark:bg-night-950/90 dark:text-white">
             <ArrowUpRight className="h-4 w-4" />
           </span>
         </div>
@@ -66,7 +73,7 @@ export function MovieCard({ movie, index = 0 }: { movie: PokemonMovie; index?: n
             <CalendarDays className="h-3.5 w-3.5" />
             {movie.category === 'upcoming' && !movie.releaseDate ? 'Coming soon' : movie.releaseYear}
           </div>
-          <h2 className="font-display text-lg font-bold leading-tight tracking-tight transition group-hover:text-brand-500">{movie.title}</h2>
+          <h2 className="font-display text-lg font-bold leading-tight tracking-tight transition group-hover:text-brand-500"><Link to={`/movies/${movie.slug}`} className="rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500">{movie.title}</Link></h2>
           {movie.alternateTitles?.[0] && <p className="mt-1 line-clamp-1 text-xs text-slate-400">{movie.alternateTitles[0]}</p>}
           <div className="mt-3 flex flex-wrap gap-1.5">
             {movie.featuredPokemon.slice(0, 3).map((pokemon) => (
@@ -74,8 +81,15 @@ export function MovieCard({ movie, index = 0 }: { movie: PokemonMovie; index?: n
             ))}
           </div>
           <div className="mt-auto pt-4"><MovieRating rating={movie.tmdb?.rating} voteCount={movie.tmdb?.voteCount} /></div>
+          <button
+            type="button"
+            onClick={(event) => onPlayTrailer(movie, event.currentTarget)}
+            className="mt-4 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
+          >
+            <Play className="h-4 w-4 fill-current" /> Play Trailer
+          </button>
         </div>
-      </Link>
+      </div>
     </motion.article>
   )
 }

@@ -17,6 +17,12 @@ export interface TmdbSnapshot {
   capturedAt: string
 }
 
+export interface MovieTrailer {
+  youtubeId: string
+  label: string
+  sourceUrl: string
+}
+
 export interface PokemonMovie {
   id: string
   slug: string
@@ -34,6 +40,7 @@ export interface PokemonMovie {
   studio?: string
   distributor?: string
   officialUrl?: string
+  trailer?: MovieTrailer
   tmdb?: TmdbSnapshot
   sources: readonly MovieSource[]
   verifiedAt: string
@@ -239,6 +246,11 @@ export const MOVIES = [
     studio: 'OLM',
     distributor: 'VIZ Media',
     officialUrl: OFFICIAL_MOVIES_URL,
+    trailer: {
+      youtubeId: '7vc-FhG682E',
+      label: 'Official Trailer',
+      sourceUrl: 'https://www.youtube.com/watch?v=7vc-FhG682E',
+    },
     tmdb: tmdb(34067, 7.0, '/3A3WiPXPmWVhXC7bGSiqtsYY9z6.jpg', '/7qzuPx3ukGxCyLR9j0Ahg3fFI7r.jpg'),
     sources: sources('M08', 34067),
     verifiedAt: VERIFIED_AT,
@@ -276,6 +288,11 @@ export const MOVIES = [
     studio: 'OLM',
     distributor: 'VIZ Media',
     officialUrl: OFFICIAL_MOVIES_URL,
+    trailer: {
+      youtubeId: 'ItZyBxKxAAk',
+      label: 'Official Trailer',
+      sourceUrl: 'https://www.youtube.com/watch?v=ItZyBxKxAAk',
+    },
     tmdb: tmdb(16808, 6.5, '/jZOi06xHjsG1VqbiIwS8GkyrAOn.jpg', '/y9I6h1NrGdzX99QKcoqLhsFfVWO.jpg'),
     sources: sources('M09', 16808),
     verifiedAt: VERIFIED_AT,
@@ -594,6 +611,11 @@ export const MOVIES = [
     director: 'Rob Letterman',
     studio: 'Legendary Entertainment',
     distributor: 'Warner Bros.',
+    trailer: {
+      youtubeId: 'NWLUZHzW890',
+      label: 'Official Home Entertainment Trailer',
+      sourceUrl: 'https://www.youtube.com/watch?v=NWLUZHzW890',
+    },
     tmdb: tmdb(447404, 6.9, '/uhWvnFgg3BNlcUz0Re1HfQqIcCD.jpg', '/yXybBEC45p84D0Ky7GmQQYrclVr.jpg'),
     sources: sources('POKÉMON_Detective_Pikachu', 447404),
     verifiedAt: VERIFIED_AT,
@@ -613,6 +635,11 @@ export const MOVIES = [
     studio: 'OLM / Sprite Animation Studios',
     distributor: 'Netflix',
     officialUrl: OFFICIAL_MOVIES_URL,
+    trailer: {
+      youtubeId: 'D0zYJ1RQ-fs',
+      label: 'Official Trailer',
+      sourceUrl: 'https://www.youtube.com/watch?v=D0zYJ1RQ-fs',
+    },
     tmdb: tmdb(571891, 6.7, '/rtlyO2oIMcCx2DbOM52XO2rAcgn.jpg', '/xHyX5zQIdu13w708J4lYhmwEqNp.jpg'),
     sources: sources('M22', 571891),
     verifiedAt: VERIFIED_AT,
@@ -649,6 +676,11 @@ export const MOVIES = [
     featuredPokemon: ['Arceus', 'Heatran', 'Pikachu'],
     studio: 'OLM',
     distributor: 'Netflix',
+    trailer: {
+      youtubeId: 'rHimPkAq5V8',
+      label: 'Official Trailer',
+      sourceUrl: 'https://www.youtube.com/watch?v=rHimPkAq5V8',
+    },
     tmdb: tmdb(207567, 7.3, '/aGH8biv7gRGeLyxg5Sn4WPcskxV.jpg', '/5X77Ep0wZLuxVuDhh5g7xJr3R9d.jpg', 'tv'),
     sources: sources('The_Arceus_Chronicles', 207567, 'tv'),
     verifiedAt: VERIFIED_AT,
@@ -704,6 +736,13 @@ export function validateMovieCatalog(movies: readonly PokemonMovie[]): string[] 
       }
     }
     if (!movie.synopsis.trim()) errors.push(`Missing synopsis: ${movie.slug}`)
+    if (movie.trailer && (
+      !/^[A-Za-z0-9_-]{6,20}$/.test(movie.trailer.youtubeId)
+      || !movie.trailer.label.trim()
+      || !movie.trailer.sourceUrl.startsWith('https://www.youtube.com/watch?v=')
+    )) {
+      errors.push(`Invalid trailer: ${movie.slug}`)
+    }
   }
 
   return errors

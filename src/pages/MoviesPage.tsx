@@ -1,30 +1,29 @@
 import { useQueries } from '@tanstack/react-query'
 import { Film, SearchX, Sparkles } from 'lucide-react'
-import { useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { getTmdbMovie, mergeTmdbMovie } from '../api/movies'
-import { Pagination } from '../components/filters/Pagination'
+import { getTmdbMovie, getTmdbVideos, mergeTmdbMovie, selectYoutubeTrailer, youtubeTrailerSearchUrl } from '../api/movies'
 import { MovieCard } from '../components/movies/MovieCard'
 import { MovieFilters } from '../components/movies/MovieFilters'
 import { TmdbAttribution } from '../components/movies/MovieRating'
+import { TrailerModal, type TrailerModalState } from '../components/movies/TrailerModal'
 import { EmptyState } from '../components/ui/Feedback'
 import { MOVIES, type PokemonMovie } from '../data/movies'
-import { filterMovies, paginateMovies, parseMovieSearchParams, sortMovies, type MovieCategoryFilter, type MovieSort } from '../utils/movies'
+import { filterMovies, parseMovieSearchParams, sortMovies, type MovieCategoryFilter, type MovieSort } from '../utils/movies'
 
-const PAGE_SIZE = 12
 const STALE_TIME = 1000 * 60 * 60
 
 export default function MoviesPage() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const heroRef = useRef<HTMLElement>(null)
+  const [trailerState, setTrailerState] = useState<TrailerModalState | null>(null)
+  const trailerOpener = useRef<HTMLButtonElement | null>(null)
+  const trailerRequest = useRef(0)
   const state = parseMovieSearchParams(searchParams)
 
   const filtered = useMemo(
     () => sortMovies(filterMovies(MOVIES, { query: state.query, category: state.category }), state.sort),
     [state.query, state.category, state.sort],
   )
-  const pageData = useMemo(() => paginateMovies(filtered, state.page, PAGE_SIZE), [filtered, state.page])
-
   useEffect(() => {
     const next = new URLSearchParams(searchParams)
     let changed = false
@@ -46,18 +45,17 @@ export default function MoviesPage() {
       next.delete('sort')
       changed = true
     }
-    if (pageData.page !== state.page || (rawPage !== null && rawPage !== String(pageData.page))) {
-      if (pageData.page === 1) next.delete('page')
-      else next.set('page', String(pageData.page))
+    if (rawPage !== null) {
+      next.delete('page')
       changed = true
     }
     if (!changed) return
     setSearchParams(next, { replace: true })
-  }, [pageData.page, searchParams, setSearchParams, state.category, state.page, state.query, state.sort])
+  }, [searchParams, setSearchParams, state.category, state.query, state.sort])
 
   const token = import.meta.env.VITE_TMDB_ACCESS_TOKEN?.trim()
   const enrichments = useQueries({
-    queries: pageData.items.map((movie) => ({
+    queries: filtered.map((movie) => ({
       queryKey: ['movies', 'tmdb', movie.tmdb?.mediaType ?? 'movie', movie.tmdb?.id],
       queryFn: async () => mergeTmdbMovie(
         movie,
@@ -69,9 +67,9 @@ export default function MoviesPage() {
       retry: 1,
     })),
   })
-  const visibleMovies = pageData.items.map((movie, index) => enrichments[index]?.data ?? movie) as PokemonMovie[]
+  const visibleMovies = filtered.map((movie, index) => enrichments[index]?.data ?? movie) as PokemonMovie[]
 
-  function updateParams(values: { q?: string; category?: MovieCategoryFilter; sort?: MovieSort; page?: number }) {
+  function updateParams(values: { q?: string; category?: MovieCategoryFilter; sort?: MovieSort }) {
     const next = new URLSearchParams(searchParams)
     if (values.q !== undefined) {
       if (values.q.trim()) next.set('q', values.q)
@@ -85,16 +83,7 @@ export default function MoviesPage() {
       if (values.sort === 'release-asc') next.delete('sort')
       else next.set('sort', values.sort)
     }
-    if (values.page !== undefined) {
-      if (values.page === 1) next.delete('page')
-      else next.set('page', String(values.page))
-    }
     setSearchParams(next)
-  }
-
-  function changePage(page: number) {
-    updateParams({ page })
-    window.requestAnimationFrame(() => heroRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
   }
 
   function reset() {
@@ -103,9 +92,44 @@ export default function MoviesPage() {
 
   const resetVisible = Boolean(state.query || state.category !== 'all' || state.sort !== 'release-asc')
 
+  const closeTrailer = useCallback(() => {
+    trailerRequest.current += 1
+    setTrailerState(null)
+    window.requestAnimationFrame(() => trailerOpener.current?.focus())
+  }, [])
+
+  const playTrailer = useCallback(async (movie: PokemonMovie, opener: HTMLButtonElement) => {
+    trailerOpener.current = opener
+    const searchUrl = youtubeTrailerSearchUrl(movie.title, movie.releaseYear)
+    if (movie.trailer) {
+      setTrailerState({ movie, youtubeId: movie.trailer.youtubeId, sourceUrl: movie.trailer.sourceUrl, searchUrl })
+      return
+    }
+    if (!token || !movie.tmdb?.id) {
+      window.open(searchUrl, '_blank', 'noopener,noreferrer')
+      return
+    }
+
+    const request = ++trailerRequest.current
+    setTrailerState({ movie, loading: true, searchUrl })
+    try {
+      const videos = await getTmdbVideos(movie.tmdb.id, token, movie.tmdb.mediaType ?? 'movie')
+      if (request !== trailerRequest.current) return
+      const trailer = selectYoutubeTrailer(videos)
+      setTrailerState({
+        movie,
+        youtubeId: trailer?.key,
+        sourceUrl: trailer ? `https://www.youtube.com/watch?v=${trailer.key}` : undefined,
+        searchUrl,
+      })
+    } catch {
+      if (request === trailerRequest.current) setTrailerState({ movie, searchUrl })
+    }
+  }, [token])
+
   return (
     <div className="pb-16">
-      <section ref={heroRef} className="movies-atmosphere relative overflow-hidden border-b border-white/10 py-16 text-white sm:py-20">
+      <section className="movies-atmosphere relative overflow-hidden border-b border-white/10 py-16 text-white sm:py-20">
         <div className="container-app relative z-10">
           <div className="max-w-3xl">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.16em] text-amber-200 backdrop-blur">
@@ -129,21 +153,18 @@ export default function MoviesPage() {
           query={state.query}
           category={state.category}
           sort={state.sort}
-          onQueryChange={(q) => updateParams({ q, page: 1 })}
-          onCategoryChange={(category) => updateParams({ category, page: 1 })}
-          onSortChange={(sort) => updateParams({ sort, page: 1 })}
+          onQueryChange={(q) => updateParams({ q })}
+          onCategoryChange={(category) => updateParams({ category })}
+          onSortChange={(sort) => updateParams({ sort })}
           onReset={reset}
           resetVisible={resetVisible}
         />
 
         <div className="mt-10">
           {visibleMovies.length > 0 ? (
-            <>
-              <div className="grid grid-cols-1 gap-5 min-[420px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                {visibleMovies.map((movie, index) => <MovieCard key={movie.id} movie={movie} index={index} />)}
-              </div>
-              <Pagination page={pageData.page} totalPages={pageData.totalPages} onChange={changePage} />
-            </>
+            <div className="grid grid-cols-1 gap-5 min-[420px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+              {visibleMovies.map((movie, index) => <MovieCard key={movie.id} movie={movie} index={index} onPlayTrailer={playTrailer} />)}
+            </div>
           ) : (
             <EmptyState
               icon={<SearchX className="h-6 w-6" />}
@@ -156,6 +177,7 @@ export default function MoviesPage() {
 
         <div className="mt-12 border-t border-slate-200 pt-6 dark:border-white/10"><TmdbAttribution /></div>
       </div>
+      <TrailerModal state={trailerState} onClose={closeTrailer} />
     </div>
   )
 }

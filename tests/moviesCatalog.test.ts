@@ -47,3 +47,24 @@ test('uses a title-specific Bulbapedia source for every released record', () => 
     assert.notEqual(source.url, 'https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_movie')
   }
 })
+
+test('ships verified direct trailers only with safe YouTube ids and HTTPS sources', () => {
+  const trailers = MOVIES.flatMap((movie) => movie.trailer ? [{ slug: movie.slug, ...movie.trailer }] : [])
+  assert.deepEqual(trailers.map((trailer) => trailer.slug).sort(), [
+    'detective-pikachu',
+    'lucario-and-the-mystery-of-mew',
+    'mewtwo-strikes-back-evolution',
+    'pokemon-ranger-and-the-temple-of-the-sea',
+    'the-arceus-chronicles',
+  ])
+  assert.ok(trailers.every((trailer) => /^[A-Za-z0-9_-]{6,20}$/.test(trailer.youtubeId)))
+  assert.ok(trailers.every((trailer) => trailer.sourceUrl.startsWith('https://www.youtube.com/watch?v=')))
+})
+
+test('catalog validation rejects unsafe trailer metadata', () => {
+  const invalid = [{
+    ...MOVIES[0],
+    trailer: { youtubeId: 'not a video id', label: 'Trailer', sourceUrl: 'http://example.com/video' },
+  }]
+  assert.ok(validateMovieCatalog(invalid).some((error) => error.includes('Invalid trailer')))
+})

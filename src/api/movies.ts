@@ -21,6 +21,16 @@ export interface TmdbMovieResponse {
   backdrop_path?: string | null
 }
 
+export interface TmdbVideo {
+  id: string
+  key: string
+  name: string
+  site: string
+  type: string
+  official?: boolean
+  published_at?: string
+}
+
 export class TmdbApiError extends Error {
   status?: number
 
@@ -35,6 +45,22 @@ const TMDB_PATH = /^\/[A-Za-z0-9._-]+$/
 
 export function tmdbImageUrl(path: string | null | undefined, size: TmdbImageSize): string | undefined {
   return path && TMDB_PATH.test(path) ? `${TMDB_IMAGE_BASE_URL}/${size}${path}` : undefined
+}
+
+export function youtubeTrailerSearchUrl(title: string, releaseYear: number): string {
+  const params = new URLSearchParams({ search_query: `${title} ${releaseYear} official trailer` })
+  return `https://www.youtube.com/results?${params}`
+}
+
+const YOUTUBE_ID = /^[A-Za-z0-9_-]{6,20}$/
+
+export function selectYoutubeTrailer(videos: readonly TmdbVideo[]): TmdbVideo | undefined {
+  return videos
+    .filter((video) => video.site === 'YouTube' && YOUTUBE_ID.test(video.key))
+    .sort((a, b) => {
+      const score = (video: TmdbVideo) => (video.type === 'Trailer' ? 4 : video.type === 'Teaser' ? 2 : 0) + (video.official ? 1 : 0)
+      return score(b) - score(a) || (b.published_at ?? '').localeCompare(a.published_at ?? '')
+    })[0]
 }
 
 function validNonNegative(value: unknown): value is number {
@@ -126,4 +152,40 @@ export async function getTmdbMovie(
   }
   if (!isTmdbMovieResponse(data)) throw new TmdbApiError('TMDB returned invalid data.')
   return data
+}
+
+export async function getTmdbVideos(
+  tmdbId: number,
+  token: string,
+  mediaType: TmdbMediaType = 'movie',
+  fetcher: typeof fetch = fetch,
+): Promise<TmdbVideo[]> {
+  if (!Number.isInteger(tmdbId) || tmdbId <= 0) throw new TmdbApiError('A valid TMDB id is required.')
+  if (!token.trim()) throw new TmdbApiError('A TMDB read access token is required.')
+
+  const controller = new AbortController()
+  const timeout = globalThis.setTimeout(() => controller.abort(), 12_000)
+  let response: Response
+  try {
+    response = await fetcher(`${TMDB_API_BASE_URL}/${mediaType}/${tmdbId}/videos?language=en-US`, {
+      headers: { Authorization: `Bearer ${token}` },
+      signal: controller.signal,
+    })
+  } catch {
+    throw new TmdbApiError('TMDB trailers are unavailable.')
+  } finally {
+    globalThis.clearTimeout(timeout)
+  }
+
+  if (!response.ok) throw new TmdbApiError(`TMDB trailer request failed (${response.status}).`, response.status)
+  const data: unknown = await response.json().catch(() => undefined)
+  if (typeof data !== 'object' || data === null || !Array.isArray((data as { results?: unknown }).results)) {
+    throw new TmdbApiError('TMDB returned invalid trailer data.')
+  }
+  return (data as { results: unknown[] }).results.filter((video): video is TmdbVideo => {
+    if (typeof video !== 'object' || video === null) return false
+    const item = video as Partial<TmdbVideo>
+    return typeof item.id === 'string' && typeof item.key === 'string' && typeof item.name === 'string'
+      && typeof item.site === 'string' && typeof item.type === 'string'
+  })
 }

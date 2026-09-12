@@ -16,6 +16,7 @@ A clean, responsive Pokémon encyclopedia powered by [PokéAPI](https://pokeapi.
 - Play Quick Battle and challenge powerful Legendary Pokémon
 - Browse a source-attributed catalogue of Pokémon movies and feature-length specials
 - Search movies by title, year, or featured Pokémon and sort them by date, rating, or title
+- Play verified trailers in an accessible YouTube dialog, with TMDB and YouTube search fallbacks
 - Switch between light and dark themes
 - Use responsive layouts designed for desktop, tablet, and mobile
 - Open global search using the navigation or `/` keyboard shortcut

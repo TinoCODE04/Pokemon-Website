@@ -2,9 +2,12 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   getTmdbMovie,
+  getTmdbVideos,
   mergeTmdbMovie,
+  selectYoutubeTrailer,
   TmdbApiError,
   tmdbImageUrl,
+  youtubeTrailerSearchUrl,
   type TmdbMovieResponse,
 } from '../src/api/movies.ts'
 import type { PokemonMovie } from '../src/data/movies.ts'
@@ -118,4 +121,32 @@ test('converts TMDB HTTP failures into readable typed errors', async () => {
 test('rejects malformed TMDB JSON payloads', async () => {
   const malformed: typeof fetch = async () => Response.json({ title: 'Missing id' })
   await assert.rejects(() => getTmdbMovie(1094, 'read-token', 'movie', malformed), /invalid data/i)
+})
+
+test('selects an official YouTube trailer ahead of teasers and unofficial videos', () => {
+  const selected = selectYoutubeTrailer([
+    { id: '1', key: 'teaser-id', name: 'Teaser', site: 'YouTube', type: 'Teaser', official: true },
+    { id: '2', key: 'vimeo-id', name: 'Trailer', site: 'Vimeo', type: 'Trailer', official: true },
+    { id: '3', key: 'unofficial-id', name: 'Trailer', site: 'YouTube', type: 'Trailer', official: false },
+    { id: '4', key: 'official-id', name: 'Official Trailer', site: 'YouTube', type: 'Trailer', official: true },
+  ])
+  assert.equal(selected?.key, 'official-id')
+})
+
+test('builds a safe YouTube trailer search URL', () => {
+  assert.equal(
+    youtubeTrailerSearchUrl('Pokémon: The First Movie', 1999),
+    'https://www.youtube.com/results?search_query=Pok%C3%A9mon%3A+The+First+Movie+1999+official+trailer',
+  )
+})
+
+test('requests TMDB videos from the selected media endpoint', async () => {
+  let requestedUrl = ''
+  const fetcher: typeof fetch = async (input) => {
+    requestedUrl = String(input)
+    return Response.json({ id: 1094, results: [] })
+  }
+  const result = await getTmdbVideos(1094, 'read-token', 'tv', fetcher)
+  assert.deepEqual(result, [])
+  assert.equal(requestedUrl, 'https://api.themoviedb.org/3/tv/1094/videos?language=en-US')
 })
