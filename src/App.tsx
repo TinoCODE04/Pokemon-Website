@@ -5,6 +5,8 @@ import { Footer } from './components/layout/Footer'
 import { Navbar } from './components/layout/Navbar'
 import { SearchModal } from './components/search/SearchModal'
 import { Spinner } from './components/ui/Feedback'
+import { MOVIES } from './data/movies'
+import { findMovieBySlug } from './utils/movies'
 
 const AbilityDetailPage = lazy(() => import('./pages/AbilityDetailPage'))
 const AbilitiesPage = lazy(() => import('./pages/AbilitiesPage'))
@@ -14,6 +16,8 @@ const GamesPage = lazy(() => import('./pages/GamesPage'))
 const GenerationDetailPage = lazy(() => import('./pages/GenerationDetailPage'))
 const GenerationsPage = lazy(() => import('./pages/GenerationsPage'))
 const HomePage = lazy(() => import('./pages/HomePage'))
+const MovieDetailPage = lazy(() => import('./pages/MovieDetailPage'))
+const MoviesPage = lazy(() => import('./pages/MoviesPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 const PokedexPage = lazy(() => import('./pages/PokedexPage'))
 const TopRankPage = lazy(() => import('./pages/TopRankPage'))
@@ -40,9 +44,13 @@ export default function App() {
 
   useEffect(() => {
     const path = location.pathname
-    const section = path === '/'
-      ? 'Explore every Pokémon'
-      : path.startsWith('/pokemon/')
+    let section: string
+    if (path === '/') section = 'Explore every Pokémon'
+    else if (path === '/movies') section = 'Pokémon Movies'
+    else if (path.startsWith('/movies/')) {
+      section = findMovieBySlug(MOVIES, path.slice('/movies/'.length))?.title ?? 'Movie not found'
+    } else {
+      section = path.startsWith('/pokemon/')
         ? 'Pokémon details'
         : path.startsWith('/types/')
           ? 'Type details'
@@ -51,6 +59,7 @@ export default function App() {
             : path.startsWith('/abilities/')
               ? 'Ability details'
               : path.slice(1).replace(/-/g, ' ') || 'Explorer'
+    }
     document.title = `${section.charAt(0).toUpperCase()}${section.slice(1)} | Pokémon Explorer`
   }, [location.pathname])
 
@@ -87,6 +96,8 @@ export default function App() {
               <Route path="/abilities/:name" element={<AbilityDetailPage />} />
               <Route path="/compare" element={<ComparePage />} />
               <Route path="/games" element={<GamesPage />} />
+              <Route path="/movies" element={<MoviesPage />} />
+              <Route path="/movies/:slug" element={<MovieDetailPage />} />
               <Route path="/favorites" element={<FavoritesPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>

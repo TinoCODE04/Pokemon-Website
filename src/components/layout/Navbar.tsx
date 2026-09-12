@@ -15,6 +15,7 @@ const NAV_LINKS = [
   { to: '/abilities', label: 'Abilities' },
   { to: '/compare', label: 'Compare' },
   { to: '/games', label: 'Games' },
+  { to: '/movies', label: 'Movies' },
   { to: '/favorites', label: 'Favorites' },
 ]
 

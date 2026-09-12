@@ -14,6 +14,8 @@ A clean, responsive Pokémon encyclopedia powered by [PokéAPI](https://pokeapi.
 - Compare up to three Pokémon side by side
 - Save favorite Pokémon on the current device
 - Play Quick Battle and challenge powerful Legendary Pokémon
+- Browse a source-attributed catalogue of Pokémon movies and feature-length specials
+- Search movies by title, year, or featured Pokémon and sort them by date, rating, or title
 - Switch between light and dark themes
 - Use responsive layouts designed for desktop, tablet, and mobile
 - Open global search using the navigation or `/` keyboard shortcut
@@ -34,7 +36,7 @@ A clean, responsive Pokémon encyclopedia powered by [PokéAPI](https://pokeapi.
 
 ## How it works
 
-The browser communicates directly with PokéAPI through a typed API layer inside `src/api`.
+The browser communicates directly with PokéAPI through a typed API layer inside `src/api`. The Movies module renders from a checked-in, verified catalogue, so it remains available without an API key or a network request.
 
 Reusable TanStack Query hooks in `src/hooks/queries.ts` fetch and cache Pokémon, species, evolution, type, generation, and ability data.
 
@@ -44,7 +46,17 @@ Detail pages combine multiple PokéAPI resources. For example, the Pokémon endp
 
 Favorites, comparison selections, and the selected color theme are stored in the browser using `localStorage`.
 
-The application does not require an account, database, API key, or `.env` file.
+The application does not require an account, database, API key, or `.env` file. A replaceable, read-only TMDB access token can optionally refresh TMDB-owned movie fields such as ratings and artwork.
+
+### Optional TMDB enrichment
+
+Copy `.env.example` to `.env.local` and add a TMDB API Read Access Token:
+
+```dotenv
+VITE_TMDB_ACCESS_TOKEN=your_read_only_token
+```
+
+This setting is optional; the bundled catalogue, poster paths, and rating snapshot are used when it is absent or TMDB is unavailable. Vite embeds every `VITE_` value in the browser bundle, so use only a replaceable read-only token—never a privileged secret.
 
 ## Getting started
 
@@ -101,6 +113,7 @@ src/
 ├── api/          # PokéAPI client functions and TypeScript response types
 ├── components/   # Layout, filters, charts, search, and Pokémon UI
 ├── constants/    # Type colors, icons, and application constants
+├── data/         # Verified, normalized Pokémon movie catalogue
 ├── hooks/        # Query, debounce, and theme hooks
 ├── pages/        # Route-level pages
 ├── store/        # Favorites and comparison state using localStorage
@@ -125,6 +138,8 @@ src/
 | `/abilities/:name` | Ability details and related Pokémon |
 | `/compare` | Side-by-side Pokémon comparison |
 | `/games` | Quick Battle and Legendary Challenge |
+| `/movies` | Searchable Pokémon movies and specials catalogue |
+| `/movies/:slug` | Movie details, production facts, sources, and chronology |
 | `/favorites` | Locally saved favorite Pokémon |
 
 ## API usage
@@ -184,6 +199,10 @@ Clearing browser data, using private browsing, or switching devices can remove o
 ## Data and trademarks
 
 Pokémon data and artwork are provided by the community-maintained [PokéAPI](https://pokeapi.co/).
+
+Movie titles and official links are checked first against the [Pokémon Movie Encyclopedia](https://www.pokemon.com/us/animation/movies), with catalogue cross-checking through [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_movie). Posters, backdrops, community ratings, and optional live enrichment are provided by [TMDB](https://www.themoviedb.org/). Each movie detail page exposes its verification links and date.
+
+This product uses the TMDB API but is not endorsed or certified by TMDB.
 
 Pokémon and Pokémon character names are trademarks of Nintendo, Game Freak, and The Pokémon Company.
 
