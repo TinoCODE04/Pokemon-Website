@@ -106,6 +106,28 @@
       linear-gradient(135deg, #ffffff 0%, #f8fafc 58%, #eef2ff 100%);
   }
 
+  .movies-atmosphere {
+    background:
+      radial-gradient(circle at 77% 30%, rgb(245 158 11 / 0.2), transparent 20rem),
+      radial-gradient(circle at 92% 90%, rgb(227 53 13 / 0.26), transparent 24rem),
+      radial-gradient(circle at 10% 95%, rgb(59 130 246 / 0.18), transparent 25rem),
+      linear-gradient(125deg, #111a30 0%, #172554 48%, #0a101f 100%);
+  }
+
+  .movie-poster-shine::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(115deg, transparent 38%, rgb(255 255 255 / 0.12) 50%, transparent 62%);
+    transform: translateX(-120%);
+    transition: transform 600ms ease;
+  }
+
+  .movie-poster-shine:hover::after {
+    transform: translateX(120%);
+  }
+
   .dark .hero-atmosphere {
     background:
       radial-gradient(circle at 78% 34%, rgb(227 53 13 / 0.2), transparent 27rem),
