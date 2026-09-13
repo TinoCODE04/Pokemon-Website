@@ -65,9 +65,9 @@ export function TrailerModal({ state, onClose }: { state: TrailerModalState | nu
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={reduceMotion ? undefined : { opacity: 0, y: 12, scale: 0.98 }}
             transition={reduceMotion ? { duration: 0 } : undefined}
-            className="w-full max-w-5xl overflow-hidden rounded-2xl border border-white/15 bg-night-900 text-white shadow-2xl"
+            className="max-h-[calc(100dvh-1.5rem)] w-full max-w-5xl overflow-y-auto rounded-2xl border border-white/15 bg-night-900 text-white shadow-2xl sm:max-h-[calc(100dvh-3rem)]"
           >
-            <header className="flex items-center justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-5">
+            <header className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-white/10 bg-night-900 px-4 py-3 sm:px-5">
               <div className="min-w-0">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand-400">Trailer</p>
                 <h2 id="trailer-title" className="truncate font-display text-lg font-bold sm:text-xl">{state.movie.title}</h2>
@@ -77,7 +77,7 @@ export function TrailerModal({ state, onClose }: { state: TrailerModalState | nu
               </button>
             </header>
 
-            <div className="relative aspect-video min-h-[220px] bg-black">
+            <div className="relative aspect-video w-full bg-black">
               {state.youtubeId ? (
                 <iframe
                   src={`https://www.youtube.com/embed/${state.youtubeId}?autoplay=1&rel=0`}

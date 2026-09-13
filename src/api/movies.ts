@@ -56,11 +56,8 @@ const YOUTUBE_ID = /^[A-Za-z0-9_-]{6,20}$/
 
 export function selectYoutubeTrailer(videos: readonly TmdbVideo[]): TmdbVideo | undefined {
   return videos
-    .filter((video) => video.site === 'YouTube' && YOUTUBE_ID.test(video.key))
-    .sort((a, b) => {
-      const score = (video: TmdbVideo) => (video.type === 'Trailer' ? 4 : video.type === 'Teaser' ? 2 : 0) + (video.official ? 1 : 0)
-      return score(b) - score(a) || (b.published_at ?? '').localeCompare(a.published_at ?? '')
-    })[0]
+    .filter((video) => video.site === 'YouTube' && video.type === 'Trailer' && video.official === true && YOUTUBE_ID.test(video.key))
+    .sort((a, b) => (b.published_at ?? '').localeCompare(a.published_at ?? ''))[0]
 }
 
 function validNonNegative(value: unknown): value is number {

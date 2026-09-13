@@ -133,6 +133,16 @@ test('selects an official YouTube trailer ahead of teasers and unofficial videos
   assert.equal(selected?.key, 'official-id')
 })
 
+test('does not select videos that are not official YouTube trailers', () => {
+  const selected = selectYoutubeTrailer([
+    { id: '1', key: 'unofficial-id', name: 'Trailer', site: 'YouTube', type: 'Trailer', official: false },
+    { id: '2', key: 'teaser-id', name: 'Teaser', site: 'YouTube', type: 'Teaser', official: true },
+    { id: '3', key: 'vimeo-id', name: 'Trailer', site: 'Vimeo', type: 'Trailer', official: true },
+    { id: '4', key: 'featurette-id', name: 'Featurette', site: 'YouTube', type: 'Featurette', official: true },
+  ])
+  assert.equal(selected, undefined)
+})
+
 test('builds a safe YouTube trailer search URL', () => {
   assert.equal(
     youtubeTrailerSearchUrl('Pokémon: The First Movie', 1999),

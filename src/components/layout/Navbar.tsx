@@ -36,7 +36,7 @@ export function Navbar({ onOpenSearch }: { onOpenSearch: () => void }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/80 backdrop-blur-xl dark:border-white/10 dark:bg-night-950/80">
-      <nav className="container-app flex h-16 min-w-0 items-center justify-between gap-2 sm:gap-3">
+      <nav className="navbar-shell flex h-16 min-w-0 items-center justify-between gap-2 sm:gap-3">
         <Link to="/" className="flex shrink-0 items-center gap-2 sm:gap-2.5" onClick={() => setMobileOpen(false)}>
           <PokeballMark className="h-7 w-7 shrink-0" />
           <span className="truncate font-display text-base font-bold tracking-tight sm:text-lg">

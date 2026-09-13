@@ -3,12 +3,10 @@ import { Star } from 'lucide-react'
 export function MovieRating({
   rating,
   voteCount,
-  capturedAt,
   compact = true,
 }: {
   rating?: number
   voteCount?: number
-  capturedAt?: string
   compact?: boolean
 }) {
   if (rating === undefined) {
@@ -20,7 +18,6 @@ export function MovieRating({
       <Star className={compact ? 'h-4 w-4 fill-amber-400 text-amber-400' : 'h-5 w-5 fill-amber-400 text-amber-400'} />
       <strong className={compact ? 'text-sm' : 'text-lg'}>{rating.toFixed(1)} TMDB</strong>
       {voteCount !== undefined && <span className="text-xs text-slate-400">· {voteCount.toLocaleString()} votes</span>}
-      {!compact && capturedAt && <span className="text-xs text-slate-400">· Snapshot {capturedAt}</span>}
     </span>
   )
 }

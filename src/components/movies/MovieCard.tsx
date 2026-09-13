@@ -21,13 +21,19 @@ export function MovieCategoryBadge({ category }: { category: MovieCategory }) {
 
 export function MoviePoster({ movie, className }: { movie: PokemonMovie; className?: string }) {
   const [failedPoster, setFailedPoster] = useState<string>()
-  const poster = tmdbImageUrl(movie.tmdb?.posterPath, 'w500')
+  const poster = movie.posterUrl ?? tmdbImageUrl(movie.tmdb?.posterPath, 'w500')
   const failed = poster !== undefined && failedPoster === poster
 
   return (
     <div className={cn('relative overflow-hidden bg-gradient-to-br from-night-800 via-night-900 to-slate-950', className)}>
       {poster && !failed ? (
-        <img src={poster} alt={`${movie.title} poster`} className="h-full w-full object-cover" loading="lazy" onError={() => setFailedPoster(poster)} />
+        <img
+          src={poster}
+          alt={`${movie.title} poster`}
+          className="h-full w-full object-cover transition duration-500"
+          loading="lazy"
+          onError={() => setFailedPoster(poster)}
+        />
       ) : (
         <div className="flex h-full flex-col items-center justify-center gap-4 p-6 text-center text-white/80">
           <span className="absolute -right-12 -top-12 h-40 w-40 rounded-full border-[24px] border-white/5" />
@@ -84,6 +90,7 @@ export function MovieCard({
           <button
             type="button"
             onClick={(event) => onPlayTrailer(movie, event.currentTarget)}
+            aria-label={`Play trailer for ${movie.title}`}
             className="mt-4 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
           >
             <Play className="h-4 w-4 fill-current" /> Play Trailer

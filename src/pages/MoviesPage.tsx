@@ -145,7 +145,6 @@ export default function MoviesPage() {
             </div>
           </div>
         </div>
-        <div className="pointer-events-none absolute -right-20 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full border-[44px] border-white/[0.035] sm:right-[8%] sm:h-96 sm:w-96" />
       </section>
 
       <div className="container-app">

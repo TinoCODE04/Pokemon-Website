@@ -86,6 +86,10 @@
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
   }
 
+  .navbar-shell {
+    @apply mx-auto w-full max-w-[92rem] px-4 sm:px-6 lg:px-6;
+  }
+
   .card-surface {
     @apply rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-night-900;
   }
@@ -107,11 +111,52 @@
   }
 
   .movies-atmosphere {
+    isolation: isolate;
+    position: relative;
+    background-color: #0a101f;
     background:
-      radial-gradient(circle at 77% 30%, rgb(245 158 11 / 0.2), transparent 20rem),
-      radial-gradient(circle at 92% 90%, rgb(227 53 13 / 0.26), transparent 24rem),
-      radial-gradient(circle at 10% 95%, rgb(59 130 246 / 0.18), transparent 25rem),
-      linear-gradient(125deg, #111a30 0%, #172554 48%, #0a101f 100%);
+      radial-gradient(ellipse at 76% 18%, rgb(245 158 11 / 0.18), transparent 22rem),
+      radial-gradient(ellipse at 92% 96%, rgb(227 53 13 / 0.28), transparent 25rem),
+      radial-gradient(ellipse at 8% 104%, rgb(14 165 233 / 0.2), transparent 28rem),
+      linear-gradient(90deg, rgb(6 12 27 / 0.97) 0%, rgb(7 15 34 / 0.9) 42%, rgb(10 14 31 / 0.66) 100%),
+      linear-gradient(124deg, rgb(8 13 25 / 0.72) 0%, rgb(16 27 61 / 0.44) 47%, rgb(23 19 38 / 0.62) 100%),
+      url('/movies-hero-bg.jpg') center 46% / cover no-repeat;
+  }
+
+  .movies-atmosphere::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.45;
+    background-image:
+      radial-gradient(circle at 18% 28%, rgb(255 255 255 / 0.32) 0 1px, transparent 1.5px),
+      radial-gradient(circle at 62% 18%, rgb(255 255 255 / 0.22) 0 1px, transparent 1.5px),
+      radial-gradient(circle at 84% 65%, rgb(255 255 255 / 0.18) 0 1px, transparent 1.5px),
+      radial-gradient(circle at 36% 84%, rgb(255 255 255 / 0.16) 0 1px, transparent 1.5px);
+    background-size: 190px 170px, 240px 210px, 220px 200px, 260px 230px;
+  }
+
+  .movies-atmosphere::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.55;
+    background:
+      linear-gradient(112deg, transparent 20%, rgb(56 189 248 / 0.14) 39%, transparent 56%),
+      linear-gradient(70deg, transparent 49%, rgb(227 53 13 / 0.14) 67%, transparent 82%),
+      repeating-linear-gradient(90deg, transparent 0 120px, rgb(255 255 255 / 0.018) 121px 122px);
+    mix-blend-mode: screen;
+  }
+
+  .movie-detail-hero {
+    background:
+      radial-gradient(circle at 78% 22%, rgb(14 165 233 / 0.12), transparent 26rem),
+      radial-gradient(circle at 18% 86%, rgb(227 53 13 / 0.1), transparent 24rem),
+      linear-gradient(135deg, #0a101f 0%, #0d1425 58%, #111a30 100%);
   }
 
   .movie-poster-shine::after {

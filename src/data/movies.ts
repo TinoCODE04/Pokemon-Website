@@ -40,6 +40,7 @@ export interface PokemonMovie {
   studio?: string
   distributor?: string
   officialUrl?: string
+  posterUrl?: string
   trailer?: MovieTrailer
   tmdb?: TmdbSnapshot
   sources: readonly MovieSource[]
@@ -92,7 +93,49 @@ function tmdb(
   return { id, mediaType, rating, posterPath, backdropPath, capturedAt: VERIFIED_AT }
 }
 
-export const MOVIES = [
+function youtubeTrailer(youtubeId: string): MovieTrailer {
+  return {
+    youtubeId,
+    label: 'YouTube Trailer',
+    sourceUrl: `https://youtu.be/${youtubeId}`,
+  }
+}
+
+const trailerBySlug: Record<string, MovieTrailer> = {
+  'pokemon-the-first-movie': youtubeTrailer('hX-NHafvY5I'),
+  'pokemon-the-movie-2000': youtubeTrailer('3uwx7tnwdCw'),
+  'pokemon-3-the-movie': youtubeTrailer('SEqstQn0sag'),
+  'mewtwo-returns': youtubeTrailer('_VdEWS_CJDI'),
+  'pokemon-4ever': youtubeTrailer('JRDRRhRQc0M'),
+  'pokemon-heroes': youtubeTrailer('ZivTZFebZGY'),
+  'jirachi-wish-maker': youtubeTrailer('eCgjWW_5SIU'),
+  'destiny-deoxys': youtubeTrailer('32k8JTOftMA'),
+  'mastermind-of-mirage-pokemon': youtubeTrailer('wFnePZJs7Hg'),
+  'the-legend-of-thunder': youtubeTrailer('epVPgW0E9AU'),
+  'lucario-and-the-mystery-of-mew': youtubeTrailer('7vc-FhG682E'),
+  'pokemon-ranger-and-the-temple-of-the-sea': youtubeTrailer('jt1Ui72oBlc'),
+  'the-rise-of-darkrai': youtubeTrailer('koKPESdDzYU'),
+  'giratina-and-the-sky-warrior': youtubeTrailer('7DliP7EX9To'),
+  'arceus-and-the-jewel-of-life': youtubeTrailer('u0uW_J5enjU'),
+  'zoroark-master-of-illusions': youtubeTrailer('3Iy3UlYdF9U'),
+  'white-victini-and-zekrom': youtubeTrailer('sgpqZq8KG8U'),
+  'black-victini-and-reshiram': youtubeTrailer('pJGcJNkzWIM'),
+  'kyurem-vs-the-sword-of-justice': youtubeTrailer('Zmd_uEHxO0Q'),
+  'genesect-and-the-legend-awakened': youtubeTrailer('S-8sNPW9aBQ'),
+  'pokemon-origins': youtubeTrailer('cgc81i06qwY'),
+  'diancie-and-the-cocoon-of-destruction': youtubeTrailer('KNv6_s2Vy4I'),
+  'hoopa-and-the-clash-of-ages': youtubeTrailer('GChQk8ixeYc'),
+  'volcanion-and-the-mechanical-marvel': youtubeTrailer('IBbCZgQBzK4'),
+  'i-choose-you': youtubeTrailer('r12w4iRBLp4'),
+  'the-power-of-us': youtubeTrailer('8PGsP59Io20'),
+  'detective-pikachu': youtubeTrailer('NWLUZHzW890'),
+  'mewtwo-strikes-back-evolution': youtubeTrailer('D0zYJ1RQ-fs'),
+  'secrets-of-the-jungle': youtubeTrailer('ByzhuRr8StU'),
+  'the-arceus-chronicles': youtubeTrailer('rHimPkAq5V8'),
+  'pokemon-wild-card': youtubeTrailer('H6_jMQ6whtQ'),
+}
+
+const MOVIE_RECORDS = [
   {
     id: 'movie-01',
     slug: 'pokemon-the-first-movie',
@@ -246,11 +289,6 @@ export const MOVIES = [
     studio: 'OLM',
     distributor: 'VIZ Media',
     officialUrl: OFFICIAL_MOVIES_URL,
-    trailer: {
-      youtubeId: '7vc-FhG682E',
-      label: 'Official Trailer',
-      sourceUrl: 'https://www.youtube.com/watch?v=7vc-FhG682E',
-    },
     tmdb: tmdb(34067, 7.0, '/3A3WiPXPmWVhXC7bGSiqtsYY9z6.jpg', '/7qzuPx3ukGxCyLR9j0Ahg3fFI7r.jpg'),
     sources: sources('M08', 34067),
     verifiedAt: VERIFIED_AT,
@@ -288,11 +326,6 @@ export const MOVIES = [
     studio: 'OLM',
     distributor: 'VIZ Media',
     officialUrl: OFFICIAL_MOVIES_URL,
-    trailer: {
-      youtubeId: 'ItZyBxKxAAk',
-      label: 'Official Trailer',
-      sourceUrl: 'https://www.youtube.com/watch?v=ItZyBxKxAAk',
-    },
     tmdb: tmdb(16808, 6.5, '/jZOi06xHjsG1VqbiIwS8GkyrAOn.jpg', '/y9I6h1NrGdzX99QKcoqLhsFfVWO.jpg'),
     sources: sources('M09', 16808),
     verifiedAt: VERIFIED_AT,
@@ -611,11 +644,6 @@ export const MOVIES = [
     director: 'Rob Letterman',
     studio: 'Legendary Entertainment',
     distributor: 'Warner Bros.',
-    trailer: {
-      youtubeId: 'NWLUZHzW890',
-      label: 'Official Home Entertainment Trailer',
-      sourceUrl: 'https://www.youtube.com/watch?v=NWLUZHzW890',
-    },
     tmdb: tmdb(447404, 6.9, '/uhWvnFgg3BNlcUz0Re1HfQqIcCD.jpg', '/yXybBEC45p84D0Ky7GmQQYrclVr.jpg'),
     sources: sources('POKÉMON_Detective_Pikachu', 447404),
     verifiedAt: VERIFIED_AT,
@@ -635,11 +663,6 @@ export const MOVIES = [
     studio: 'OLM / Sprite Animation Studios',
     distributor: 'Netflix',
     officialUrl: OFFICIAL_MOVIES_URL,
-    trailer: {
-      youtubeId: 'D0zYJ1RQ-fs',
-      label: 'Official Trailer',
-      sourceUrl: 'https://www.youtube.com/watch?v=D0zYJ1RQ-fs',
-    },
     tmdb: tmdb(571891, 6.7, '/rtlyO2oIMcCx2DbOM52XO2rAcgn.jpg', '/xHyX5zQIdu13w708J4lYhmwEqNp.jpg'),
     sources: sources('M22', 571891),
     verifiedAt: VERIFIED_AT,
@@ -676,11 +699,6 @@ export const MOVIES = [
     featuredPokemon: ['Arceus', 'Heatran', 'Pikachu'],
     studio: 'OLM',
     distributor: 'Netflix',
-    trailer: {
-      youtubeId: 'rHimPkAq5V8',
-      label: 'Official Trailer',
-      sourceUrl: 'https://www.youtube.com/watch?v=rHimPkAq5V8',
-    },
     tmdb: tmdb(207567, 7.3, '/aGH8biv7gRGeLyxg5Sn4WPcskxV.jpg', '/5X77Ep0wZLuxVuDhh5g7xJr3R9d.jpg', 'tv'),
     sources: sources('The_Arceus_Chronicles', 207567, 'tv'),
     verifiedAt: VERIFIED_AT,
@@ -695,6 +713,7 @@ export const MOVIES = [
     synopsis: 'A Pokémon Trading Card Game player and their partner Mimikyu pursue their goals in a new feature-length animated story produced with CloverWorks.',
     featuredPokemon: ['Mimikyu'],
     studio: 'CloverWorks',
+    posterUrl: '/movie-wild-card-poster.webp',
     officialUrl: 'https://www.pokemon.com/uk/news/new-feature-length-animated-film-pokemon-wild-card-coming-soon',
     sources: [
       {
@@ -708,8 +727,27 @@ export const MOVIES = [
   },
 ] as const satisfies readonly PokemonMovie[]
 
+export const MOVIES: readonly PokemonMovie[] = MOVIE_RECORDS.map((movie) => ({
+  ...movie,
+  trailer: trailerBySlug[movie.slug],
+}))
+
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+const YOUTUBE_ID = /^[A-Za-z0-9_-]{6,20}$/
+
+function isMatchingYoutubeUrl(sourceUrl: string, youtubeId: string): boolean {
+  try {
+    const url = new URL(sourceUrl)
+    if (url.protocol !== 'https:') return false
+    if (url.hostname === 'youtu.be') return url.pathname === `/${youtubeId}`
+    return url.hostname === 'www.youtube.com'
+      && url.pathname === '/watch'
+      && url.searchParams.get('v') === youtubeId
+  } catch {
+    return false
+  }
+}
 
 export function validateMovieCatalog(movies: readonly PokemonMovie[]): string[] {
   const errors: string[] = []
@@ -737,9 +775,9 @@ export function validateMovieCatalog(movies: readonly PokemonMovie[]): string[] 
     }
     if (!movie.synopsis.trim()) errors.push(`Missing synopsis: ${movie.slug}`)
     if (movie.trailer && (
-      !/^[A-Za-z0-9_-]{6,20}$/.test(movie.trailer.youtubeId)
+      !YOUTUBE_ID.test(movie.trailer.youtubeId)
       || !movie.trailer.label.trim()
-      || !movie.trailer.sourceUrl.startsWith('https://www.youtube.com/watch?v=')
+      || !isMatchingYoutubeUrl(movie.trailer.sourceUrl, movie.trailer.youtubeId)
     )) {
       errors.push(`Invalid trailer: ${movie.slug}`)
     }
