@@ -433,7 +433,7 @@ export default function HomePage() {
                 href="https://github.com/TinoCODE04/Pokemon-Website"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="View the Pokémon Explorer website source code on GitHub"
+                aria-label="View the Pokémon World website source code on GitHub"
                 className="group relative inline-flex min-h-12 w-fit items-center gap-3 rounded-xl border border-slate-300 bg-white/75 px-4 py-2.5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-brand-400 hover:shadow-md dark:border-white/15 dark:bg-white/5 dark:hover:border-brand-400"
               >
                 <img src="/github.svg" alt="" width="20" height="20" className="h-5 w-5 opacity-75 dark:invert" />

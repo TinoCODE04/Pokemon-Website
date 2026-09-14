@@ -40,7 +40,7 @@ export function Navbar({ onOpenSearch }: { onOpenSearch: () => void }) {
         <Link to="/" className="flex shrink-0 items-center gap-2 sm:gap-2.5" onClick={() => setMobileOpen(false)}>
           <PokeballMark className="h-7 w-7 shrink-0" />
           <span className="truncate font-display text-base font-bold tracking-tight sm:text-lg">
-            Pokémon <span className="hidden text-brand-500 sm:inline">Explorer</span>
+            Pokémon <span className="hidden text-brand-500 sm:inline">World</span>
           </span>
         </Link>
 

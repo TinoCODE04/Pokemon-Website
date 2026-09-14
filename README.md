@@ -1,6 +1,6 @@
-# Pokémon Explorer
+# Pokémon World
 
-A clean, responsive Pokémon encyclopedia powered by [PokéAPI](https://pokeapi.co/). Browse the National Pokédex, search by name or number, inspect stats and evolution chains, explore types and generations, compare Pokémon, and save favorites locally.
+A clean, responsive Pokémon world powered by [PokéAPI](https://pokeapi.co/). Browse the National Pokédex, search by name or number, inspect stats and evolution chains, explore types and generations, compare Pokémon, battle, watch movie trailers, and save favorites locally.
 
 ## Features
 

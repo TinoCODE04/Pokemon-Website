@@ -9,7 +9,7 @@ export function Footer() {
         <div className="flex items-center gap-2.5">
           <PokeballMark className="h-6 w-6" />
           <div>
-            <p className="font-display text-sm font-bold">Pokémon Explorer</p>
+            <p className="font-display text-sm font-bold">Pokémon World</p>
             <p className="text-xs text-slate-500 dark:text-slate-400">
               Data from{' '}
               <a

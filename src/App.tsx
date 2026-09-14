@@ -44,9 +44,13 @@ export default function App() {
 
   useEffect(() => {
     const path = location.pathname
+    if (path === '/') {
+      document.title = 'Pokémon World — Explore, Battle & Discover'
+      return
+    }
+
     let section: string
-    if (path === '/') section = 'Explore every Pokémon'
-    else if (path === '/movies') section = 'Pokémon Movies'
+    if (path === '/movies') section = 'Pokémon Movies'
     else if (path.startsWith('/movies/')) {
       section = findMovieBySlug(MOVIES, path.slice('/movies/'.length))?.title ?? 'Movie not found'
     } else {
@@ -60,7 +64,7 @@ export default function App() {
               ? 'Ability details'
               : path.slice(1).replace(/-/g, ' ') || 'Explorer'
     }
-    document.title = `${section.charAt(0).toUpperCase()}${section.slice(1)} | Pokémon Explorer`
+    document.title = `${section.charAt(0).toUpperCase()}${section.slice(1)} | Pokémon World`
   }, [location.pathname])
 
   return (
