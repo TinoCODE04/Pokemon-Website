@@ -29,13 +29,16 @@ export function PokeballMark({ className }: { className?: string }) {
   )
 }
 
-export function Navbar({ onOpenSearch }: { onOpenSearch: () => void }) {
+export function Navbar({ onOpenSearch, isHomePage = false }: { onOpenSearch: () => void; isHomePage?: boolean }) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { favorites } = useFavorites()
   const { theme, toggle } = useTheme()
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/80 backdrop-blur-xl dark:border-white/10 dark:bg-night-950/80">
+    <header className={cn(
+      'sticky top-0 z-40 bg-white/80 backdrop-blur-xl dark:bg-night-950/80',
+      !isHomePage && 'border-b border-slate-200/80 dark:border-white/10',
+    )}>
       <nav className="navbar-shell flex h-16 min-w-0 items-center justify-between gap-2 sm:gap-3">
         <Link to="/" className="flex shrink-0 items-center gap-2 sm:gap-2.5" onClick={() => setMobileOpen(false)}>
           <PokeballMark className="h-7 w-7 shrink-0" />

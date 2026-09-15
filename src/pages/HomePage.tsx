@@ -131,7 +131,7 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="hero-atmosphere relative overflow-hidden border-b border-slate-200 dark:border-white/10">
+      <section className="hero-atmosphere relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 opacity-40" aria-hidden>
           <div className="absolute -right-24 -top-32 h-96 w-96 rounded-full border border-brand-500/15" />
           <div className="absolute -right-8 -top-16 h-72 w-72 rounded-full border border-sky-400/10" />
@@ -334,7 +334,7 @@ export default function HomePage() {
       )}
 
       {/* Types overview */}
-      <section className="border-y border-slate-200 bg-white py-14 dark:border-white/10 dark:bg-night-900">
+      <section className="py-14">
         <div className="container-app">
           <div className="mb-7 flex flex-wrap items-end justify-between gap-3">
             <div>

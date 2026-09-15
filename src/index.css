@@ -105,9 +105,16 @@
 
   .hero-atmosphere {
     background:
+      linear-gradient(
+        90deg,
+        rgb(248 250 252 / 0.95) 0%,
+        rgb(248 250 252 / 0.88) 34%,
+        rgb(248 250 252 / 0.52) 58%,
+        rgb(248 250 252 / 0.16) 100%
+      ),
       radial-gradient(circle at 78% 34%, rgb(227 53 13 / 0.12), transparent 27rem),
       radial-gradient(circle at 88% 78%, rgb(14 165 233 / 0.1), transparent 23rem),
-      linear-gradient(135deg, #ffffff 0%, #f8fafc 58%, #eef2ff 100%);
+      url('/pokemon-ghibi-style.png') center 47% / 125% auto no-repeat;
   }
 
   .movies-atmosphere {
@@ -175,9 +182,30 @@
 
   .dark .hero-atmosphere {
     background:
+      linear-gradient(
+        90deg,
+        rgb(10 16 31 / 0.95) 0%,
+        rgb(10 16 31 / 0.88) 34%,
+        rgb(10 16 31 / 0.56) 58%,
+        rgb(10 16 31 / 0.22) 100%
+      ),
       radial-gradient(circle at 78% 34%, rgb(227 53 13 / 0.2), transparent 27rem),
       radial-gradient(circle at 88% 78%, rgb(14 165 233 / 0.15), transparent 23rem),
-      linear-gradient(135deg, #0d1425 0%, #0a101f 58%, #0d1830 100%);
+      url('/pokemon-ghibi-style.png') center 47% / 125% auto no-repeat;
+  }
+
+  @media (max-width: 767px) {
+    .hero-atmosphere {
+      background:
+        linear-gradient(180deg, rgb(248 250 252 / 0.95) 0%, rgb(248 250 252 / 0.91) 60%, rgb(248 250 252 / 0.76) 100%),
+        url('/pokemon-ghibi-style.png') center / cover no-repeat;
+    }
+
+    .dark .hero-atmosphere {
+      background:
+        linear-gradient(180deg, rgb(10 16 31 / 0.96) 0%, rgb(10 16 31 / 0.92) 60%, rgb(10 16 31 / 0.76) 100%),
+        url('/pokemon-ghibi-style.png') center / cover no-repeat;
+    }
   }
 
   .pokemon-stage {

@@ -28,6 +28,7 @@ const TypesPage = lazy(() => import('./pages/TypesPage'))
 export default function App() {
   const location = useLocation()
   const [searchOpen, setSearchOpen] = useState(false)
+  const isHomePage = location.pathname === '/'
 
   useEffect(() => {
     const openSearch = (event: KeyboardEvent) => {
@@ -75,7 +76,7 @@ export default function App() {
       >
         Skip to main content
       </a>
-      <Navbar onOpenSearch={() => setSearchOpen(true)} />
+      <Navbar onOpenSearch={() => setSearchOpen(true)} isHomePage={isHomePage} />
       <AnimatePresence mode="wait" initial={false}>
         <motion.main
           key={location.pathname}
@@ -108,7 +109,7 @@ export default function App() {
           </Suspense>
         </motion.main>
       </AnimatePresence>
-      <Footer />
+      <Footer isHomePage={isHomePage} />
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>
   )

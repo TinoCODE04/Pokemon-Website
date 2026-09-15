@@ -1,10 +1,14 @@
 import { PokeballMark } from './Navbar'
+import { cn } from '../../utils/cn'
 
-export function Footer() {
+export function Footer({ isHomePage = false }: { isHomePage?: boolean }) {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="border-t border-slate-200 bg-white py-6 dark:border-white/10 dark:bg-night-900">
+    <footer className={cn(
+      'bg-white py-6 dark:bg-night-900',
+      !isHomePage && 'border-t border-slate-200 dark:border-white/10',
+    )}>
       <div className="container-app flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">
         <div className="flex items-center gap-2.5">
           <PokeballMark className="h-6 w-6" />
