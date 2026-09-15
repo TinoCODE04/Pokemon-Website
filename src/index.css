@@ -105,16 +105,10 @@
 
   .hero-atmosphere {
     background:
-      linear-gradient(
-        90deg,
-        rgb(248 250 252 / 0.95) 0%,
-        rgb(248 250 252 / 0.88) 34%,
-        rgb(248 250 252 / 0.52) 58%,
-        rgb(248 250 252 / 0.16) 100%
-      ),
+      linear-gradient(90deg, rgb(248 250 252 / 0.97) 0%, rgb(248 250 252 / 0.91) 34%, rgb(248 250 252 / 0.62) 58%, rgb(248 250 252 / 0.12) 100%),
       radial-gradient(circle at 78% 34%, rgb(227 53 13 / 0.12), transparent 27rem),
       radial-gradient(circle at 88% 78%, rgb(14 165 233 / 0.1), transparent 23rem),
-      url('/pokemon-ghibi-style.png') center 47% / 125% auto no-repeat;
+      url('/home-bg.png') center 35% / cover no-repeat;
   }
 
   .movies-atmosphere {
@@ -180,31 +174,25 @@
     transform: translateX(120%);
   }
 
-  .dark .hero-atmosphere {
+    .dark .hero-atmosphere {
     background:
-      linear-gradient(
-        90deg,
-        rgb(10 16 31 / 0.95) 0%,
-        rgb(10 16 31 / 0.88) 34%,
-        rgb(10 16 31 / 0.56) 58%,
-        rgb(10 16 31 / 0.22) 100%
-      ),
+      linear-gradient(90deg, rgb(10 16 31 / 0.24) 0%, rgb(10 16 31 / 0.3) 34%, rgb(10 16 31 / 0.48) 58%, rgb(10 16 31 / 0.56) 100%),
       radial-gradient(circle at 78% 34%, rgb(227 53 13 / 0.2), transparent 27rem),
       radial-gradient(circle at 88% 78%, rgb(14 165 233 / 0.15), transparent 23rem),
-      url('/pokemon-ghibi-style.png') center 47% / 125% auto no-repeat;
+      url('/home-bg.png') center 35% / cover no-repeat;
   }
 
   @media (max-width: 767px) {
     .hero-atmosphere {
       background:
-        linear-gradient(180deg, rgb(248 250 252 / 0.95) 0%, rgb(248 250 252 / 0.91) 60%, rgb(248 250 252 / 0.76) 100%),
-        url('/pokemon-ghibi-style.png') center / cover no-repeat;
+        linear-gradient(180deg, rgb(248 250 252 / 0.96) 0%, rgb(248 250 252 / 0.92) 62%, rgb(248 250 252 / 0.78) 100%),
+        url('/home-bg.png') center / cover no-repeat;
     }
 
     .dark .hero-atmosphere {
       background:
-        linear-gradient(180deg, rgb(10 16 31 / 0.96) 0%, rgb(10 16 31 / 0.92) 60%, rgb(10 16 31 / 0.76) 100%),
-        url('/pokemon-ghibi-style.png') center / cover no-repeat;
+        linear-gradient(180deg, rgb(10 16 31 / 0.28) 0%, rgb(10 16 31 / 0.38) 62%, rgb(10 16 31 / 0.52) 100%),
+        url('/home-bg.png') center / cover no-repeat;
     }
   }
 
