@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { lazy, Suspense, useEffect, useState } from 'react'
-import { Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { Footer } from './components/layout/Footer'
 import { Navbar } from './components/layout/Navbar'
 import { SearchModal } from './components/search/SearchModal'
@@ -90,6 +90,7 @@ export default function App() {
           <Suspense fallback={<Spinner label="Loading page…" />}>
             <Routes location={location}>
               <Route path="/" element={<HomePage />} />
+              <Route path="/home" element={<Navigate to="/" replace />} />
               <Route path="/pokedex" element={<PokedexPage />} />
               <Route path="/rankings" element={<TopRankPage />} />
               <Route path="/pokemon/:id" element={<PokemonDetailPage />} />

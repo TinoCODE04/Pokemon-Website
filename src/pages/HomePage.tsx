@@ -22,6 +22,7 @@ import { artworkUrl } from '../utils/format'
 import { useLocalStorage } from '../store/useLocalStorage'
 import { PokemonCard, PokemonCardSkeleton, toCardPokemon } from '../components/pokemon/PokemonCard'
 import { PokemonGrid } from '../components/pokemon/PokemonGrid'
+import IslandExplorer from '../components/island/IslandExplorer'
 
 type HeroTrick = 'roar' | 'bounce' | 'spin' | 'levitate' | 'dash-right' | 'dash-left'
 
@@ -284,6 +285,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <IslandExplorer />
 
       {/* Feature tiles */}
       <section className="container-app py-14">

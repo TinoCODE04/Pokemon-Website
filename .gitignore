@@ -10,6 +10,11 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+output/
+.playwright-cli/
+*.blend
+*.blend1
+*.blend2
 *.local
 
 # Editor directories and files
