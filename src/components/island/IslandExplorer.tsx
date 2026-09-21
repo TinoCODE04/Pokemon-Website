@@ -65,7 +65,7 @@ export default function IslandExplorer() {
     <section ref={section} className="container-app pt-10" aria-labelledby="island-title">
       <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="mb-2 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.22em] text-brand-500"><Compass size={14} /> A world waiting to be explored</p>
+          <p className="mb-2 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.22em] text-brand-500"><Compass size={14} /> Interactive 3D map</p>
           <h2 id="island-title" className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">Legendary Island</h2>
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Orbit the island. Find a legend. Discover their story.</p>
         </div>
@@ -75,11 +75,11 @@ export default function IslandExplorer() {
         <div className="island-stage">
           <img className={`island-poster ${status === 'ready' ? 'island-poster-hidden' : ''}`} src="/models/island-poster.webp" alt="A miniature Pokémon island with forests, waterways, a volcano and legendary Pokémon" loading="lazy" />
           <div ref={host} className={`island-canvas ${status !== 'ready' ? 'invisible' : ''}`} />
-          <div className="island-label"><span className="island-dot" /> {status === 'ready' ? 'LIVE EXPLORATION' : 'LEGENDARY ISLAND'} <span className="opacity-40">/</span> 001</div>
+          <div className="island-label"><span className="island-dot" />{status === 'ready' ? 'Live' : 'Legendary Island'}</div>
           <button className="island-expand island-button" onClick={() => setExpanded(!expanded)} aria-label={expanded ? 'Close expanded island' : 'Expand island'} aria-pressed={expanded}><Maximize2 size={16} /><span>{expanded ? 'Close' : 'Expand'}</span></button>
           {status !== 'ready' && <div className="island-loading" role="status">
             <Compass size={26} className={status === 'loading' ? 'animate-pulse' : ''} />
-            <p>{status === 'error' ? 'The 3D island could not be loaded.' : `Preparing your island${progress > 0 ? ` · ${progress}%` : '…'}`}</p>
+            <p>{status === 'error' ? 'The 3D island could not be loaded.' : `Loading island${progress > 0 ? ` · ${progress}%` : '…'}`}</p>
             {status === 'error' && <><p className="text-xs opacity-70">You can still discover every legend in the Pokédex.</p><button className="island-button" onClick={() => { setProgress(0); setAttempt(attempt + 1) }}>Try again</button><Link to="/pokedex?legendary=1" className="text-sm underline">Explore the Pokédex</Link></>}
           </div>}
           {status === 'ready' && <div className="island-hint">Drag to orbit <span>·</span> Pinch or scroll to zoom <span>·</span> Click a Pokémon</div>}
@@ -93,7 +93,7 @@ export default function IslandExplorer() {
           <div className="flex items-center gap-1">
             <button className="island-button" aria-label="Zoom in" disabled={status !== 'ready'} onClick={() => scene.current?.zoom(0.8)}><Plus size={17} /></button>
             <button className="island-button" aria-label="Zoom out" disabled={status !== 'ready'} onClick={() => scene.current?.zoom(1.25)}><Minus size={17} /></button>
-            <span className="mx-1 h-5 w-px bg-white/10" />
+            <span className="mx-1 h-5 w-px bg-white/[0.08]" />
             <button className="island-button" aria-label="Reset island view" disabled={status !== 'ready'} onClick={() => { scene.current?.reset(); setSelected(null) }}><RotateCcw size={15} /><span className="hidden sm:inline">Reset</span></button>
             <button className="island-button" aria-label={rotating ? 'Pause auto-rotation' : 'Start auto-rotation'} aria-pressed={rotating} disabled={status !== 'ready'} onClick={() => { scene.current?.rotate(!rotating); setRotating(!rotating) }}>{rotating ? <Pause size={15} /> : <Play size={15} />}<span className="hidden sm:inline">Orbit</span></button>
           </div>

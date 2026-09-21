@@ -33,8 +33,8 @@ export function createIslandScene(host: HTMLElement, callbacks: {
   controls.enablePan = false
   // Zoom is also available through explicit controls for keyboard users.
   controls.enableZoom = true
-  controls.maxPolarAngle = Math.PI * 0.48
-  controls.minPolarAngle = 0.12
+  controls.maxPolarAngle = Math.PI * 0.85
+  controls.minPolarAngle = 0.08
   controls.autoRotateSpeed = 0.45
   controls.autoRotate = !matchMedia('(prefers-reduced-motion: reduce)').matches
   scene.add(new THREE.HemisphereLight(0xd5efff, 0x718465, 1.8))
