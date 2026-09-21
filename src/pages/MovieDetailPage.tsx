@@ -6,6 +6,7 @@ import { MovieCategoryBadge, MoviePoster } from '../components/movies/MovieCard'
 import { MovieRating, TmdbAttribution } from '../components/movies/MovieRating'
 import { TrailerModal, type TrailerModalState } from '../components/movies/TrailerModal'
 import { EmptyState } from '../components/ui/Feedback'
+import { Seo } from '../components/Seo'
 import { MOVIES } from '../data/movies'
 import { useMovieEnrichment } from '../hooks/queries'
 import { findMovieBySlug, getChronologicalNeighbors } from '../utils/movies'
@@ -59,6 +60,26 @@ export default function MovieDetailPage() {
 
   return (
     <div className="pb-16">
+      <Seo
+        title={movie.title}
+        description={movie.synopsis}
+        path={`/movies/${movie.slug}`}
+        type="article"
+        image={movie.posterUrl ?? undefined}
+        imageAlt={`Poster for ${movie.title}`}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'Movie',
+          name: movie.title,
+          alternateName: movie.japaneseTitle,
+          description: movie.synopsis,
+          datePublished: movie.releaseDate,
+          director: movie.director ? { '@type': 'Person', name: movie.director } : undefined,
+          productionCompany: movie.studio ? { '@type': 'Organization', name: movie.studio } : undefined,
+          image: movie.posterUrl,
+          url: `https://pokemon-world.vercel.app/movies/${movie.slug}`,
+        }}
+      />
       <header className="movie-detail-hero relative isolate overflow-hidden border-b border-white/10 text-white">
         {backdrop && <img src={backdrop} alt="" className="absolute inset-0 -z-20 h-full w-full object-cover opacity-40" />}
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-night-950 via-night-950/85 to-night-950/40" />

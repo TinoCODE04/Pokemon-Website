@@ -6,6 +6,7 @@ import { PokemonCard, PokemonCardSkeleton, resourceToCardPokemon } from '../comp
 import { PokemonGrid } from '../components/pokemon/PokemonGrid'
 import { TypeBadge } from '../components/pokemon/TypeBadge'
 import { ErrorState, SectionHeading, Skeleton } from '../components/ui/Feedback'
+import { Seo } from '../components/Seo'
 import { useGeneration } from '../hooks/queries'
 import { formatName } from '../utils/format'
 
@@ -42,6 +43,11 @@ export default function GenerationDetailPage() {
 
   return (
     <div className="container-app py-10">
+      <Seo
+        title={gen ? `Generation ${ROMAN[gen.id - 1] ?? gen.id}` : 'Generation'}
+        description={gen ? `Explore Generation ${ROMAN[gen.id - 1] ?? gen.id} Pokémon — new species, moves, abilities, and the ${gen.main_region?.name ?? ''} region.` : 'Explore Pokémon by generation.'}
+        path={`/generations/${id}`}
+      />
       <Link
         to="/generations"
         className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 transition hover:text-brand-500 dark:text-slate-400"

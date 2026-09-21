@@ -6,6 +6,7 @@ import { getPokemon } from '../api/pokemon'
 import { PokemonCard, PokemonCardSkeleton, toCardPokemon } from '../components/pokemon/PokemonCard'
 import { PokemonGrid } from '../components/pokemon/PokemonGrid'
 import { EmptyState } from '../components/ui/Feedback'
+import { Seo } from '../components/Seo'
 import { useFavorites } from '../store/AppContext'
 
 export default function FavoritesPage() {
@@ -22,6 +23,11 @@ export default function FavoritesPage() {
 
   return (
     <div className="container-app py-10">
+      <Seo
+        title="Favorites"
+        description="Your personal Pokémon collection. View and manage your favorite Pokémon saved on this device."
+        path="/favorites"
+      />
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="flex items-center gap-2.5 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">

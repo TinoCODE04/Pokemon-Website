@@ -23,6 +23,7 @@ import { useLocalStorage } from '../store/useLocalStorage'
 import { PokemonCard, PokemonCardSkeleton, toCardPokemon } from '../components/pokemon/PokemonCard'
 import { PokemonGrid } from '../components/pokemon/PokemonGrid'
 import IslandExplorer from '../components/island/IslandExplorer'
+import { Seo } from '../components/Seo'
 
 type HeroTrick = 'roar' | 'bounce' | 'spin' | 'levitate' | 'dash-right' | 'dash-left'
 
@@ -131,6 +132,26 @@ export default function HomePage() {
 
   return (
     <div>
+      <Seo
+        title="Pokémon World — Explore, Battle & Discover"
+        description="A modern Pokédex and encyclopedia powered by PokéAPI. Browse every Pokémon species, explore stats and evolutions, master type matchups, compare favorites, battle, and watch movies."
+        path="/"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: 'Pokémon World',
+          url: 'https://pokemon-world.vercel.app',
+          description: 'A modern Pokédex and Pokémon encyclopedia powered by PokéAPI.',
+          potentialAction: {
+            '@type': 'SearchAction',
+            target: {
+              '@type': 'EntryPoint',
+              urlTemplate: 'https://pokemon-world.vercel.app/pokedex?q={search_term_string}',
+            },
+            'query-input': 'required name=search_term_string',
+          },
+        }}
+      />
       {/* Hero */}
       <section className="hero-atmosphere relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 opacity-40" aria-hidden>

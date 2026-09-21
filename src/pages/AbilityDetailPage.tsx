@@ -5,6 +5,7 @@ import { Pagination } from '../components/filters/Pagination'
 import { PokemonCard, PokemonCardSkeleton, resourceToCardPokemon } from '../components/pokemon/PokemonCard'
 import { PokemonGrid } from '../components/pokemon/PokemonGrid'
 import { ErrorState, SectionHeading, Skeleton } from '../components/ui/Feedback'
+import { Seo } from '../components/Seo'
 import { useAbility } from '../hooks/queries'
 import { extractId } from '../api/pokeapi'
 import { cleanFlavorText, formatName, longEffect, spriteUrl } from '../utils/format'
@@ -37,6 +38,11 @@ export default function AbilityDetailPage() {
 
   return (
     <div className="container-app py-10">
+      <Seo
+        title={ability ? formatName(ability.name) : 'Ability'}
+        description={ability ? `${formatName(ability.name)} — ${ability.effect_entries.find((e) => e.language.name === 'en')?.short_effect ?? 'A Pokémon ability.'}` : 'A Pokémon ability.'}
+        path={`/abilities/${name}`}
+      />
       <Link
         to="/abilities"
         className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 transition hover:text-brand-500 dark:text-slate-400"

@@ -9,6 +9,7 @@ import { Pagination } from '../components/filters/Pagination'
 import { PokemonCard, PokemonCardSkeleton, toCardPokemon } from '../components/pokemon/PokemonCard'
 import { PokemonGrid } from '../components/pokemon/PokemonGrid'
 import { ErrorState, Skeleton } from '../components/ui/Feedback'
+import { Seo } from '../components/Seo'
 import { useDebounce } from '../hooks/useDebounce'
 import { artworkUrl, formatDexNumber, formatName } from '../utils/format'
 
@@ -89,6 +90,11 @@ export default function TopRankPage() {
 
   return (
     <div className="container-app py-8 sm:py-10">
+      <Seo
+        title="Top Rank"
+        description="Discover the strongest Pokémon ranked by combined base stats. Browse Top 50, Top 100, and Top 200 power rankings."
+        path="/rankings"
+      />
       <header className="mb-8 flex flex-wrap items-end justify-between gap-5">
         <div className="max-w-2xl">
           <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-amber-600 dark:text-amber-300">

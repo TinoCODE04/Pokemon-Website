@@ -10,6 +10,7 @@ import { LegendaryFilter, ResetFiltersButton, SortSelect, TypeFilter, type SortO
 import { PokemonCard, PokemonCardSkeleton, resourceToCardPokemon, toCardPokemon, type CardPokemon } from '../components/pokemon/PokemonCard'
 import { PokemonGrid } from '../components/pokemon/PokemonGrid'
 import { EmptyState, ErrorState } from '../components/ui/Feedback'
+import { Seo } from '../components/Seo'
 import { useAllPokemon } from '../hooks/queries'
 import { useDebounce } from '../hooks/useDebounce'
 import { LEGENDARY_POKEMON_IDS, TYPE_ORDER, type TypeName } from '../constants/types'
@@ -182,6 +183,11 @@ export default function PokedexPage() {
 
   return (
     <div className="container-app py-8">
+      <Seo
+        title="Pokédex"
+        description="Browse the complete National Pokédex. Search and filter every Pokémon by type, generation, and more."
+        path="/pokedex"
+      />
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">Pokédex</h1>

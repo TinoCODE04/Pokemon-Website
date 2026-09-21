@@ -1,0 +1,11 @@
+# robots.txt for Pokémon World
+# https://pokemon-world.vercel.app
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://pokemon-world.vercel.app/sitemap.xml
+
+# Block internal or utility paths if needed in the future
+# Disallow: /api/

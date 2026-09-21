@@ -23,6 +23,7 @@ import type { Pokemon } from '../api/types'
 import { TypeBadge } from '../components/pokemon/TypeBadge'
 import { PokeballMark } from '../components/layout/Navbar'
 import { Spinner } from '../components/ui/Feedback'
+import { Seo } from '../components/Seo'
 import {
   calculateDamage,
   chooseAiMove,
@@ -300,6 +301,11 @@ export default function GamesPage() {
 
   return (
     <div className="game-shell min-h-[calc(100vh-4rem)] text-slate-900 transition-colors dark:text-slate-100">
+      <Seo
+        title="Battle Arena"
+        description="Play Pokémon battles — Quick Battle against random opponents or challenge powerful Legendary Pokémon."
+        path="/games"
+      />
       <div className="container-app py-8 sm:py-10">
         <header className="mb-8 flex flex-wrap items-end justify-between gap-5">
           <div className="flex items-center gap-4">

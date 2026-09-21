@@ -16,6 +16,7 @@ import { Link, useParams } from 'react-router-dom'
 import { extractId, PokeApiError } from '../api/pokeapi'
 import { EvolutionChainView } from '../components/pokemon/EvolutionChain'
 import { TypeBadge } from '../components/pokemon/TypeBadge'
+import { Seo } from '../components/Seo'
 import { StatBars } from '../components/charts/StatBars'
 import { StatRadarChart, pokemonToRadarSeries } from '../components/charts/StatRadarChart'
 import { ErrorState, Skeleton, Spinner } from '../components/ui/Feedback'
@@ -121,6 +122,24 @@ export default function PokemonDetailPage() {
 
   return (
     <div>
+      <Seo
+        title={`${formatName(pokemon.name)} #${formatDexNumber(pokemon.id)}`}
+        description={`${formatName(pokemon.name)} — ${genus || 'Pokémon'}. ${flavorText || `Type: ${pokemon.types.map((t) => formatName(t.type.name)).join('/')}.`}`}
+        path={`/pokemon/${pokemon.id}`}
+        image={bestArtwork(pokemon.sprites)}
+        imageAlt={`Official artwork of ${formatName(pokemon.name)}`}
+        type="article"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: `${formatName(pokemon.name)} #${formatDexNumber(pokemon.id)}`,
+          description: flavorText || `${formatName(pokemon.name)} Pokémon details.`,
+          image: bestArtwork(pokemon.sprites),
+          author: { '@type': 'Organization', name: 'Pokémon World' },
+          publisher: { '@type': 'Organization', name: 'Pokémon World' },
+          mainEntityOfPage: `https://pokemon-world.vercel.app/pokemon/${pokemon.id}`,
+        }}
+      />
       {/* Hero band tinted by primary type */}
       <div
         className="border-b border-slate-200 dark:border-white/10"

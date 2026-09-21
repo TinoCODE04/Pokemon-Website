@@ -33,6 +33,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Pagination } from '../components/filters/Pagination'
 import { EmptyState, ErrorState, Skeleton } from '../components/ui/Feedback'
+import { Seo } from '../components/Seo'
 import { useAbilityList } from '../hooks/queries'
 import { useDebounce } from '../hooks/useDebounce'
 import { abilityCategory, type AbilityCategory } from '../utils/abilityCategory'
@@ -104,6 +105,11 @@ export default function AbilitiesPage() {
 
   return (
     <div className="container-app py-10">
+      <Seo
+        title="Abilities"
+        description="Browse all Pokémon abilities — passive traits that shape how a Pokémon battles. Search by name or filter by category."
+        path="/abilities"
+      />
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div className="max-w-xl">
           <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">Abilities</h1>

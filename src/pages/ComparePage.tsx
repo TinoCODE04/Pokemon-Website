@@ -11,6 +11,7 @@ import { StatRadarChart, pokemonToRadarSeries } from '../components/charts/StatR
 import { Pagination } from '../components/filters/Pagination'
 import { TypeBadge } from '../components/pokemon/TypeBadge'
 import { SectionHeading } from '../components/ui/Feedback'
+import { Seo } from '../components/Seo'
 import { MAX_COMPARE, typeStyle } from '../constants/types'
 import { useCompare } from '../store/AppContext'
 import { useAllPokemon } from '../hooks/queries'
@@ -144,6 +145,11 @@ export default function ComparePage() {
 
   return (
     <div className="container-app py-10">
+      <Seo
+        title="Compare Pokémon"
+        description="Compare up to three Pokémon side by side across every base stat. Analyze strengths and weaknesses."
+        path="/compare"
+      />
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1

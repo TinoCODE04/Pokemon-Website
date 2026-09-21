@@ -8,6 +8,7 @@ import { MovieFilters } from '../components/movies/MovieFilters'
 import { TmdbAttribution } from '../components/movies/MovieRating'
 import { TrailerModal, type TrailerModalState } from '../components/movies/TrailerModal'
 import { EmptyState } from '../components/ui/Feedback'
+import { Seo } from '../components/Seo'
 import { MOVIES, type PokemonMovie } from '../data/movies'
 import { filterMovies, parseMovieSearchParams, sortMovies, type MovieCategoryFilter, type MovieSort } from '../utils/movies'
 
@@ -129,6 +130,11 @@ export default function MoviesPage() {
 
   return (
     <div className="pb-16">
+      <Seo
+        title="Pokémon Movies"
+        description="Browse a source-attributed catalogue of Pokémon movies and feature-length specials. Watch trailers, explore ratings, and discover cinematic adventures."
+        path="/movies"
+      />
       <section className="movies-atmosphere relative overflow-hidden border-b border-white/10 py-16 text-white sm:py-20">
         <div className="container-app relative z-10">
           <div className="max-w-3xl">

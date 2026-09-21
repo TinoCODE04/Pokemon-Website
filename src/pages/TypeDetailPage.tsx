@@ -4,10 +4,11 @@ import { Pagination } from '../components/filters/Pagination'
 import { PokemonCard, PokemonCardSkeleton, resourceToCardPokemon } from '../components/pokemon/PokemonCard'
 import { PokemonGrid } from '../components/pokemon/PokemonGrid'
 import { ErrorState, SectionHeading } from '../components/ui/Feedback'
+import { Seo } from '../components/Seo'
 import { useType } from '../hooks/queries'
 import { TYPE_ORDER, typeMascot, typeStyle } from '../constants/types'
 import { cn } from '../utils/cn'
-import { artworkUrl } from '../utils/format'
+import { artworkUrl, formatName } from '../utils/format'
 import { useState } from 'react'
 
 const PAGE_SIZE = 24
@@ -40,6 +41,11 @@ export default function TypeDetailPage() {
 
   return (
     <div className="container-app py-10">
+      <Seo
+        title={`${formatName(name ?? '')} Type`}
+        description={`Explore the ${formatName(name ?? '')} type — strengths, weaknesses, immunities, and all ${formatName(name ?? '')}-type Pokémon.`}
+        path={`/types/${name}`}
+      />
       <Link
         to="/types"
         className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 transition hover:text-brand-500 dark:text-slate-400"

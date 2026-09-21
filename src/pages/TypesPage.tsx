@@ -3,10 +3,16 @@ import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { TYPE_MASCOTS, TYPE_ORDER, typeStyle } from '../constants/types'
 import { artworkUrl } from '../utils/format'
+import { Seo } from '../components/Seo'
 
 export default function TypesPage() {
   return (
     <div className="container-app py-10">
+      <Seo
+        title="Types"
+        description="Explore all 18 Pokémon types with full offensive and defensive effectiveness charts. Master type matchups."
+        path="/types"
+      />
       <div className="mb-8 max-w-xl">
         <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">Types</h1>
         <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">

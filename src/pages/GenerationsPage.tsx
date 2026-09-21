@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { extractId } from '../api/pokeapi'
 import { ErrorState, Skeleton } from '../components/ui/Feedback'
+import { Seo } from '../components/Seo'
 import { useGenerations } from '../hooks/queries'
 import { artworkUrl, formatName } from '../utils/format'
 
@@ -31,6 +32,11 @@ export default function GenerationsPage() {
 
   return (
     <div className="container-app py-10">
+      <Seo
+        title="Generations"
+        description="Explore Pokémon by generation and region. From Kanto to Paldea, discover every generation's new species, moves, and abilities."
+        path="/generations"
+      />
       <div className="mb-8 max-w-xl">
         <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">Generations</h1>
         <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
