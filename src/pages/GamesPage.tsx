@@ -16,7 +16,7 @@ import {
   Zap,
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { extractId } from '../api/pokeapi'
 import { getPokemon } from '../api/pokemon'
 import type { Pokemon } from '../api/types'
@@ -404,6 +404,10 @@ function BattleRecordStrip({ record }: { record: BattleRecord }) {
 function ModeSelection({ onChoose }: { onChoose: (mode: GameMode) => void }) {
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
+      <Link to="/games/super-pokemon" aria-label="Super Pokémon: Start your adventure" className="pixel-panel group mb-6 flex flex-wrap items-center justify-between gap-5 rounded-xl border-4 border-emerald-400/60 bg-gradient-to-r from-[#e8efd9] to-[#b3d8ba] p-6 text-[#345344] transition hover:-translate-y-1 hover:border-emerald-500 sm:p-8">
+        <div><span className="pixel-label text-[8px] uppercase text-emerald-800">NEW · 2D PLATFORM ADVENTURE</span><h2 className="mt-3 font-game text-4xl font-bold">Super Pokémon</h2><p className="mt-3 text-sm">Choose Pikachu, Charmander, or Mewtwo and journey through meadows, forest, and cave.</p><span className="mt-4 inline-flex items-center gap-2 text-xs font-bold">Start your adventure <Gamepad2 size={16} /></span></div>
+        <span aria-hidden="true" className="h-24 w-24 shrink-0 [background-image:url('/super-pokemon/sprites.png')] [background-size:600%_600%] [image-rendering:pixelated]" />
+      </Link>
       <div className="grid gap-5 lg:grid-cols-2">
         <button
           onClick={() => onChoose('quick')}

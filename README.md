@@ -139,11 +139,23 @@ src/
 | `/abilities/:name` | Ability details and related Pokémon |
 | `/compare` | Side-by-side Pokémon comparison |
 | `/games` | Quick Battle and Legendary Challenge |
+| `/games/super-pokemon` | Super Pokémon: three-stage 2D platform adventure |
 | `/movies` | Searchable Pokémon movies and specials catalogue |
 | `/movies/:slug` | Movie details, production facts, sources, and chronology |
 | `/favorites` | Locally saved favorite Pokémon |
 
 ## API usage
+
+### Super Pokémon
+
+Open **Games → Super Pokémon** to play the English-language platform adventure. Choose Pikachu, Charmander, or Mewtwo, then explore the meadows, forest, and cave. Progress, best scores, character, and sound preferences are saved locally; the game uses no reward or leaderboard API.
+
+- Move: A/D or Left/Right. Jump: W or Up (hold for a higher jump).
+- Crouch/drop through: S or Down. Sprint: hold Shift/Ctrl; each new press also fires one elemental attack when ready.
+- Pause: P. Mute: M. Touch devices have separate direction, jump, attack, and sprint buttons with multi-touch support.
+- Losing window/tab focus pauses play. Resume manually from the pause menu.
+
+The shipped pixel atlas is local and reproducible with `node scripts/generate-platformer-art.mjs`. Physics settings live in `src/game/platformer/world.ts`. See [implementation and verification notes](docs/super-pokemon.md) for the asset replacement list and acceptance results.
 
 The PokéAPI base URL is configured in `src/api/pokeapi.ts`:
 

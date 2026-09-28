@@ -13,6 +13,7 @@ const AbilitiesPage = lazy(() => import('./pages/AbilitiesPage'))
 const ComparePage = lazy(() => import('./pages/ComparePage'))
 const FavoritesPage = lazy(() => import('./pages/FavoritesPage'))
 const GamesPage = lazy(() => import('./pages/GamesPage'))
+const SuperPokemonPage = lazy(() => import('./pages/SuperPokemonPage'))
 const GenerationDetailPage = lazy(() => import('./pages/GenerationDetailPage'))
 const GenerationsPage = lazy(() => import('./pages/GenerationsPage'))
 const HomePage = lazy(() => import('./pages/HomePage'))
@@ -102,6 +103,7 @@ export default function App() {
               <Route path="/abilities/:name" element={<AbilityDetailPage />} />
               <Route path="/compare" element={<ComparePage />} />
               <Route path="/games" element={<GamesPage />} />
+              <Route path="/games/super-pokemon" element={<SuperPokemonPage />} />
               <Route path="/movies" element={<MoviesPage />} />
               <Route path="/movies/:slug" element={<MovieDetailPage />} />
               <Route path="/favorites" element={<FavoritesPage />} />

@@ -32,6 +32,7 @@ const staticRoutes = [
   { path: '/abilities', priority: '0.8' },
   { path: '/compare', priority: '0.7' },
   { path: '/games', priority: '0.7' },
+  { path: '/games/super-pokemon', priority: '0.7' },
   { path: '/movies', priority: '0.8' },
   { path: '/favorites', priority: '0.6' },
 ]
