@@ -22,6 +22,14 @@ Versioned local storage holds level unlocks, best scores, character choice, and 
 
 ## Assets
 
+### Menu visual update · September 29, 2026
+
+The welcome screen uses the actual meadow scenery with large partner sprites, a yellow play button, and locally hosted Pixelify Sans Bold (`public/fonts/pixelify`, SIL Open Font License). The font remains available when external font requests fail. Menus hide the inactive gameplay HUD and scenery omits collectibles and enemies. Gameplay removes the outer focus outline, in-world instruction signs, attack/boost text, notification labels, and the repeated status footer. Health, score, collectibles, the timer, and game controls remain visible; detailed instructions are available through Full controls and the pause menu.
+
+Character selection uses elemental colors and a visible selected state. Journey selection shows static Canvas previews of each real level and names the preceding journey required to unlock it. Decorative journey numbers, step numbers, and the header's numbered range are removed. On phones, selection cards use horizontal rows and menus grow with their content. Reduced-motion preferences disable the partner entrance animation.
+
+Visual and interaction evidence is recorded by `../.qa/super-ui-check.mjs`: desktop, phone, tablet, landscape, small phone, dark theme, and an external-font-blocked scenario. The game simulation tests pass (15/15). The project build and lint pass; the full test suite has an existing failure in `tests/islandTheme.test.ts`, whose expected island CSS variables are absent from the committed island stylesheet.
+
 `public/super-pokemon/sprites.png` is a locally generated placeholder atlas. Backgrounds, platforms, collectibles, and effects are drawn in Canvas. The Web Audio API synthesizes short sound effects. Gameplay does not rely on externally hosted image links.
 
 Assets available for future replacement: refined frame-by-frame art for the three partners; a Grass-type patrol enemy; a ranged Ghost-type enemy; the cave guardian; environment tiles and parallax layers for all three levels; Poké Balls, berries, elemental energy; and original music and sound effects. Preserve the atlas layout, or adjust the frame mapping in `art.ts`. Collision boxes are independent of sprite dimensions.

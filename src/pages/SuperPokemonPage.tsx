@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, ChevronRight, Flag, Heart, LockKeyhole, Maximize2, Pause, Play, RotateCcw, Volume2, VolumeX, Zap } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ChevronRight, Flag, Heart, LockKeyhole, Maximize2, Pause, Play, RotateCcw, Sparkles, Volume2, VolumeX } from 'lucide-react'
 import { Seo } from '../components/Seo'
 import { CHARACTER_INFO, render } from '../game/platformer/art'
 import { AudioBus } from '../game/platformer/audio'
@@ -14,13 +14,22 @@ import { World } from '../game/platformer/world'
 import '../game/platformer/platformer.css'
 
 type Screen = 'welcome' | 'characters' | 'levels' | 'play' | 'result'
-interface Hud { hp: number; score: number; collected: number; time: number; power: number; cooldown: number; progress: number; notice: string }
-const EMPTY_HUD: Hud = { hp: 3, score: 0, collected: 0, time: 0, power: 0, cooldown: 0, progress: 0, notice: '' }
+interface Hud { hp: number; score: number; collected: number; time: number; progress: number }
+const EMPTY_HUD: Hud = { hp: 3, score: 0, collected: 0, time: 0, progress: 0 }
 const CHARACTERS = Object.keys(CHARACTER_INFO) as Character[]
 const formatTime = (time: number) => `${Math.floor(time / 60).toString().padStart(2, '0')}:${Math.floor(time % 60).toString().padStart(2, '0')}`
 
 function Sprite({ character, className = '' }: { character: Character; className?: string }) {
   return <span aria-hidden="true" className={`sp-sprite ${className}`} style={{ backgroundPosition: `0 ${CHARACTER_INFO[character].row * 20}%` }} />
+}
+
+function JourneyPreview({ levelId, atlas }: { levelId: number; atlas: HTMLImageElement }) {
+  const ref = useRef<HTMLCanvasElement>(null)
+  useEffect(() => {
+    const ctx = ref.current?.getContext('2d')
+    if (ctx) render(ctx, new World(levelId, 'pikachu'), atlas, true)
+  }, [levelId, atlas])
+  return <canvas ref={ref} width={960} height={540} aria-hidden="true" />
 }
 
 function Controls() {
@@ -73,7 +82,7 @@ export default function SuperPokemonPage() {
   }
   const syncHud = () => {
     const w = worldRef.current
-    if (w) setHud({ hp: w.hp, score: w.score, collected: w.collected, time: w.time, power: w.power, cooldown: w.cooldown, progress: w.player.x / w.level.goal, notice: w.noticeTime > 0 ? w.notice : '' })
+    if (w) setHud({ hp: w.hp, score: w.score, collected: w.collected, time: w.time, progress: w.player.x / w.level.goal })
   }
   actionsRef.current = {
     pause: togglePause, mute: toggleMute,
@@ -121,7 +130,7 @@ export default function SuperPokemonPage() {
   useEffect(() => {
     if (!atlas || !canvasRef.current || screen === 'play') return
     const ctx = canvasRef.current.getContext('2d')
-    if (ctx) render(ctx, screen === 'result' && worldRef.current ? worldRef.current : new World(levelId, character), atlas)
+    if (ctx) render(ctx, screen === 'result' && worldRef.current ? worldRef.current : new World(1, character), atlas, screen !== 'result')
   }, [atlas, screen, levelId, character])
 
   const startLevel = (id: number) => {
@@ -148,17 +157,17 @@ export default function SuperPokemonPage() {
     <div className="container-app sp-container">
       <div className="sp-breadcrumb"><Link to="/games"><ArrowLeft size={14} /> Game Center</Link><span>/</span><span>SUPER POKÉMON</span><span className="sp-offline"><i /> SAVED ON THIS DEVICE · NO SIGN-IN</span></div>
       <header className="sp-header">
-        <div><p className="sp-eyebrow">KANTO REGION / PLATFORM ADVENTURE</p><h1>Super <span>Pokémon</span><span className="sp-title-star">✦</span></h1><p className="sp-tagline">One partner. Three journeys. Take a leap into the unknown.</p></div>
-        <div className="sp-header-note"><span>01 — 03</span><small>MOVE · JUMP · EXPLORE</small></div>
+        <div><h1>Super <span>Pokémon</span><Sparkles className="sp-title-star" aria-hidden="true" /></h1><p className="sp-tagline">A little partner. A whole world of adventure.</p></div>
+        <div className="sp-header-note"><span><span className="sp-mini-ball" /> KANTO ADVENTURES</span><small>MOVE · JUMP · EXPLORE</small></div>
       </header>
 
-      <div className="sp-console" ref={rootRef} tabIndex={0} aria-label="Super Pokémon game area">
+      <div className={`sp-console ${['welcome', 'characters', 'levels'].includes(screen) ? 'sp-is-menu' : ''}`} ref={rootRef} tabIndex={0} aria-label="Super Pokémon game area">
         <div className="sp-hud">
-          <div className="sp-partner"><Sprite character={character} /><div><small>YOUR PARTNER</small><strong>{info.name}</strong></div></div>
+          <div className="sp-partner"><Sprite character={character} /><strong>{info.name}</strong></div>
           <div className="sp-hearts" aria-label={`Health ${hud.hp} / 3`}>{[1, 2, 3].map(i => <Heart key={i} size={19} className={i <= hud.hp ? 'is-full' : ''} fill={i <= hud.hp ? 'currentColor' : 'none'} />)}</div>
           <div className="sp-stat"><small>SCORE</small><strong>{hud.score.toString().padStart(5, '0')}</strong></div>
           <div className="sp-stat"><small>POKÉ BALLS</small><strong><span className="sp-mini-ball" /> × {hud.collected.toString().padStart(2, '0')}</strong></div>
-          <div className="sp-stat sp-level-stat"><small>LEVEL {levelId.toString().padStart(2, '0')}</small><strong>{LEVEL_INFO[levelId - 1].name}</strong></div>
+          <div className="sp-stat sp-level-stat"><strong>{LEVEL_INFO[levelId - 1].name}</strong></div>
           <div className="sp-hud-actions">
             <button aria-label={save.muted ? 'Turn sound on' : 'Mute'} onClick={toggleMute}>{save.muted ? <VolumeX size={18} /> : <Volume2 size={18} />}</button>
             <button aria-label={paused ? 'Resume game' : 'Pause game'} onClick={togglePause} disabled={screen !== 'play'}>{paused ? <Play size={18} /> : <Pause size={18} />}</button>
@@ -166,36 +175,31 @@ export default function SuperPokemonPage() {
           </div>
         </div>
 
-        <div className={`sp-stage ${screen === 'play' && !paused ? 'sp-is-playing' : ''}`} onPointerDown={e => { if (e.target === canvasRef.current) runtimeRef.current?.focus() }}>
+        <div className={`sp-stage sp-screen-${screen} ${screen === 'play' && !paused ? 'sp-is-playing' : ''}`} onPointerDown={e => { if (e.target === canvasRef.current) runtimeRef.current?.focus() }}>
           <canvas ref={canvasRef} width={960} height={540} aria-label="Pokémon side-scrolling platform game" />
-          {screen === 'play' && !paused && <>
-            <div className="sp-time">{formatTime(hud.time)}</div>
-            {hud.power > 0 && <div className="sp-power"><Zap size={13} /> ELEMENTAL BOOST {Math.ceil(hud.power)}s</div>}
-            {hud.notice && <div className="sp-notice" role="status">{hud.notice}</div>}
-            <div className="sp-attack-indicator">{hud.cooldown > 0 ? 'ATTACK RECHARGING' : '✦ ELEMENTAL ATTACK READY'}</div>
-          </>}
+          {screen === 'play' && !paused && <div className="sp-time">{formatTime(hud.time)}</div>}
 
           {(!atlas || error) && <div className="sp-overlay"><div className="sp-menu sp-loading" role="status"><span className="sp-menu-icon">◓</span><h2>{error ? 'Adventure unavailable' : 'Preparing your adventure…'}</h2><p>{error || 'Loading local pixel art'}</p>{!error && <><progress value={loading} max="100" /><small>{loading}%</small></>}{error && <button className="sp-primary" onClick={() => { setAtlas(null); setAttempt(n => n + 1); setRun(n => n + 1) }}>Try again</button>}</div></div>}
 
           {atlas && !error && screen === 'welcome' && <div className="sp-overlay sp-welcome-overlay"><div className="sp-welcome">
-            <span className="sp-pill">A LITTLE PIXEL ADVENTURE</span><h2>A big world.<br />Let's <span>explore.</span></h2><p>Cross the meadows of Pallet Town and leap through the forest canopy.<br />Your Pokémon story begins with one little jump.</p>
-            <button className="sp-primary" onClick={() => { audioRef.current?.setMuted(save.muted); audioRef.current?.unlock(); setScreen('characters') }}>Start adventure <ArrowRight size={17} /></button>
-            <small>3 partners <span>·</span> 3 levels <span>·</span> Play again anytime</small>
-          </div><div className="sp-welcome-partners">{CHARACTERS.map(c => <Sprite key={c} character={c} />)}<span>CHOOSE YOUR PARTNER</span></div></div>}
+            <h2>Ready, set.<br /><span>EXPLORE!</span></h2><p>Big jumps. Hidden treasures. Your favorite partner.<br />A pixel-sized Pokémon adventure is waiting for you.</p>
+            <button className="sp-primary" onClick={() => { audioRef.current?.setMuted(save.muted); audioRef.current?.unlock(); setScreen('characters') }}><Play size={19} fill="currentColor" /> Start adventure <ArrowRight size={19} /></button>
+            <small>No sign-in. Just jump in.</small>
+          </div><div className="sp-welcome-partners" aria-label="Adventure partners">{CHARACTERS.map(c => <div className={`sp-hero-partner sp-hero-${c}`} key={c}><Sprite character={c} /><strong>{CHARACTER_INFO[c].name}</strong></div>)}<span className="sp-hero-caption">YOUR NEXT ADVENTURE STARTS TOGETHER</span><Sparkles className="sp-hero-spark" aria-hidden="true" /></div><div className="sp-welcome-worlds"><span><i /> Pallet Town Meadows</span><span><i /> Viridian Forest</span><span><i /> Mt. Moon Cave</span></div></div>}
 
           {atlas && !error && screen === 'characters' && <div className="sp-overlay"><div className="sp-menu sp-selection">
-            <p className="sp-eyebrow">STEP 01 / CHOOSE YOUR PARTNER</p><h2>Who will join your adventure?</h2><p>Each partner moves the same way, but brings a unique elemental attack.</p>
+            <h2>Choose your partner</h2><p>One adventure. Three ways to make it your own.</p>
             <div className="sp-character-grid">{CHARACTERS.map(c => { const detail = CHARACTER_INFO[c]; return <button key={c} className={`sp-character ${character === c ? 'is-selected' : ''}`} onClick={() => persist({ ...save, character: c })} aria-pressed={character === c} style={{ '--partner-color': detail.color } as React.CSSProperties}>
-              <span className="sp-type">{detail.type}</span><Sprite character={c} /><strong>{detail.name}</strong><small>{detail.english}</small><p>{detail.description}</p><span className="sp-selected-mark">{character === c ? '✓ SELECTED' : 'CHOOSE PARTNER'}</span>
+              <span className="sp-type">{detail.type}</span><div className="sp-character-art"><Sprite character={c} /></div><strong>{detail.name}</strong><p>{detail.description}</p><span className="sp-selected-mark">{character === c ? '✓ YOUR PARTNER' : 'CHOOSE ME'} {character !== c && <ArrowRight size={14} />}</span>
             </button> })}</div>
-            <div className="sp-menu-footer"><button className="sp-text-button" onClick={() => setScreen('welcome')}><ArrowLeft size={14} /> Back</button><button className="sp-primary" onClick={() => setScreen('levels')}>Choose a level <ArrowRight size={16} /></button></div>
+            <div className="sp-menu-footer"><button className="sp-text-button" onClick={() => setScreen('welcome')}><ArrowLeft size={14} /> Back</button><button className="sp-primary" onClick={() => setScreen('levels')}>Choose your journey <ArrowRight size={16} /></button></div>
           </div></div>}
 
           {atlas && !error && screen === 'levels' && <div className="sp-overlay"><div className="sp-menu sp-selection">
-            <p className="sp-eyebrow">STEP 02 / CHOOSE YOUR JOURNEY</p><h2>Where to next?</h2><p>Complete a level to unlock the next adventure. Your best scores stay on this device.</p>
+            <h2>Where will you explore?</h2><p>From sunny meadows to moonlit caves. Clear a journey to open the next.</p>
             <div className="sp-level-grid">{LEVEL_INFO.map(l => { const locked = l.id > save.unlocked, best = save.best[l.id]; return <button disabled={locked} key={l.id} className={`sp-level-card sp-map-${l.theme}`} onClick={() => startLevel(l.id)}>
-              <div className="sp-map-art"><span className="sp-map-number">0{l.id}</span><span className="sp-map-tree">{l.theme === 'cave' ? '◆' : '♠'}</span>{locked ? <LockKeyhole size={24} /> : <Flag size={24} />}</div>
-              <strong>{l.name}</strong><p>{l.subtitle}</p><small>{locked ? 'Complete the previous level to unlock' : best ? `Best ${best.score} points · ${formatTime(best.time)}` : l.id === 1 ? 'Beginner friendly · Meadow tutorial' : 'Not yet explored'}</small><span className="sp-level-action">{locked ? 'LOCKED' : 'PLAY LEVEL'} {!locked && <ChevronRight size={14} />}</span>
+              <div className="sp-map-art"><JourneyPreview levelId={l.id} atlas={atlas} /><span className="sp-map-label">{l.theme === 'grass' ? 'MEADOWS' : l.theme === 'forest' ? 'FOREST' : 'CAVE'}</span>{locked ? <LockKeyhole size={20} /> : <Flag size={20} />}</div>
+              <strong>{l.name}</strong><p>{l.subtitle}</p><small>{locked ? `Clear ${LEVEL_INFO[l.id - 2].name} to unlock` : best ? `Best ${best.score} points · ${formatTime(best.time)}` : l.id === 1 ? 'A perfect place to start' : 'A new discovery awaits'}</small><span className="sp-level-action">{locked ? 'LOCKED' : 'LET’S GO'} {!locked && <ChevronRight size={16} />}</span>
             </button> })}</div>
             <div className="sp-menu-footer"><button className="sp-text-button" onClick={() => setScreen('characters')}><ArrowLeft size={14} /> Change partner</button><span className="sp-current-partner"><Sprite character={character} /> {info.name} is ready!</span></div>
           </div></div>}
@@ -216,11 +220,11 @@ export default function SuperPokemonPage() {
             <button className="sp-text-button" onClick={showLevels}>Level select</button>
           </div></div>}
         </div>
-        <div className="sp-stage-footer"><span><i /> {screen === 'play' ? paused ? 'PAUSED' : 'ADVENTURING' : screen === 'result' ? 'ADVENTURE COMPLETE' : 'READY FOR ADVENTURE'}<span className="sp-footer-separator">/</span>{LEVEL_INFO[levelId - 1].name}</span><div className="sp-progress" aria-label={`Level progress ${Math.min(100, Math.round(hud.progress * 100))}%`}><i style={{ width: `${Math.min(100, hud.progress * 100)}%` }} /></div><span>GO EXPLORE. <Flag size={12} /></span></div>
+        {screen !== 'play' && <div className="sp-stage-footer"><span><i /> {screen === 'result' ? 'ADVENTURE COMPLETE' : 'READY FOR ADVENTURE'}<span className="sp-footer-separator">/</span>{LEVEL_INFO[levelId - 1].name}</span><div className="sp-progress" aria-label={`Level progress ${Math.min(100, Math.round(hud.progress * 100))}%`}><i style={{ width: `${Math.min(100, hud.progress * 100)}%` }} /></div><span>GO EXPLORE. <Flag size={12} /></span></div>}
         {screen === 'play' && !paused && <div className="sp-touch-controls" aria-label="Touch game controls"><div className="sp-touch-directions">{touchButton('left', 'Left', '←')}{touchButton('right', 'Right', '→')}{touchButton('down', 'Down', '↓')}</div><div className="sp-touch-abilities">{touchButton('sprint', 'Sprint', '»')}{touchButton('attack', 'Attack', '✦')}{touchButton('jump', 'Jump', '↑')}</div></div>}
       </div>
 
-      <div className="sp-below"><div className="sp-quick-controls"><span>QUICK CONTROLS</span><p><kbd>A</kbd><kbd>D</kbd> Move</p><p><kbd>W</kbd> Jump</p><p><kbd>Shift</kbd> Sprint / Attack</p><p><kbd>P</kbd> Pause</p></div><button className="sp-text-button" onClick={() => setHelp(!help)}>Full controls {help ? '−' : '+'}</button></div>
+      <div className={`sp-below ${screen === 'play' ? 'sp-below-playing' : ''}`}>{screen !== 'play' && <div className="sp-quick-controls"><span>QUICK CONTROLS</span><p><kbd>A</kbd><kbd>D</kbd> Move</p><p><kbd>W</kbd> Jump</p><p><kbd>Shift</kbd> Sprint / Attack</p><p><kbd>P</kbd> Pause</p></div>}<button className="sp-text-button" onClick={() => setHelp(!help)}>Full controls {help ? '−' : '+'}</button></div>
       {help && !(screen === 'play' && paused) && <div className="sp-help-panel"><Controls /><p>On mobile, hold a direction and jump at the same time. Rotate to landscape for a wider view. Press down on a one-way platform to drop through it. Elemental energy boosts your attacks for 12 seconds. Attacks fire once when pressed; holding sprint will not repeat them.</p></div>}
       {storageFailed && <p className="sp-storage-message" role="status">Your browser blocked local storage. You can keep playing, but this session's progress will not be saved.</p>}
       {message && <p role="status" className="sp-storage-message">{message}</p>}

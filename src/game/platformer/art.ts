@@ -29,7 +29,7 @@ function ball(ctx: CanvasRenderingContext2D, x: number, y: number, hidden = fals
   block(ctx, x + 4, y + 3, 12, 6, hidden ? '#d6ae48' : '#ee796d'); block(ctx, x + 4, y + 11, 12, 6, '#fff5dc')
   block(ctx, x + 8, y + 8, 5, 5, '#344b57'); block(ctx, x + 9, y + 9, 3, 3, '#fff9e9')
 }
-export function render(ctx: CanvasRenderingContext2D, world: World, atlas: HTMLImageElement) {
+export function render(ctx: CanvasRenderingContext2D, world: World, atlas: HTMLImageElement, sceneryOnly = false) {
   const { level, camera, time } = world, t = THEMES[level.theme]
   ctx.imageSmoothingEnabled = false
   block(ctx, 0, 0, 960, 540, t.sky)
@@ -78,16 +78,10 @@ export function render(ctx: CanvasRenderingContext2D, world: World, atlas: HTMLI
       }
     }
   }
+  // Menus use the actual world as scenery, without live-game tutorial clutter.
+  if (sceneryOnly) { ctx.restore(); return }
   for (const trap of level.traps) for (let x = trap.x; x < trap.x + trap.w; x += 16) {
     polygon(ctx, [[x, 448], [x + 8, 426], [x + 16, 448]], '#b99ed9'); block(ctx, x + 7, 432, 3, 12, '#e4cbff')
-  }
-  for (const sign of level.signs) {
-    if (sign.x < camera - 320 || sign.x > camera + 1000) continue
-    ctx.font = '13px "Microsoft YaHei", sans-serif'
-    const width = ctx.measureText(sign.text).width + 22
-    block(ctx, sign.x - 4, sign.y - 3, width + 8, 32, '#385d5a35')
-    block(ctx, sign.x, sign.y, width, 25, level.theme === 'cave' ? '#3c3855' : '#f7f0d6')
-    ctx.fillStyle = level.theme === 'cave' ? '#f1e8fb' : '#3f6356'; ctx.fillText(sign.text, sign.x + 11, sign.y + 17)
   }
   const checkpoint = world.checkpoint
   block(ctx, checkpoint.x + 8, 382, 5, 65, '#4b6657')
