@@ -1,45 +1,75 @@
-import { Home, Search } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import { artworkUrl } from '../utils/format'
+import { ArrowRight, Home, Search, Shuffle, Zap } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
 import { Seo } from '../components/Seo'
+import './not-found.css'
 
 export default function NotFoundPage() {
+  const navigate = useNavigate()
+
   return (
-    <div className="container-app flex flex-col items-center py-20 text-center">
+    <section className="not-found" aria-labelledby="not-found-title">
       <Seo
         title="Page Not Found"
         description="The page you are looking for does not exist."
         path="/404"
       />
-      <img
-        src={artworkUrl(54)}
-        alt="A very confused Psyduck"
-        className="h-44 w-44 object-contain opacity-90"
-      />
-      <p className="mt-2 font-mono text-sm font-bold text-brand-500">Error 404</p>
-      <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
-        A wild missing page appeared!
-      </h1>
-      <p className="mt-3 max-w-md text-sm text-slate-500 dark:text-slate-400">
-        This route does not exist in the tall grass. Head back to safety, or search for the
-        Pokémon you were actually looking for.
-      </p>
-      <div className="mt-7 flex flex-wrap justify-center gap-3">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 rounded-full bg-brand-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-brand-500/30 transition hover:bg-brand-600"
-        >
-          <Home className="h-4 w-4" />
-          Back home
-        </Link>
-        <Link
-          to="/pokedex"
-          className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-6 py-3 text-sm font-bold text-slate-600 transition hover:border-brand-400 hover:text-brand-500 dark:border-white/15 dark:text-slate-300"
-        >
-          <Search className="h-4 w-4" />
-          Open Pokédex
-        </Link>
+      <div className="not-found-content">
+        <div className="not-found-scene">
+          <div className="not-found-aura" aria-hidden="true" />
+          <div className="not-found-code" aria-hidden="true">
+            <span>4</span>
+            <span className="not-found-zero">0</span>
+            <span>4</span>
+          </div>
+          <Zap className="not-found-spark not-found-spark-left" aria-hidden="true" />
+          <Zap className="not-found-spark not-found-spark-right" aria-hidden="true" />
+          <img
+            src="/images/pikachu-official.png"
+            alt="A cheerful Pikachu ready to guide you back to your adventure"
+            width={475}
+            height={475}
+            className="not-found-pikachu"
+            fetchPriority="high"
+          />
+          <div className="not-found-ground" aria-hidden="true" />
+        </div>
+        <h1 id="not-found-title">
+          Looks like we lost the trail.
+        </h1>
+        <p className="not-found-description">
+          <span className="sr-only">Error 404. </span>
+          Even Pikachu couldn’t find this page.
+          <br className="not-found-copy-break" /> Let’s get you back to your adventure.
+        </p>
+        <div className="not-found-actions">
+          <Link
+            to="/"
+            className="not-found-button not-found-button-primary"
+          >
+            <Home size={18} aria-hidden="true" />
+            Back home
+            <ArrowRight size={17} aria-hidden="true" />
+          </Link>
+          <Link
+            to="/pokedex"
+            className="not-found-button not-found-button-secondary"
+          >
+            <Search size={18} aria-hidden="true" />
+            Open Pokédex
+          </Link>
+        </div>
+        <div className="not-found-discover">
+          <button
+            type="button"
+            className="not-found-random"
+            onClick={() => navigate(`/pokemon/${Math.floor(Math.random() * 1025) + 1}`)}
+          >
+            <Shuffle size={16} aria-hidden="true" />
+            Discover a random Pokémon
+            <ArrowRight size={16} aria-hidden="true" />
+          </button>
+        </div>
       </div>
-    </div>
+    </section>
   )
 }
