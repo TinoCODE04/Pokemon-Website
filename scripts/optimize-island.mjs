@@ -17,7 +17,7 @@ const palette = JSON.parse(await readFile('public/models/island-palette.json', '
 for (const material of document.getRoot().listMaterials()) {
   if (!material.getBaseColorTexture() && palette[material.getName()]) material.setBaseColorFactor(palette[material.getName()])
 }
-await document.transform(dedup(), weld(), simplify({ simplifier: MeshoptSimplifier, ratio: 0.4, error: 0.0005 }), prune(), textureCompress({ encoder: sharp, targetFormat: 'webp', resize: [1024, 1024], quality: 85 }), meshopt({ encoder: MeshoptEncoder, level: 'medium' }))
+await document.transform(dedup(), weld(), simplify({ simplifier: MeshoptSimplifier, ratio: 0.28, error: 0.0005 }), prune(), textureCompress({ encoder: sharp, targetFormat: 'webp', resize: [1024, 1024], quality: 85 }), meshopt({ encoder: MeshoptEncoder, level: 'medium' }))
 await io.write(output, document)
 console.log(`Island GLB: ${((await stat(output)).size / 1024 / 1024).toFixed(2)} MB`)
 // Keep the intermediate export out of Vite's public directory and production builds.

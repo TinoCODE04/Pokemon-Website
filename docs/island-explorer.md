@@ -3,9 +3,9 @@
 The home page places the interactive island immediately below the existing hero,
 before feature cards. `/home` redirects to the canonical home route `/`.
 
-The source is `pokemon_island_arceus_redesigned.blend`. It is never modified by
+The source is `pokemon_island_regirock_redesigned.blend`. It is never modified by
 the export process. The shipped model is `public/models/pokemon-island.glb`
-(about 5.9 MiB), with 34 individually selectable Pokémon and Meshopt compression.
+(about 15 MiB), with 34 individually selectable Pokémon and Meshopt compression.
 The water texture is embedded WebP; other colors are portable PBR base colors.
 Blender-only procedural ambient occlusion is approximated by the web lighting.
 
@@ -14,7 +14,7 @@ Blender-only procedural ambient occlusion is approximated by the web lighting.
 From the repository root, using Blender 5.2 and installed npm dependencies:
 
 ```powershell
-& 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' -b pokemon_island_arceus_redesigned.blend --python scripts/export-island.py
+& 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' -b pokemon_island_regirock_redesigned.blend --python scripts/export-island.py
 node scripts/optimize-island.mjs
 node --test tests/islandAsset.test.ts
 ```

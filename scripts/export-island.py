@@ -61,7 +61,7 @@ bpy.ops.export_scene.gltf(filepath=str(OUT / 'pokemon-island.raw.glb'),
     export_cameras=False, export_lights=False, export_animations=False,
     export_yup=True)
 (OUT / 'island-manifest.json').write_text(json.dumps({
-    'source': 'pokemon_island_arceus_redesigned.blend',
+    'source': 'pokemon_island_regirock_redesigned.blend',
     'camera': camera_position,
     'pokemon': [{'id': id, 'name': name} for name, id in sorted(IDS.items())]
 }, indent=2))
