@@ -1,0 +1,4 @@
+Pokémon official artwork distributed by PokeAPI/sprites.
+Source: https://github.com/PokeAPI/sprites/tree/master/sprites/pokemon/other/official-artwork
+Pokémon and Pokémon character names are trademarks of Nintendo, Creatures Inc. and GAME FREAK inc.
+Resized to 160 × 160 WebP for the Legendary Island picker.

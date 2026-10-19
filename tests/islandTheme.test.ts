@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
 test('island explorer switches its 3D backdrop and surfaces with the active theme', () => {
-  const css = readFileSync('src/components/island/island.css', 'utf8')
+  const css = readFileSync('src/components/island/island.css', 'utf8').replace(/\s*([{}:;])\s*/g, '$1')
 
   assert.match(css, /\.island-shell\{[^}]*--island-stage-bg:/)
   assert.match(css, /\.dark \.island-shell\{[^}]*--island-stage-bg:/)

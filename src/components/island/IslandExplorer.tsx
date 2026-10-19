@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { ArrowUpRight, Compass, Maximize2, Minus, Pause, Play, Plus, RotateCcw, Sparkles } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import type { IslandPokemon, IslandScene } from './islandScene'
+import IslandPokemonPicker from './IslandPokemonPicker'
+import IslandPokemonImage from './IslandPokemonImage'
 import './island.css'
 
 export default function IslandExplorer() {
@@ -49,7 +51,7 @@ export default function IslandExplorer() {
     const key = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setExpanded(false)
       if (event.key === 'Tab') {
-        const controls = shell.current?.querySelectorAll<HTMLElement>('button:not(:disabled), select:not(:disabled), a[href]')
+        const controls = shell.current?.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), a[href]')
         if (!controls?.length) return
         const first = controls[0]
         const last = controls[controls.length - 1]
@@ -84,12 +86,13 @@ export default function IslandExplorer() {
           </div>}
           {status === 'ready' && <div className="island-hint">Drag to orbit <span>·</span> Pinch or scroll to zoom <span>·</span> Click a Pokémon</div>}
           {selected && status === 'ready' && <div className="island-selection" aria-live="polite">
+            <IslandPokemonImage id={selected.id} className="island-selection-image" />
             <div><span className="text-[10px] font-bold uppercase tracking-widest text-amber-300">Legend discovered · #{String(selected.id).padStart(3, '0')}</span><h3 className="font-display text-xl font-bold">{selected.name}</h3></div>
             <Link to={`/pokemon/${selected.id}`} className="island-detail">Pokédex <ArrowUpRight size={16} /></Link>
           </div>}
         </div>
         <div className="island-toolbar">
-          <label className="island-select-label"><Compass size={16} /><span className="sr-only">Find a Pokémon on the island</span><select aria-label="Find a Pokémon on the island" disabled={status !== 'ready'} value={selected?.id ?? ''} onChange={(event) => scene.current?.select(Number(event.target.value))}><option value="" disabled>Find a Pokémon…</option>{pokemon.map((entry) => <option key={entry.id} value={entry.id}>{entry.name}</option>)}</select></label>
+          <IslandPokemonPicker pokemon={pokemon} selected={selected} disabled={status !== 'ready'} onSelect={(id) => scene.current?.select(id)} />
           <div className="flex items-center gap-1">
             <button className="island-button" aria-label="Zoom in" disabled={status !== 'ready'} onClick={() => scene.current?.zoom(0.8)}><Plus size={17} /></button>
             <button className="island-button" aria-label="Zoom out" disabled={status !== 'ready'} onClick={() => scene.current?.zoom(1.25)}><Minus size={17} /></button>

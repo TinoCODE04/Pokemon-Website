@@ -28,7 +28,12 @@ No external CDN or API is required to load the island.
 ## Controls and lifecycle
 
 - Drag to orbit; wheel/pinch or plus/minus buttons to zoom.
-- Click visible Pokémon, or choose any of the 34 from the native keyboard-accessible selector.
+- Click visible Pokémon, or open the illustrated picker to choose any of the 34.
+  Search by name or Pokédex number; use Tab or arrow keys to browse, Enter to
+  select, and Escape to close. Selection returns focus to the picker trigger.
+- The picker, toolbar selection, and discovery card use local 160px WebP artwork
+  in `public/images/island-pokemon/`. Regenerate with
+  `node scripts/download-island-artwork.mjs` (requires network access).
 - Selection frames and highlights the Pokémon and links to its existing Pokédex page.
 - Reset restores the overview; Orbit toggles automatic rotation.
 - Expand opens a larger view; Escape closes it and focus returns to the opener.

@@ -1,8 +1,17 @@
 .island-shell {
+  --island-shell-bg: #eef6fb;
+  --island-stage-bg: radial-gradient(ellipse at 50% 48%, #bfe3f2 0%, #8fc6e2 43%, #dceff8 78%);
+  --island-panel-bg: #ffffff;
+  --island-muted: #496176;
+  --island-line: #0f172a1a;
+  --island-hover: #0f172a08;
+  --island-selected: #fef3cd;
+  --island-accent: #805800;
+  position: relative;
   overflow: hidden;
   border: 1px solid #0f172a14;
   border-radius: 16px;
-  background: #eef6fb;
+  background: var(--island-shell-bg);
   box-shadow: 0 22px 65px #02061718;
   color: #17202d;
 }
@@ -10,7 +19,7 @@
 .island-stage {
   position: relative;
   height: 560px;
-  background: radial-gradient(ellipse at 50% 48%, #bfe3f2 0%, #8fc6e2 43%, #dceff8 78%);
+  background: var(--island-stage-bg);
 }
 
 .island-canvas,
@@ -28,13 +37,17 @@
 }
 
 .dark .island-shell {
+  --island-shell-bg: #0b1725;
+  --island-stage-bg: radial-gradient(ellipse at 50% 48%, #264959 0%, #142e3e 43%, #0b1725 78%);
+  --island-panel-bg: #101f2e;
+  --island-muted: #adc3d5;
+  --island-line: #ffffff1a;
+  --island-hover: #ffffff08;
+  --island-selected: #fbbf241a;
+  --island-accent: #fcd34d;
   border-color: #ffffff10;
-  background: #0b1725;
+  background: var(--island-shell-bg);
   color: #e8f1fb;
-}
-
-.dark .island-stage {
-  background: radial-gradient(ellipse at 50% 48%, #264959 0%, #142e3e 43%, #0b1725 78%);
 }
 
 .island-poster {
@@ -112,7 +125,7 @@
 
 .island-button:focus-visible,
 .island-detail:focus-visible,
-.island-select-label select:focus-visible {
+.island-picker button:focus-visible {
   outline: 2px solid #fbbf24;
   outline-offset: 2px;
 }
@@ -165,13 +178,37 @@
   left: 22px;
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 16px;
   padding: 14px 18px;
   border: 1px solid #fbbf2440;
   border-radius: 16px;
   background: #fffffff0;
   box-shadow: 0 8px 30px #0003;
   backdrop-filter: blur(12px);
+}
+
+.island-selection-image {
+  width: 72px;
+  height: 72px;
+  flex: none;
+  object-fit: contain;
+}
+
+.island-selection > div {
+  min-width: 0;
+}
+
+.island-selection h3 {
+  overflow-wrap: anywhere;
+}
+
+.island-selection .island-detail {
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.island-selection > div > span {
+  color: var(--island-accent);
 }
 
 .dark .island-selection {
@@ -191,44 +228,252 @@
 }
 
 .island-toolbar {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   border-top: 1px solid #0f172a14;
   padding: 12px 20px;
-  background: #eef6fb;
+  background: var(--island-shell-bg);
 }
 
 .dark .island-toolbar {
   border-top-color: #ffffff12;
-  background: #0b1725;
+  background: var(--island-shell-bg);
 }
 
-.island-select-label {
+.island-picker {
+  min-width: 0;
+}
+
+.island-picker-trigger {
   display: flex;
   align-items: center;
-  gap: 9px;
-  color: #3d5a6e;
+  gap: 10px;
+  width: 232px;
+  min-height: 48px;
+  padding: 4px 10px;
+  border-radius: 10px;
+  text-align: left;
+  transition: background 0.15s;
 }
 
-.island-select-label select {
-  min-height: 40px;
-  max-width: 210px;
-  background: #eef6fb;
+.island-picker-trigger:hover:not(:disabled),
+.island-picker-trigger[aria-expanded='true'] {
+  background: var(--island-hover);
+}
+
+.island-picker-trigger:disabled {
+  opacity: 0.4;
+}
+
+.island-trigger-image {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex: none;
+}
+
+.island-trigger-copy {
+  display: grid;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
   font-size: 12px;
-  color: #17202d;
-  border-radius: 8px;
-  padding: 0 8px;
+  font-weight: 700;
 }
 
-.dark .island-select-label {
-  color: #b6cedc;
+.island-trigger-copy small {
+  color: var(--island-muted);
+  font-size: 10px;
+  font-weight: 400;
 }
 
-.dark .island-select-label select {
-  background: #0b1725;
-  color: #e8f1fb;
+.island-picker-trigger > svg {
+  flex-shrink: 0;
+  color: var(--island-muted);
+}
+
+.island-chevron-open {
+  transform: rotate(180deg);
+}
+
+.island-picker-panel {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 16px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  width: 396px;
+  max-width: calc(100% - 32px);
+  max-height: min(470px, 70dvh);
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--island-panel-bg);
+  box-shadow: 0 16px 48px #02061740;
+}
+
+.island-picker-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.island-picker-heading h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.island-picker-heading p {
+  margin-top: 3px;
+  color: var(--island-muted);
+  font-size: 11px;
+}
+
+.island-picker-heading .island-button {
+  margin: -6px -8px 0 0;
+}
+
+.island-picker-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  flex-shrink: 0;
+  border: 1px solid var(--island-line);
+  border-radius: 9px;
+  padding: 0 10px;
+  color: var(--island-muted);
+}
+
+.island-picker-search:focus-within {
+  outline: 2px solid var(--island-accent);
+  outline-offset: 2px;
+}
+
+.island-picker-search input {
+  min-width: 0;
+  width: 100%;
+  height: 42px;
+  background: transparent;
+  color: inherit;
+  font-size: 16px;
+  outline: none;
+  caret-color: var(--island-accent);
+}
+
+.island-picker-search input::placeholder {
+  color: var(--island-muted);
+  font-size: 12px;
+}
+
+.island-search-clear {
+  display: grid;
+  place-items: center;
+  min-width: 32px;
+  min-height: 40px;
+}
+
+.island-picker-count {
+  padding: 12px 0 8px;
+  color: var(--island-muted);
+  font-size: 10px;
+}
+
+.island-picker-results {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--island-muted) transparent;
+  padding: 3px;
+  margin: -3px;
+}
+
+.island-pokemon-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 72px;
+  padding: 8px;
+  border-radius: 9px;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.island-pokemon-option:hover,
+.island-pokemon-option:focus-visible {
+  background: var(--island-hover);
+}
+
+.island-pokemon-option[aria-pressed='true'] {
+  background: var(--island-selected);
+}
+
+.island-option-image {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  flex: none;
+}
+
+.island-option-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.island-option-copy small {
+  color: var(--island-muted);
+  font-size: 10px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.island-option-check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  color: var(--island-accent);
+}
+
+.island-picker-empty {
+  grid-column: 1 / -1;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 24px 8px;
+  color: var(--island-muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.island-picker-empty p {
+  color: inherit;
+  font-weight: 600;
+}
+
+.island-picker-empty span {
+  font-size: 11px;
+}
+
+.island-picker-empty button {
+  min-height: 40px;
+  color: var(--island-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .island-expanded {
@@ -268,12 +513,37 @@
     flex-wrap: wrap;
   }
 
-  .island-select-label {
-    gap: 2px;
+  .island-picker {
+    width: 100%;
   }
 
-  .island-select-label select {
-    max-width: 160px;
+  .island-picker-trigger {
+    width: 100%;
+  }
+
+  .island-toolbar > .flex {
+    width: 100%;
+    justify-content: flex-end;
+    border-top: 1px solid var(--island-line);
+    padding-top: 4px;
+  }
+
+  .island-picker-panel {
+    left: 8px;
+    max-width: calc(100% - 16px);
+    max-height: min(390px, 60dvh);
+    padding: 12px;
+  }
+
+  .island-option-image {
+    width: 44px;
+    height: 44px;
+  }
+
+  .island-pokemon-option {
+    gap: 5px;
+    padding: 6px;
+    min-height: 64px;
   }
 
   .island-selection {
@@ -283,6 +553,29 @@
     justify-content: space-between;
     gap: 12px;
     padding: 12px;
+  }
+
+  .island-selection-image {
+    width: 48px;
+    height: 56px;
+  }
+
+  .island-selection {
+    gap: 8px;
+  }
+
+  .island-selection > div > span {
+    font-size: 8px;
+    letter-spacing: 0.04em;
+  }
+
+  .island-selection h3 {
+    font-size: 18px;
+  }
+
+  .island-selection .island-detail {
+    margin-left: 0;
+    padding: 10px 8px;
   }
 
   .island-hint {
@@ -304,6 +597,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .island-poster {
+    transition: none;
+  }
+
+  .island-picker button {
     transition: none;
   }
 
