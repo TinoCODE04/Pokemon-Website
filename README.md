@@ -13,6 +13,7 @@ A clean, responsive Pokémon world powered by [PokéAPI](https://pokeapi.co/). B
 - Browse Pokémon by generation and region
 - Compare up to three Pokémon side by side
 - Save favorite Pokémon on the current device
+- Meet the creator, find social links and share feedback on the About us page
 - Play Quick Battle and challenge powerful Legendary Pokémon
 - Browse a source-attributed catalogue of Pokémon movies and feature-length specials
 - Search movies by title, year, or featured Pokémon and sort them by date, rating, or title
@@ -20,6 +21,19 @@ A clean, responsive Pokémon world powered by [PokéAPI](https://pokeapi.co/). B
 - Switch between light and dark themes
 - Use responsive layouts designed for desktop, tablet, and mobile
 - Open global search using the navigation or `/` keyboard shortcut
+
+## Mobile experience
+
+- Phone navigation opens a scrollable drawer; every main section remains available.
+- Pokédex and movie filters open in a bottom sheet on narrow screens. Search stays visible, and filter selections remain in the URL.
+- Pokémon and movie grids use one column on the narrowest screens and two from 360 CSS pixels. Artwork scales with its card.
+- Phone pagination provides previous/next buttons and a page selector.
+- Global search fills the phone screen and adapts to the visible viewport when the keyboard opens.
+- Comparison selections fit the page; the detailed stat table scrolls independently with stat names pinned.
+- On narrow screens, touch devices, or data-saving connections, the 3D island loads only after **Enter 3D island**. Touch exploration opens an expanded view; Close remains available during loading or errors.
+- Touch game controls have larger targets. Battle move details can be expanded before attacking, including in landscape orientation.
+
+The layouts target current mobile browsers. Real-device Safari/Chrome checks are still useful for keyboard, display cutouts, fullscreen availability, and device performance.
 
 ## Tech stack
 
@@ -128,6 +142,7 @@ src/
 | Route | Screen |
 | --- | --- |
 | `/` | Homepage and quick navigation |
+| `/about` | Creator profile, project details, social links and feedback |
 | `/pokedex` | Searchable and filterable Pokédex |
 | `/rankings` | Base Stat Total rankings for Pokémon and forms |
 | `/pokemon/:id` | Pokémon details, stats, moves, and evolution chain |
@@ -143,6 +158,8 @@ src/
 | `/movies` | Searchable Pokémon movies and specials catalogue |
 | `/movies/:slug` | Movie details, production facts, sources, and chronology |
 | `/favorites` | Locally saved favorite Pokémon |
+
+Creator information and social links live in `src/data/about.ts`. Edit that file to update the introduction or links; the About us page is rendered by `src/pages/AboutPage.tsx`.
 
 ## API usage
 

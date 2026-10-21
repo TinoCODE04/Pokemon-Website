@@ -47,7 +47,7 @@ export function PokemonCard({ pokemon, index = 0, rank, score }: { pokemon: Card
       transition={{ duration: 0.3, delay: Math.min(index * 0.03, 0.4) }}
       whileHover={{ y: -4 }}
       className={cn(
-        'card-surface group relative flex flex-col overflow-hidden p-4 transition-shadow duration-300 hover:shadow-xl',
+        'card-surface group relative flex min-w-0 flex-col overflow-hidden p-3 transition-shadow duration-300 hover:shadow-xl sm:p-4',
         legendary && 'border-amber-400/45 shadow-amber-500/5 hover:shadow-amber-500/15',
       )}
       style={style ? {
@@ -56,8 +56,8 @@ export function PokemonCard({ pokemon, index = 0, rank, score }: { pokemon: Card
           : `linear-gradient(155deg, ${style.soft}, transparent 58%)`,
       } : undefined}
     >
-      <div className="relative z-10 flex items-start justify-between">
-        <div className="flex items-center gap-1.5 pt-2">
+      <div className="relative z-10 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-1">
+        <div className="flex min-w-0 flex-wrap items-center gap-1 py-2">
           {rank !== undefined && (
             <span className={cn(
               'rounded-full px-2 py-0.5 font-display text-xs font-extrabold',
@@ -85,7 +85,7 @@ export function PokemonCard({ pokemon, index = 0, rank, score }: { pokemon: Card
             </span>
           )}
         </div>
-        <div className="flex gap-1">
+        <div className="flex shrink-0 gap-0.5">
           <button
             type="button"
             aria-label={compared ? 'Remove from compare' : isFull ? 'Compare list is full' : 'Add to compare'}
@@ -94,7 +94,7 @@ export function PokemonCard({ pokemon, index = 0, rank, score }: { pokemon: Card
             title={!compared && isFull ? 'Compare list is full (maximum 3)' : undefined}
             onClick={() => toggleCompare(pokemon.id)}
             className={cn(
-              'flex h-9 w-9 items-center justify-center rounded-full transition',
+              'flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition sm:h-9 sm:w-9',
               compared
                 ? 'bg-brand-500 text-white shadow-sm shadow-brand-500/30'
                 : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-40 dark:text-slate-500 dark:hover:bg-white/10 dark:hover:text-slate-200',
@@ -108,7 +108,7 @@ export function PokemonCard({ pokemon, index = 0, rank, score }: { pokemon: Card
             aria-pressed={favorite}
             onClick={() => toggleFavorite(pokemon.id)}
             className={cn(
-              'flex h-9 w-9 items-center justify-center rounded-full transition active:scale-90',
+              'flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition active:scale-90 sm:h-9 sm:w-9',
               favorite
                 ? 'bg-brand-500/10 text-brand-500'
                 : 'text-slate-400 hover:bg-slate-100 hover:text-brand-500 dark:text-slate-500 dark:hover:bg-white/10',
@@ -124,7 +124,7 @@ export function PokemonCard({ pokemon, index = 0, rank, score }: { pokemon: Card
         aria-label={`View ${formatName(pokemon.name)} details`}
         className="relative -mx-1 -mb-1 mt-1 flex flex-1 flex-col rounded-xl px-1 pb-1"
       >
-        <div className="pokemon-stage relative mx-auto flex h-32 w-32 items-center justify-center sm:h-36 sm:w-36">
+        <div className="pokemon-stage relative mx-auto flex aspect-square w-full max-w-32 items-center justify-center sm:max-w-36">
           {style && (
             <div
               className="absolute inset-1 scale-90 rounded-full opacity-30 blur-2xl transition duration-500 group-hover:scale-105 group-hover:opacity-65"
@@ -155,19 +155,19 @@ export function PokemonCard({ pokemon, index = 0, rank, score }: { pokemon: Card
           </div>
         </div>
 
-        <h3 className="text-center font-display text-base font-bold capitalize leading-tight">
+        <h3 className="text-center font-display text-base font-bold capitalize leading-tight [overflow-wrap:anywhere]">
           {formatName(pokemon.name)}
         </h3>
 
         {pokemon.types && (
-          <div className="mt-2 flex flex-nowrap justify-center gap-1">
+          <div className="mt-2 flex flex-wrap justify-center gap-1">
             {pokemon.types.map((t) => (
               <TypeBadge key={t} type={t} size="sm" className="shrink-0 gap-1 px-1.5" />
             ))}
           </div>
         )}
         {score !== undefined && (
-          <div className="mt-3 flex items-center justify-center gap-1.5 rounded-xl bg-slate-900/5 px-3 py-2 dark:bg-white/5">
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5 rounded-xl bg-slate-900/5 px-2 py-2 dark:bg-white/5">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Base stat total</span>
             <span className="font-display text-sm font-extrabold text-brand-500">{score}</span>
           </div>
@@ -179,7 +179,7 @@ export function PokemonCard({ pokemon, index = 0, rank, score }: { pokemon: Card
 
 export function PokemonCardSkeleton() {
   return (
-    <div className="card-surface flex flex-col items-center p-4">
+    <div className="card-surface flex min-w-0 flex-col items-center p-3 sm:p-4">
       <div className="h-4 w-12 self-start animate-pulse rounded bg-slate-200 dark:bg-white/10" />
       <div className="my-3 h-28 w-28 animate-pulse rounded-full bg-slate-200 sm:h-32 sm:w-32 dark:bg-white/10" />
       <div className="h-4 w-24 animate-pulse rounded bg-slate-200 dark:bg-white/10" />

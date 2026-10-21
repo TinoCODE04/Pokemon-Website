@@ -74,12 +74,12 @@ export function MovieCard({
             <ArrowUpRight className="h-4 w-4" />
           </span>
         </div>
-        <div className="flex flex-1 flex-col p-4">
+        <div className="flex min-w-0 flex-1 flex-col p-3 sm:p-4">
           <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
             <CalendarDays className="h-3.5 w-3.5" />
             {movie.category === 'upcoming' && !movie.releaseDate ? 'Coming soon' : movie.releaseYear}
           </div>
-          <h2 className="font-display text-lg font-bold leading-tight tracking-tight transition group-hover:text-brand-500"><Link to={`/movies/${movie.slug}`} className="rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500">{movie.title}</Link></h2>
+          <h2 className="font-display text-base font-bold leading-tight tracking-tight transition group-hover:text-brand-500 sm:text-lg"><Link to={`/movies/${movie.slug}`} className="rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500">{movie.title}</Link></h2>
           {movie.alternateTitles?.[0] && <p className="mt-1 line-clamp-1 text-xs text-slate-400">{movie.alternateTitles[0]}</p>}
           <div className="mt-3 flex flex-wrap gap-1.5">
             {movie.featuredPokemon.slice(0, 3).map((pokemon) => (
@@ -91,7 +91,7 @@ export function MovieCard({
             type="button"
             onClick={(event) => onPlayTrailer(movie, event.currentTarget)}
             aria-label={`Play trailer for ${movie.title}`}
-            className="mt-4 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
+            className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-2 py-2 text-xs font-bold text-white transition hover:bg-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 sm:px-4 sm:text-sm"
           >
             <Play className="h-4 w-4 fill-current" /> Play Trailer
           </button>

@@ -5,6 +5,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { useFavorites } from '../../store/AppContext'
 import { useTheme } from '../../hooks/useTheme'
 import { cn } from '../../utils/cn'
+import { MobileDialog } from '../ui/MobileDialog'
 
 const NAV_LINKS = [
   { to: '/', label: 'Home' },
@@ -17,6 +18,7 @@ const NAV_LINKS = [
   { to: '/games', label: 'Games' },
   { to: '/movies', label: 'Movies' },
   { to: '/favorites', label: 'Favorites' },
+  { to: '/about', label: 'About us' },
 ]
 
 export function PokeballMark({ className }: { className?: string }) {
@@ -36,7 +38,7 @@ export function Navbar({ onOpenSearch, isHomePage = false }: { onOpenSearch: () 
 
   return (
     <header className={cn(
-      'sticky top-0 z-40 bg-white/80 backdrop-blur-xl dark:bg-night-950/80',
+      'sticky top-0 z-40 bg-white/80 pt-[env(safe-area-inset-top)] backdrop-blur-xl dark:bg-night-950/80',
       !isHomePage && 'border-b border-slate-200/80 dark:border-white/10',
     )}>
       <nav className="navbar-shell flex h-16 min-w-0 items-center justify-between gap-2 sm:gap-3">
@@ -47,7 +49,7 @@ export function Navbar({ onOpenSearch, isHomePage = false }: { onOpenSearch: () 
           </span>
         </Link>
 
-        <div className="hidden items-center gap-1 xl:flex">
+        <div className="hidden items-center gap-1 2xl:flex">
           {NAV_LINKS.map((link) => (
             <NavLink
               key={link.to}
@@ -55,7 +57,7 @@ export function Navbar({ onOpenSearch, isHomePage = false }: { onOpenSearch: () 
               end={link.to === '/'}
               className={({ isActive }) =>
                 cn(
-                  'relative whitespace-nowrap rounded-full px-2.5 py-1.5 text-sm font-medium transition-colors',
+                  'relative inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-1.5 text-sm font-medium transition-colors',
                   isActive
                     ? 'text-brand-600 dark:text-brand-300'
                     : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white',
@@ -142,15 +144,17 @@ export function Navbar({ onOpenSearch, isHomePage = false }: { onOpenSearch: () 
             onClick={() => setMobileOpen((v) => !v)}
             className="flex h-9 w-9 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-100 md:hidden dark:text-slate-300 dark:hover:bg-white/10"
             aria-label="Menu"
+            aria-haspopup="dialog"
+            aria-expanded={mobileOpen}
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
       </nav>
 
-      <div className="hidden border-t border-slate-200/70 md:block xl:hidden dark:border-white/10">
+      <div className="hidden border-t border-slate-200/70 md:block 2xl:hidden dark:border-white/10">
         <div className="container-app overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <nav className="flex h-11 min-w-[640px] items-center justify-between gap-1" aria-label="Primary navigation">
+          <nav className="flex h-11 w-max min-w-full items-center justify-between gap-1" aria-label="Primary navigation">
             {NAV_LINKS.map((link) => (
               <NavLink
                 key={link.to}
@@ -158,7 +162,7 @@ export function Navbar({ onOpenSearch, isHomePage = false }: { onOpenSearch: () 
                 end={link.to === '/'}
                 className={({ isActive }) =>
                   cn(
-                    'relative whitespace-nowrap rounded-full px-2.5 py-1.5 text-[13px] font-medium transition-colors',
+                    'relative inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-1.5 text-[13px] font-medium transition-colors',
                     isActive
                       ? 'text-brand-600 dark:text-brand-300'
                       : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white',
@@ -177,16 +181,8 @@ export function Navbar({ onOpenSearch, isHomePage = false }: { onOpenSearch: () 
         </div>
       </div>
 
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden border-t border-slate-200 bg-white md:hidden dark:border-white/10 dark:bg-night-950"
-          >
-            <div className="container-app grid gap-1 py-3">
+      <MobileDialog open={mobileOpen} onClose={() => setMobileOpen(false)} title="Menu" variant="drawer" desktopQuery="(min-width: 768px)">
+            <nav className="grid gap-1" aria-label="Mobile navigation">
               {NAV_LINKS.map((link) => (
                 <NavLink
                   key={link.to}
@@ -195,7 +191,7 @@ export function Navbar({ onOpenSearch, isHomePage = false }: { onOpenSearch: () 
                   onClick={() => setMobileOpen(false)}
                   className={({ isActive }) =>
                     cn(
-                      'rounded-xl px-4 py-2.5 text-sm font-medium transition-colors',
+                      'flex min-h-12 items-center rounded-xl px-4 py-3 text-base font-medium transition-colors',
                       isActive
                         ? 'bg-brand-500/10 text-brand-600 dark:bg-brand-500/20 dark:text-brand-300'
                         : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/5',
@@ -205,10 +201,8 @@ export function Navbar({ onOpenSearch, isHomePage = false }: { onOpenSearch: () 
                   {link.label}
                 </NavLink>
               ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </nav>
+      </MobileDialog>
     </header>
   )
 }

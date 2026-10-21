@@ -8,6 +8,7 @@ import { Spinner } from './components/ui/Feedback'
 import { MOVIES } from './data/movies'
 import { findMovieBySlug } from './utils/movies'
 
+const AboutPage = lazy(() => import('./pages/AboutPage'))
 const AbilityDetailPage = lazy(() => import('./pages/AbilityDetailPage'))
 const AbilitiesPage = lazy(() => import('./pages/AbilitiesPage'))
 const ComparePage = lazy(() => import('./pages/ComparePage'))
@@ -32,10 +33,15 @@ export default function App() {
   const isHomePage = location.pathname === '/'
 
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  }, [location.pathname])
+
+  useEffect(() => {
     const openSearch = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null
       const isTyping = target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.isContentEditable
-      if (event.key === '/' && !isTyping) {
+      const modalOpen = document.querySelector('dialog[open], [role="dialog"][aria-modal="true"]') !== null
+      if (event.key === '/' && !isTyping && !modalOpen) {
         event.preventDefault()
         setSearchOpen(true)
       }
@@ -52,7 +58,8 @@ export default function App() {
     }
 
     let section: string
-    if (path === '/movies') section = 'Pokémon Movies'
+    if (path === '/about') section = 'About us'
+    else if (path === '/movies') section = 'Pokémon Movies'
     else if (path.startsWith('/movies/')) {
       section = findMovieBySlug(MOVIES, path.slice('/movies/'.length))?.title ?? 'Movie not found'
     } else {
@@ -92,6 +99,7 @@ export default function App() {
             <Routes location={location}>
               <Route path="/" element={<HomePage />} />
               <Route path="/home" element={<Navigate to="/" replace />} />
+              <Route path="/about" element={<AboutPage />} />
               <Route path="/pokedex" element={<PokedexPage />} />
               <Route path="/rankings" element={<TopRankPage />} />
               <Route path="/pokemon/:id" element={<PokemonDetailPage />} />

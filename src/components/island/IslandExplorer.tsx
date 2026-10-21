@@ -5,6 +5,8 @@ import type { IslandPokemon, IslandScene } from './islandScene'
 import IslandPokemonPicker from './IslandPokemonPicker'
 import IslandPokemonImage from './IslandPokemonImage'
 import './island.css'
+import { shouldAutoLoadIsland } from '../../utils/islandLoading'
+import { useDialogViewport } from '../../hooks/useDialogViewport'
 
 export default function IslandExplorer() {
   const section = useRef<HTMLElement>(null)
@@ -19,8 +21,19 @@ export default function IslandExplorer() {
   const [rotating, setRotating] = useState(() => !matchMedia('(prefers-reduced-motion: reduce)').matches)
   const [expanded, setExpanded] = useState(false)
   const [attempt, setAttempt] = useState(0)
+  const [touchMode, setTouchMode] = useState(() => matchMedia('(max-width: 767px), (pointer: coarse)').matches)
+  useDialogViewport(shell, expanded)
 
   useEffect(() => {
+    const media = matchMedia('(max-width: 767px), (pointer: coarse)')
+    const update = () => setTouchMode(media.matches)
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [])
+
+  useEffect(() => {
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
+    if (!shouldAutoLoadIsland({ compact: matchMedia('(max-width: 767px)').matches, coarsePointer: matchMedia('(pointer: coarse)').matches, saveData: connection?.saveData ?? false })) return
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) { setActive(true); observer.disconnect() }
     }, { rootMargin: '200px' })
@@ -78,13 +91,18 @@ export default function IslandExplorer() {
           <img className={`island-poster ${status === 'ready' ? 'island-poster-hidden' : ''}`} src="/models/island-poster.webp" alt="A miniature Pokémon island with forests, waterways, a volcano and legendary Pokémon" loading="lazy" />
           <div ref={host} className={`island-canvas ${status !== 'ready' ? 'invisible' : ''}`} />
           <div className="island-label"><span className="island-dot" />{status === 'ready' ? 'Live' : 'Legendary Island'}</div>
-          <button className="island-expand island-button" onClick={() => setExpanded(!expanded)} aria-label={expanded ? 'Close expanded island' : 'Expand island'} aria-pressed={expanded}><Maximize2 size={16} /><span>{expanded ? 'Close' : 'Expand'}</span></button>
-          {status !== 'ready' && <div className="island-loading" role="status">
+          <button className="island-expand island-button" onClick={() => { setActive(true); setExpanded(!expanded) }} aria-label={expanded ? 'Close expanded island' : 'Expand island'} aria-pressed={expanded}><Maximize2 size={16} /><span>{expanded ? 'Close' : 'Expand'}</span></button>
+          {(!active || (touchMode && !expanded)) && <div className="island-loading island-entry">
+            <button type="button" className="island-enter-button" onClick={() => { setActive(true); if (touchMode) setExpanded(true) }}><Play size={18} />{active ? 'Open 3D island' : 'Enter 3D island'}</button>
+            <p>Explore 34 legends in an interactive island.</p>
+            {!active && <p className="text-xs">3D loads when you enter · about 15 MB</p>}
+          </div>}
+          {active && (!touchMode || expanded) && status !== 'ready' && <div className="island-loading" role="status">
             <Compass size={26} className={status === 'loading' ? 'animate-pulse' : ''} />
             <p>{status === 'error' ? 'The 3D island could not be loaded.' : `Loading island${progress > 0 ? ` · ${progress}%` : '…'}`}</p>
             {status === 'error' && <><p className="text-xs opacity-70">You can still discover every legend in the Pokédex.</p><button className="island-button" onClick={() => { setProgress(0); setAttempt(attempt + 1) }}>Try again</button><Link to="/pokedex?legendary=1" className="text-sm underline">Explore the Pokédex</Link></>}
           </div>}
-          {status === 'ready' && <div className="island-hint">Drag to orbit <span>·</span> Pinch or scroll to zoom <span>·</span> Click a Pokémon</div>}
+          {status === 'ready' && <div className="island-hint">{touchMode ? 'Drag to orbit · Pinch to zoom · Tap a Pokémon' : 'Drag to orbit · Scroll to zoom · Click a Pokémon'}</div>}
           {selected && status === 'ready' && <div className="island-selection" aria-live="polite">
             <IslandPokemonImage id={selected.id} className="island-selection-image" />
             <div><span className="text-[10px] font-bold uppercase tracking-widest text-amber-300">Legend discovered · #{String(selected.id).padStart(3, '0')}</span><h3 className="font-display text-xl font-bold">{selected.name}</h3></div>

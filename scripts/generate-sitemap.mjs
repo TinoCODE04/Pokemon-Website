@@ -25,6 +25,7 @@ function urlEntry(path, lastmod = TODAY, priority = '0.5') {
 
 const staticRoutes = [
   { path: '/', priority: '1.0' },
+  { path: '/about', priority: '0.5' },
   { path: '/pokedex', priority: '0.9' },
   { path: '/rankings', priority: '0.8' },
   { path: '/types', priority: '0.8' },

@@ -135,7 +135,7 @@ export default function MoviesPage() {
         description="Browse a source-attributed catalogue of Pokémon movies and feature-length specials. Watch trailers, explore ratings, and discover cinematic adventures."
         path="/movies"
       />
-      <section className="movies-atmosphere relative overflow-hidden border-b border-white/10 py-16 text-white sm:py-20">
+      <section className="movies-atmosphere relative overflow-hidden border-b border-white/10 py-10 text-white sm:py-20">
         <div className="container-app relative z-10">
           <div className="max-w-3xl">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.16em] text-amber-200 backdrop-blur">
@@ -167,7 +167,7 @@ export default function MoviesPage() {
 
         <div className="mt-10">
           {visibleMovies.length > 0 ? (
-            <div className="grid grid-cols-1 gap-5 min-[420px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-2 sm:gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {visibleMovies.map((movie, index) => <MovieCard key={movie.id} movie={movie} index={index} onPlayTrailer={playTrailer} />)}
             </div>
           ) : (

@@ -262,13 +262,19 @@ function PodiumCard({ entry, rank }: { entry: PokemonRanking; rank: number }) {
           <p className="mt-1 text-sm font-bold text-brand-500">BST {entry.total}</p>
         </div>
       </div>
-      <div className="relative mt-4 grid grid-cols-6 gap-1.5">
+      <details className="relative z-20 mt-4 sm:hidden">
+      <summary className="flex min-h-11 cursor-pointer items-center text-sm font-semibold">View base stats</summary>
+      <div className="grid grid-cols-3 gap-1.5">
         {stats.map(([label, value]) => (
           <div key={label} className="rounded-lg bg-slate-900/5 px-1 py-2 text-center dark:bg-white/5">
-            <p className="text-[9px] font-bold text-slate-400">{label}</p>
+            <p className="text-xs font-bold text-slate-500 dark:text-slate-400">{label}</p>
             <p className="mt-0.5 font-mono text-xs font-bold">{value}</p>
           </div>
         ))}
+      </div>
+      </details>
+      <div className="relative mt-4 hidden grid-cols-6 gap-1.5 sm:grid">
+        {stats.map(([label, value]) => <div key={label} className="rounded-lg bg-slate-900/5 px-1 py-2 text-center dark:bg-white/5"><p className="text-[10px] font-bold text-slate-500 dark:text-slate-400">{label}</p><p className="mt-0.5 font-mono text-xs font-bold">{value}</p></div>)}
       </div>
     </motion.div>
   )

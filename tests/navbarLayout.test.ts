@@ -14,7 +14,7 @@ test('keeps desktop navbar groups separated while preserving the mobile menu', (
   const source = readFileSync(new URL('../src/components/layout/Navbar.tsx', import.meta.url), 'utf8')
 
   assert.match(source, /className="navbar-shell flex h-16 min-w-0 items-center justify-between gap-2 sm:gap-3"/)
-  assert.match(source, /className="hidden items-center gap-1 xl:flex"/)
+  assert.match(source, /className="hidden items-center gap-1 2xl:flex"/)
   assert.match(source, /className="flex shrink-0 items-center gap-1 sm:gap-1\.5"/)
   assert.match(source, /className="container-app overflow-x-auto/)
 })

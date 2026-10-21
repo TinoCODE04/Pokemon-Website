@@ -92,6 +92,7 @@
 
 .island-expand {
   position: absolute;
+  z-index: 5;
   right: 16px;
   top: 12px;
   background: #ffffffb3;
@@ -491,6 +492,34 @@
   min-height: 0;
 }
 
+.island-enter-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  background: #e3350d;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.island-entry { pointer-events: auto; padding: 64px 20px; }
+.island-expanded {
+  top: calc(var(--dialog-top, 0px) + max(8px, env(safe-area-inset-top)));
+  bottom: auto;
+  height: calc(var(--dialog-height, 100dvh) - max(8px, env(safe-area-inset-top)) - max(8px, env(safe-area-inset-bottom)));
+}
+
+@media (pointer: coarse), (max-width: 767px) {
+  .island-shell:not(.island-expanded) .island-canvas { pointer-events: none; }
+  .island-button { min-height: 44px; min-width: 44px; }
+  .island-picker-search input { font-size: 16px; }
+}
+
 @media (max-width: 640px) {
   .island-stage {
     height: 430px;
@@ -587,7 +616,8 @@
   }
 
   .island-expanded {
-    inset: 6px;
+    left: max(6px, env(safe-area-inset-left));
+    right: max(6px, env(safe-area-inset-right));
   }
 
   .island-shell {

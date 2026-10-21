@@ -192,7 +192,7 @@ export default function PokemonDetailPage() {
               />
               <div className="card-surface relative overflow-hidden p-6">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.5),transparent_62%)] dark:bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06),transparent_62%)]" />
-                <div className="pokemon-stage relative mx-auto h-64 w-64 sm:h-80 sm:w-80">
+                <div className="pokemon-stage relative mx-auto aspect-square w-full max-w-64 sm:max-w-80">
                   <span className="pokemon-shadow absolute bottom-4 left-1/2 h-5 w-36 -translate-x-1/2 rounded-full bg-slate-950/30 blur-lg dark:bg-black/60" />
                   <img
                     src={image}
@@ -284,7 +284,7 @@ export default function PokemonDetailPage() {
                 </p>
               )}
 
-              <div className="mt-6 grid max-w-md grid-cols-2 gap-3">
+              <div className="mt-6 grid max-w-md grid-cols-1 gap-3 min-[420px]:grid-cols-2">
                 <div className="card-surface flex items-center gap-3 p-3.5">
                   <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-white/10 dark:text-slate-300">
                     <Ruler className="h-4.5 w-4.5" />
@@ -464,18 +464,20 @@ function MovesList({ moves }: { moves: import('../api/types').Pokemon['moves'] }
     <div>
       <div className="flex flex-wrap gap-1.5">
         {shown.map((m) => (
-          <span
+          <details
             key={m.name}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium capitalize dark:border-white/10 dark:bg-white/5"
-            title={m.level > 0 ? `Learned at level ${m.level} via ${formatName(m.method)}` : `Learned via ${formatName(m.method)}`}
+            className="max-w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-sm font-medium dark:border-white/10 dark:bg-white/5"
           >
+            <summary className="flex min-h-11 cursor-pointer list-none items-center gap-1.5 capitalize">
             {formatName(m.name)}
             {m.level > 0 && (
               <span className="rounded bg-slate-200 px-1 font-mono text-[10px] font-bold text-slate-500 dark:bg-white/10 dark:text-slate-400">
                 {m.level}
               </span>
             )}
-          </span>
+            </summary>
+            <p className="max-w-60 pb-3 text-sm font-normal text-slate-600 dark:text-slate-300">{m.level > 0 ? `Learned at level ${m.level} via ${formatName(m.method)}` : `Learned via ${formatName(m.method)}`}</p>
+          </details>
         ))}
       </div>
       {list.length > 48 && (

@@ -1,6 +1,6 @@
 @font-face { font-family: 'Super Pixel'; src: url('/fonts/pixelify/PixelifySans-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
 
-.sp-page { --sp-ink: #213b54; --sp-paper: #f4f8f3; --sp-muted: #506578; --sp-accent: #e95144; --sp-yellow: #ffd447; --sp-frame: #243f57; --sp-display: 'Super Pixel', var(--font-game), monospace; color: var(--sp-ink); background: var(--sp-paper); font-family: var(--font-sans); min-height: calc(100vh - 4rem); }
+.sp-page { --sp-ink: #213b54; --sp-paper: #f4f8f3; --sp-muted: #506578; --sp-accent: #e95144; --sp-yellow: #ffd447; --sp-frame: #243f57; --sp-display: 'Super Pixel', var(--font-game), monospace; color: var(--sp-ink); background: var(--sp-paper); font-family: var(--font-sans); min-height: calc(100svh - 4rem); }
 .dark .sp-page { --sp-ink: #edf7ec; --sp-paper: #142d38; --sp-muted: #b1c9ce; --sp-frame: #0d2333; }
 .sp-page ::selection { color: #213b54; background: #ffd447; }
 .sp-page button, .sp-page a { -webkit-tap-highlight-color: transparent; }
@@ -273,3 +273,29 @@
   .sp-console:fullscreen .sp-hud { min-height: 55px; }
 }
 @media (prefers-reduced-motion: reduce) { .sp-page *, .sp-page *::before, .sp-page *::after { animation: none !important; transition: none !important; } }
+
+@media (max-width: 700px) {
+  .sp-touch-directions, .sp-touch-abilities { display: grid; grid-template-columns: repeat(2, 48px); gap: 6px; }
+  .sp-touch-down { grid-column: 1 / -1; justify-self: center; width: 48px; }
+  .sp-touch-jump { grid-column: 2; grid-row: 1 / 3; height: 106px; }
+  .sp-touch-button { min-width: 48px; min-height: 50px; }
+  .sp-touch-button small { font-size: 11px; }
+  .sp-touch-controls { padding: 10px max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)); }
+  .sp-hud-actions button { width: 44px; height: 44px; }
+  .sp-hud { gap: 8px; }
+  .sp-breadcrumb { flex-wrap: wrap; font-size: 12px; }
+  .sp-breadcrumb a, .sp-text-button, .sp-pause-options a { min-height: 44px; }
+  .sp-pause-menu small { font-size: 12px; line-height: 1.6; }
+  .sp-welcome .sp-primary { min-width: 0; max-width: 100%; }
+  .sp-welcome-worlds { font-size: 11px; }
+  .sp-control-guide { font-size: 12px; }
+}
+
+@media (pointer: coarse) and (orientation: landscape) {
+  .sp-console:fullscreen { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); justify-content: flex-start; }
+  .sp-console:fullscreen .sp-hud { flex-wrap: wrap; min-height: 48px; padding: 4px 8px; gap: 8px; }
+  .sp-console:fullscreen .sp-stage { max-height: calc(100dvh - 132px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); width: min(100%, calc((100dvh - 132px) * 16 / 9)); }
+  .sp-console:fullscreen .sp-touch-directions, .sp-console:fullscreen .sp-touch-abilities { display: flex; gap: 6px; }
+  .sp-console:fullscreen .sp-touch-controls { padding-block: 6px; }
+  .sp-console:fullscreen .sp-touch-jump { height: 50px; }
+}

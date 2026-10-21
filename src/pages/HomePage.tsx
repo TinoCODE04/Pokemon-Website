@@ -7,7 +7,6 @@ import {
   GitCompareArrows,
   Grid3X3,
   Heart,
-  ArrowUpRight,
   Search,
   Sparkles,
   Swords,
@@ -77,27 +76,6 @@ const FEATURE_TILES = [
   },
 ]
 
-const SOCIAL_LINKS = [
-  {
-    name: 'GitHub',
-    handle: '@TinoCODE04',
-    href: 'https://github.com/TinoCODE04',
-    icon: '/github.svg',
-  },
-  {
-    name: 'Instagram',
-    handle: '@ttino.oo',
-    href: 'https://www.instagram.com/ttino.oo/',
-    icon: '/instagram.svg',
-  },
-  {
-    name: 'Facebook',
-    handle: 'Follow on Facebook',
-    href: 'https://www.facebook.com/share/1PXBpgBois/',
-    icon: '/facebook.svg',
-  },
-] as const
-
 export default function HomePage() {
   const navigate = useNavigate()
   const { data: allPokemon } = useAllPokemon()
@@ -158,7 +136,7 @@ export default function HomePage() {
           <div className="absolute -right-24 -top-32 h-96 w-96 rounded-full border border-brand-500/15" />
           <div className="absolute -right-8 -top-16 h-72 w-72 rounded-full border border-sky-400/10" />
         </div>
-        <div className="container-app relative grid min-h-[480px] items-center gap-8 py-10 md:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)] md:gap-4 md:py-12 xl:grid-cols-2 xl:gap-8 xl:py-16">
+        <div className="container-app relative grid items-center gap-6 py-8 sm:min-h-[480px] sm:gap-8 sm:py-10 md:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)] md:gap-4 md:py-12 xl:grid-cols-2 xl:gap-8 xl:py-16">
           <div className="relative z-10 min-w-0 max-w-xl">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -201,6 +179,8 @@ export default function HomePage() {
             >
               <Search className="ml-2 h-5 w-5 shrink-0 text-slate-400" />
               <input
+                type="search"
+                enterKeyHint="search"
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
                 placeholder="Search by name or Pokédex number"
@@ -209,6 +189,7 @@ export default function HomePage() {
               />
               <button
                 type="submit"
+                aria-label="Search the Pokédex"
                 className="inline-flex h-11 w-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-brand-500 px-3 text-sm font-bold text-white shadow-md shadow-brand-500/25 transition hover:bg-brand-600 sm:w-auto sm:px-5"
               >
                 <span className="hidden sm:inline">Search</span>
@@ -438,63 +419,15 @@ export default function HomePage() {
         <GenerationPreview />
       </section>
 
-      {/* Social links */}
-      <section className="container-app pb-12" aria-labelledby="social-links-title">
-        <div className="card-surface overflow-hidden">
-          <div className="grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
-            <div className="relative flex flex-col justify-between gap-8 overflow-hidden border-b border-slate-200 bg-gradient-to-br from-brand-500/10 via-transparent to-sky-500/10 p-7 dark:border-white/10 lg:border-b-0 lg:border-r lg:p-9">
-              <div className="pointer-events-none absolute -right-12 -top-16 h-44 w-44 rounded-full border border-brand-500/15" aria-hidden />
-              <div className="relative">
-              <h2 id="social-links-title" className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">
-                Follow More About Me
-              </h2>
-              <p className="mt-2 text-base font-medium text-slate-600 dark:text-slate-400">
-                Student &amp; Developer
-              </p>
-              </div>
-
-              <a
-                href="https://github.com/TinoCODE04/Pokemon-Website"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="View the Pokémon World website source code on GitHub"
-                className="group relative inline-flex min-h-12 w-fit items-center gap-3 rounded-xl border border-slate-300 bg-white/75 px-4 py-2.5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-brand-400 hover:shadow-md dark:border-white/15 dark:bg-white/5 dark:hover:border-brand-400"
-              >
-                <img src="/github.svg" alt="" width="20" height="20" className="h-5 w-5 opacity-75 dark:invert" />
-                <span>
-                  <span className="block text-sm font-bold">Website Source Code</span>
-                  <span className="block text-xs text-slate-500 dark:text-slate-400">View repository</span>
-                </span>
-                <ArrowUpRight className="h-4 w-4 text-slate-400 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand-500" />
-              </a>
-            </div>
-
-            <div className="grid divide-y divide-slate-200 dark:divide-white/10 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-              {SOCIAL_LINKS.map((platform) => (
-                <a
-                  key={platform.name}
-                  href={platform.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Follow Tino on ${platform.name}`}
-                  className="group relative flex min-h-24 items-center gap-3.5 p-6 pr-12 transition-colors hover:bg-slate-50 focus-visible:bg-slate-50 dark:hover:bg-white/[0.04] dark:focus-visible:bg-white/[0.04] sm:min-h-48"
-                >
-                  <img
-                    src={platform.icon}
-                    alt=""
-                    width="28"
-                    height="28"
-                    className="h-7 w-7 shrink-0 opacity-75 transition duration-200 group-hover:scale-110 group-hover:opacity-100 dark:invert"
-                  />
-                  <span className="min-w-0">
-                    <span className="block font-display text-base font-bold">{platform.name}</span>
-                    <span className="mt-0.5 block truncate text-sm text-slate-500 dark:text-slate-400">{platform.handle}</span>
-                  </span>
-                  <ArrowUpRight className="absolute right-5 top-5 h-4 w-4 text-slate-400 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand-500" />
-                </a>
-              ))}
-            </div>
+      <section className="container-app pb-12" aria-labelledby="about-preview-heading">
+        <div className="flex flex-col items-start justify-between gap-5 border-t border-slate-200 pt-8 sm:flex-row sm:items-center dark:border-white/10">
+          <div>
+            <h2 id="about-preview-heading" className="font-display text-xl font-bold tracking-tight">Meet the person behind Pokémon World.</h2>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">A little about the creator, the project and where to find me.</p>
           </div>
+          <Link to="/about" className="inline-flex min-h-12 shrink-0 items-center gap-2 rounded-xl border border-slate-300 px-5 py-3 text-sm font-bold transition hover:border-brand-500 hover:text-brand-600 dark:border-slate-600 dark:hover:text-brand-300">
+            About us <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
         </div>
       </section>
     </div>

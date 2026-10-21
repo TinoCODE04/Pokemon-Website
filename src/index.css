@@ -35,11 +35,24 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
+    scroll-padding-top: calc(5rem + env(safe-area-inset-top));
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
-    @apply overflow-x-hidden bg-slate-100 font-sans text-slate-900 dark:bg-night-950 dark:text-slate-100;
+    @apply bg-slate-100 font-sans text-slate-900 dark:bg-night-950 dark:text-slate-100;
+    min-width: 0;
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
   }
+
+  main, main > *, .card-surface { min-width: 0; }
+  h1, h2, h3, p, dd { overflow-wrap: anywhere; }
+  img, video, canvas { max-width: 100%; }
+  button, a, input, select, textarea { touch-action: manipulation; }
+  button, a { -webkit-tap-highlight-color: rgb(227 53 13 / 0.12); }
 
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-brand-500;
@@ -94,6 +107,34 @@
     @apply rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-night-900;
   }
 
+  .mobile-dialog {
+    @apply fixed border border-slate-200 bg-white text-slate-900 shadow-2xl dark:border-white/10 dark:bg-night-900 dark:text-slate-100;
+    padding: 0;
+    max-width: none;
+    max-height: none;
+    overflow: hidden;
+  }
+  .mobile-dialog[open] { display: flex; flex-direction: column; }
+  .mobile-dialog::backdrop { background: rgb(2 6 23 / 0.65); }
+  .mobile-dialog-sheet {
+    inset: auto 0 var(--dialog-bottom, 0px);
+    margin: 0 auto;
+    width: min(100%, 42rem);
+    max-height: min(90dvh, var(--dialog-height, 100dvh));
+    border-radius: 20px 20px 0 0;
+  }
+  .mobile-dialog-drawer {
+    inset: var(--dialog-top, 0px) 0 auto auto;
+    margin: 0;
+    width: min(100%, 24rem);
+    height: var(--dialog-height, 100dvh);
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  .mobile-dialog-footer { padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); }
+
   .dot-grid {
     background-image: radial-gradient(circle, rgb(100 116 139 / 0.16) 1px, transparent 1px);
     background-size: 22px 22px;
@@ -104,14 +145,16 @@
   }
 
   .hero-atmosphere {
+    --home-art: url('/home-bg.webp');
     background:
       linear-gradient(90deg, rgb(248 250 252 / 0.97) 0%, rgb(248 250 252 / 0.91) 34%, rgb(248 250 252 / 0.62) 58%, rgb(248 250 252 / 0.12) 100%),
       radial-gradient(circle at 78% 34%, rgb(227 53 13 / 0.12), transparent 27rem),
       radial-gradient(circle at 88% 78%, rgb(14 165 233 / 0.1), transparent 23rem),
-      url('/home-bg.png') center 35% / cover no-repeat;
+      var(--home-art) center 35% / cover no-repeat;
   }
 
   .movies-atmosphere {
+    --movie-art: url('/movies-hero-bg.jpg');
     isolation: isolate;
     position: relative;
     background-color: #0a101f;
@@ -121,7 +164,7 @@
       radial-gradient(ellipse at 8% 104%, rgb(14 165 233 / 0.2), transparent 28rem),
       linear-gradient(90deg, rgb(6 12 27 / 0.97) 0%, rgb(7 15 34 / 0.9) 42%, rgb(10 14 31 / 0.66) 100%),
       linear-gradient(124deg, rgb(8 13 25 / 0.72) 0%, rgb(16 27 61 / 0.44) 47%, rgb(23 19 38 / 0.62) 100%),
-      url('/movies-hero-bg.jpg') center 46% / cover no-repeat;
+      var(--movie-art) center 46% / cover no-repeat;
   }
 
   .movies-atmosphere::before {
@@ -179,21 +222,23 @@
       linear-gradient(90deg, rgb(10 16 31 / 0.24) 0%, rgb(10 16 31 / 0.3) 34%, rgb(10 16 31 / 0.48) 58%, rgb(10 16 31 / 0.56) 100%),
       radial-gradient(circle at 78% 34%, rgb(227 53 13 / 0.2), transparent 27rem),
       radial-gradient(circle at 88% 78%, rgb(14 165 233 / 0.15), transparent 23rem),
-      url('/home-bg.png') center 35% / cover no-repeat;
+      var(--home-art) center 35% / cover no-repeat;
   }
 
   @media (max-width: 767px) {
     .hero-atmosphere {
+      --home-art: url('/home-bg-mobile.webp');
       background:
         linear-gradient(180deg, rgb(248 250 252 / 0.96) 0%, rgb(248 250 252 / 0.92) 62%, rgb(248 250 252 / 0.78) 100%),
-        url('/home-bg.png') center / cover no-repeat;
+        var(--home-art) center / cover no-repeat;
     }
 
     .dark .hero-atmosphere {
       background:
         linear-gradient(180deg, rgb(10 16 31 / 0.28) 0%, rgb(10 16 31 / 0.38) 62%, rgb(10 16 31 / 0.52) 100%),
-        url('/home-bg.png') center / cover no-repeat;
+        var(--home-art) center / cover no-repeat;
     }
+    .movies-atmosphere { --movie-art: url('/movies-hero-mobile.webp'); }
   }
 
   .pokemon-stage {
@@ -212,6 +257,66 @@
 
   .battle-stage {
     background: #14223b;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto minmax(11rem, 1fr) auto;
+    grid-template-areas:
+      'opponent-panel opponent-panel'
+      'player-sprite opponent-sprite'
+      'player-panel player-panel';
+    gap: 1.5rem;
+    padding: 0.75rem;
+    isolation: isolate;
+  }
+
+  /* Panels stay in their own tracks, including when names or HP text wrap. */
+  .battle-combatant {
+    position: relative;
+    z-index: 20;
+    min-width: 0;
+    width: min(100%, 18rem);
+  }
+  .battle-combatant-opponent { grid-area: opponent-panel; }
+  .battle-combatant-player { grid-area: player-panel; justify-self: end; }
+  .battle-sprite {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 11rem;
+    aspect-ratio: 1;
+  }
+  .battle-sprite-opponent { grid-area: opponent-sprite; align-self: start; justify-self: end; }
+  .battle-sprite-player { grid-area: player-sprite; align-self: end; max-width: 12rem; }
+
+  .battle-move-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .battle-move-content {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .battle-move-name {
+    grid-column: 1 / -1;
+    min-height: 2.5em;
+    overflow-wrap: anywhere;
+  }
+  .battle-move-meta { display: flex; align-items: center; min-height: 2.5em; line-height: 1.25; }
+
+  @media (min-width: 640px) {
+    .battle-move-content { grid-template-columns: auto minmax(0, 1fr) auto; }
+    .battle-stage {
+      grid-template-rows: repeat(2, minmax(auto, 1fr));
+      grid-template-areas: 'opponent-panel opponent-sprite' 'player-sprite player-panel';
+      gap: 2rem;
+      padding: 2rem;
+    }
+    .battle-combatant { width: min(100%, 20rem); align-self: center; }
+    .battle-sprite { max-width: 14rem; align-self: center; }
+    .battle-sprite-player { max-width: 16rem; }
+  }
+
+  @media (max-width: 359px) {
+    .battle-move-grid { grid-template-columns: minmax(0, 1fr); }
   }
 
   .game-shell {
@@ -283,6 +388,44 @@
     transform: translateY(3px);
     box-shadow: inset 0 -1px 0 rgb(15 23 42 / 0.25), 0 1px 0 rgb(2 6 23 / 0.35);
   }
+}
+
+@media (max-width: 767px), (pointer: coarse) {
+  button, select, [role='button'] { min-height: 44px; min-width: 44px; }
+  input, select, textarea { font-size: 1rem; }
+  .navbar-shell :is(button, a[aria-label]) { min-width: 44px; min-height: 44px; }
+  a.inline-flex, a.flex, nav a, summary { min-height: 44px; }
+  .pokemon-float, .pokemon-shadow { animation: none; }
+}
+
+.viewport-overlay {
+  top: var(--dialog-top, 0px);
+  bottom: auto;
+  height: var(--dialog-height, 100dvh);
+}
+
+.compare-stats-scroll th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-width: 8rem;
+  background: white;
+  box-shadow: 1px 0 0 #e2e8f0;
+}
+.dark .compare-stats-scroll th:first-child { background: #0d1425; box-shadow: 1px 0 0 #334155; }
+
+@media (max-width: 767px) {
+  .game-shell .pixel-label { font-size: 10px; line-height: 1.5; letter-spacing: 0.04em; }
+}
+
+@media (hover: none) {
+  .group .group-hover\:opacity-100 { opacity: 1; }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .move-details { display: block; }
+  .move-touch-help { display: inline; }
+  .move-tooltip, .move-pointer-help { display: none; }
 }
 
 @keyframes pokemon-float {

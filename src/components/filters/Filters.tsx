@@ -49,7 +49,7 @@ export function TypeFilter({
             onClick={() => onToggle(type)}
             aria-pressed={active}
             className={cn(
-              'rounded-full border px-3 py-1.5 text-xs font-semibold capitalize transition-all',
+              'min-h-11 rounded-full border px-3 py-2 text-sm font-semibold capitalize transition-all sm:min-h-0 sm:py-1.5 sm:text-xs',
               active
                 ? 'border-transparent text-white shadow-sm'
                 : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-white/25',
@@ -72,8 +72,8 @@ export function SortSelect({
   onChange: (v: SortOption) => void
 }) {
   return (
-    <label className="flex items-center gap-2 text-sm">
-      <span className="hidden items-center gap-1.5 text-slate-500 sm:flex dark:text-slate-400">
+    <label className="flex flex-wrap items-center gap-2 text-sm">
+      <span className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
         {value.startsWith('name') ? (
           <ArrowDownAZ className="h-4 w-4" />
         ) : value === 'id-asc' ? (
@@ -86,7 +86,7 @@ export function SortSelect({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as SortOption)}
-        className="h-9 rounded-full border border-slate-200 bg-white px-3 text-sm font-medium outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 dark:border-white/10 dark:bg-white/5"
+        className="h-11 min-w-0 max-w-full rounded-xl border border-slate-200 bg-white px-3 text-base font-medium outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 sm:h-9 sm:rounded-full sm:text-sm dark:border-white/10 dark:bg-white/5"
       >
         {SORT_OPTIONS.map((o) => (
           <option key={o.value} value={o.value}>

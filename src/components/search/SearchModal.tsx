@@ -1,11 +1,13 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, Loader2, Search, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { extractId } from '../../api/pokeapi'
 import { useAllPokemon } from '../../hooks/queries'
 import { useDebounce } from '../../hooks/useDebounce'
 import { artworkUrl, formatDexNumber, formatName } from '../../utils/format'
+import { useDialogViewport } from '../../hooks/useDialogViewport'
 
 interface SearchEntry {
   id: number
@@ -17,10 +19,12 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
   const [activeIndex, setActiveIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const dialogRef = useRef<HTMLDivElement>(null)
+  const overlayRef = useRef<HTMLDivElement>(null)
   const previousFocusRef = useRef<HTMLElement | null>(null)
   const navigate = useNavigate()
   const { data, isLoading } = useAllPokemon()
   const debounced = useDebounce(query, 120)
+  useDialogViewport(overlayRef, open)
 
   const entries = useMemo<SearchEntry[]>(() => {
     if (!data) return []
@@ -46,17 +50,22 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
   }, [debounced, entries])
 
   useEffect(() => {
-    if (open) {
-      previousFocusRef.current = document.activeElement as HTMLElement | null
-      setQuery('')
-      setActiveIndex(0)
-      document.body.style.overflow = 'hidden'
-      // wait for mount before focusing
-      window.setTimeout(() => inputRef.current?.focus(), 30)
-    }
+    if (!open) return
+    const previousOverflow = document.body.style.overflow
+    const appRoot = document.getElementById('root')
+    const previousInert = appRoot?.inert ?? false
+    previousFocusRef.current = document.activeElement as HTMLElement | null
+    setQuery('')
+    setActiveIndex(0)
+    document.body.style.overflow = 'hidden'
+    if (appRoot) appRoot.inert = true
+    // Wait for the entering dialog before focusing the input.
+    const timer = window.setTimeout(() => inputRef.current?.focus(), 30)
     return () => {
-      document.body.style.overflow = ''
-      previousFocusRef.current?.focus()
+      window.clearTimeout(timer)
+      document.body.style.overflow = previousOverflow
+      if (appRoot) appRoot.inert = previousInert
+      if (previousFocusRef.current?.isConnected) previousFocusRef.current.focus({ preventScroll: true })
     }
   }, [open])
 
@@ -106,11 +115,12 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
     navigate(`/pokemon/${entry.id}`)
   }
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-[12vh]"
+          ref={overlayRef}
+          className="viewport-overlay fixed inset-0 z-50 flex items-start justify-center sm:p-4 sm:pt-[8vh]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -122,31 +132,34 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -10 }}
             transition={{ duration: 0.16 }}
-            className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-white/10 dark:bg-night-900"
+            className="relative flex h-full max-h-full w-full max-w-xl flex-col overflow-hidden border border-slate-200 bg-white shadow-2xl sm:h-auto sm:rounded-2xl dark:border-white/10 dark:bg-night-900"
             role="dialog"
             aria-modal="true"
             aria-label="Search Pokémon"
           >
-            <div className="flex items-center gap-3 border-b border-slate-200 px-4 dark:border-white/10">
+            <div className="flex shrink-0 items-center gap-2 border-b border-slate-200 px-3 pt-[env(safe-area-inset-top)] sm:gap-3 sm:px-4 dark:border-white/10">
               <Search className="h-5 w-5 shrink-0 text-slate-400" />
               <input
                 ref={inputRef}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search by name or number…"
-                className="h-14 flex-1 bg-transparent text-base outline-none placeholder:text-slate-400"
+                aria-label="Search by name or number"
+                type="search"
+                enterKeyHint="search"
+                className="h-14 min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-slate-400"
               />
               {isLoading && <Loader2 className="h-4 w-4 animate-spin text-slate-400" />}
               <button
                 onClick={onClose}
-                className="flex h-7 w-7 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-white/10"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-white/10"
                 aria-label="Close search"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <div className="max-h-80 overflow-y-auto p-2">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:max-h-80">
               <p className="sr-only" aria-live="polite">
                 {query.trim() ? `${results.length} search results` : 'Enter a name or number to search'}
               </p>
@@ -198,7 +211,7 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
               ))}
             </div>
 
-            <div className="flex items-center gap-4 border-t border-slate-200 px-4 py-2.5 text-[11px] text-slate-400 dark:border-white/10">
+            <div className="hidden shrink-0 items-center gap-4 border-t border-slate-200 px-4 py-2.5 text-[11px] text-slate-400 sm:flex dark:border-white/10">
               <span className="flex items-center gap-1.5">
                 <kbd className="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-sans dark:border-white/10 dark:bg-white/5">↑↓</kbd>
                 navigate
@@ -215,6 +228,6 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>, document.body,
   )
 }

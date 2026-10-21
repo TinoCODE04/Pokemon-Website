@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { ExternalLink, Loader2, Play, X } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import type { PokemonMovie } from '../../data/movies'
+import { useDialogViewport } from '../../hooks/useDialogViewport'
 
 export interface TrailerModalState {
   movie: PokemonMovie
@@ -15,6 +16,8 @@ export function TrailerModal({ state, onClose }: { state: TrailerModalState | nu
   const closeRef = useRef<HTMLButtonElement>(null)
   const dialogRef = useRef<HTMLElement>(null)
   const reduceMotion = useReducedMotion()
+  const overlayRef = useRef<HTMLDivElement>(null)
+  useDialogViewport(overlayRef, Boolean(state))
 
   useEffect(() => {
     if (!state) return
@@ -47,7 +50,8 @@ export function TrailerModal({ state, onClose }: { state: TrailerModalState | nu
     <AnimatePresence>
       {state && (
         <motion.div
-          className="fixed inset-0 z-[80] flex items-center justify-center bg-night-950/90 p-3 backdrop-blur-sm sm:p-6"
+          ref={overlayRef}
+          className="viewport-overlay fixed inset-0 z-[80] flex items-center justify-center bg-night-950/90 p-3 backdrop-blur-sm sm:p-6"
           initial={reduceMotion ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={reduceMotion ? undefined : { opacity: 0 }}
@@ -65,12 +69,12 @@ export function TrailerModal({ state, onClose }: { state: TrailerModalState | nu
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={reduceMotion ? undefined : { opacity: 0, y: 12, scale: 0.98 }}
             transition={reduceMotion ? { duration: 0 } : undefined}
-            className="max-h-[calc(100dvh-1.5rem)] w-full max-w-5xl overflow-y-auto rounded-2xl border border-white/15 bg-night-900 text-white shadow-2xl sm:max-h-[calc(100dvh-3rem)]"
+            className="max-h-full w-full max-w-5xl overflow-y-auto overscroll-contain rounded-2xl border border-white/15 bg-night-900 text-white shadow-2xl"
           >
             <header className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-white/10 bg-night-900 px-4 py-3 sm:px-5">
               <div className="min-w-0">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand-400">Trailer</p>
-                <h2 id="trailer-title" className="truncate font-display text-lg font-bold sm:text-xl">{state.movie.title}</h2>
+                <h2 id="trailer-title" className="font-display text-base font-bold sm:text-xl">{state.movie.title}</h2>
               </div>
               <button ref={closeRef} type="button" onClick={onClose} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 text-slate-300 transition hover:bg-white/10 hover:text-white" aria-label="Close trailer">
                 <X className="h-5 w-5" />

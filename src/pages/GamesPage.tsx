@@ -520,7 +520,7 @@ function FighterSelection(props: FighterSelectionProps) {
       </button>
 
       <div className={cn(
-        'pixel-panel relative overflow-hidden rounded-lg border-4 p-6 sm:p-8',
+        'pixel-panel relative overflow-hidden rounded-lg border-4 p-6 pb-32 sm:p-8',
         props.mode === 'legendary'
           ? 'border-amber-300 bg-gradient-to-r from-amber-100/80 via-white/80 to-violet-100/70 dark:border-amber-400/30 dark:from-amber-400/10 dark:via-transparent dark:to-violet-500/10'
           : 'border-sky-300 bg-gradient-to-r from-sky-100/80 via-white/80 to-red-50/70 dark:border-sky-400/25 dark:from-sky-400/10 dark:via-transparent dark:to-brand-500/5',
@@ -626,7 +626,7 @@ function FighterSelection(props: FighterSelectionProps) {
 
       {props.error && <p className="mt-5 rounded-xl border border-red-300 bg-red-50 p-4 text-sm font-semibold text-red-600 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300" role="alert">{props.error}</p>}
 
-      <div className="fixed inset-x-4 bottom-4 z-30 flex justify-end rounded-2xl border border-slate-200 bg-white/90 p-2 shadow-2xl backdrop-blur-xl sm:static sm:mt-8 sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none dark:border-white/10 dark:bg-night-950/85 dark:sm:bg-transparent">
+      <div className="fixed inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-30 flex justify-end rounded-2xl border border-slate-200 bg-white/90 p-2 shadow-2xl backdrop-blur-xl sm:static sm:mt-8 sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none dark:border-white/10 dark:bg-night-950/85 dark:sm:bg-transparent">
         <button
           onClick={props.onStart}
           className={cn(
@@ -738,25 +738,25 @@ function BattleArena(props: BattleArenaProps) {
       </div>
 
       <section className={cn(
-        'battle-stage pixel-panel relative min-h-[520px] overflow-hidden rounded-lg border-4 text-white sm:min-h-[560px]',
+        'battle-stage pixel-panel relative min-h-[440px] overflow-hidden rounded-lg border-4 text-white sm:min-h-[560px]',
         boss ? 'border-amber-400/70' : 'border-sky-300/60',
       )} aria-label="Battle arena">
         <img src="/battle-arena-pixel.jpg" alt="" className="pixel-sprite absolute inset-0 h-full w-full object-cover" />
         <div className={cn('absolute inset-0', boss ? 'bg-amber-950/20 mix-blend-multiply' : 'bg-sky-950/5')} />
-        <div className="absolute left-[4%] top-[5%] z-20 w-[78%] max-w-sm sm:left-[10%] sm:top-[12%] sm:w-80">
+        <div className="battle-combatant battle-combatant-opponent">
           <CombatantPanel pokemon={props.opponent} hp={props.opponentHp} maxHp={props.opponentMaxHp} boss={boss} />
         </div>
-        <div className="absolute bottom-[5%] right-[4%] z-20 w-[78%] max-w-sm sm:bottom-[10%] sm:right-[10%] sm:w-80">
+        <div className="battle-combatant battle-combatant-player">
           <CombatantPanel pokemon={props.player} hp={props.playerHp} maxHp={props.playerMaxHp} player />
         </div>
 
-        <div className="absolute right-[2%] top-[24%] z-10 h-40 w-40 sm:right-[12%] sm:top-[16%] sm:h-56 sm:w-56">
+        <div className="battle-sprite battle-sprite-opponent">
           <span className="absolute bottom-3 left-1/2 h-5 w-36 -translate-x-1/2 rounded-full bg-black/35 blur-lg" />
           <motion.img
             animate={props.opponentControls}
             src={opponentImage}
             alt={formatName(props.opponent.name)}
-            className="pixel-sprite relative h-full w-full scale-110 object-contain drop-shadow-[0_10px_3px_rgba(15,23,42,0.4)]"
+            className="pixel-sprite relative h-full w-full object-contain drop-shadow-[0_10px_3px_rgba(15,23,42,0.4)]"
             onError={(event) => {
               const image = event.currentTarget
               if (!image.dataset.fallback) {
@@ -769,13 +769,13 @@ function BattleArena(props: BattleArenaProps) {
             }}
           />
         </div>
-        <div className="absolute bottom-[20%] left-[2%] z-10 h-44 w-44 sm:bottom-[15%] sm:left-[11%] sm:h-64 sm:w-64">
+        <div className="battle-sprite battle-sprite-player">
           <span className="absolute bottom-2 left-1/2 h-6 w-40 -translate-x-1/2 rounded-full bg-black/40 blur-lg" />
           <motion.img
             animate={props.playerControls}
             src={playerImage}
             alt={formatName(props.player.name)}
-            className="pixel-sprite relative h-full w-full scale-110 object-contain drop-shadow-[0_12px_3px_rgba(15,23,42,0.45)]"
+            className="pixel-sprite relative h-full w-full object-contain drop-shadow-[0_12px_3px_rgba(15,23,42,0.45)]"
             onError={(event) => {
               const image = event.currentTarget
               if (!image.dataset.fallback) {
@@ -813,7 +813,7 @@ function BattleArena(props: BattleArenaProps) {
       </section>
 
       <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
-        <section className="game-dialog flex min-h-52 flex-col rounded-lg p-5 sm:p-6" aria-live="polite">
+        <section className="game-dialog order-2 flex min-h-40 flex-col rounded-lg p-4 lg:order-none sm:p-6" aria-live="polite">
           <p className="pixel-label text-[8px] uppercase text-brand-600">Battle message</p>
           <p className="mt-3 font-game text-2xl font-bold leading-snug">{props.message}</p>
           <div className="mt-4 space-y-1.5 border-t-2 border-slate-300 pt-4 dark:border-slate-600">
@@ -823,16 +823,16 @@ function BattleArena(props: BattleArenaProps) {
           </div>
         </section>
 
-        <section className="game-dialog rounded-lg p-5 sm:p-6">
+        <section className="game-dialog min-w-0 rounded-lg p-3 sm:p-6">
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
               <p className="pixel-label text-[8px] uppercase text-sky-700 dark:text-sky-300">Command</p>
               <h2 className="mt-1 font-game text-2xl font-bold">Choose a move</h2>
-              <p className="mt-1 font-game text-sm text-slate-500 dark:text-slate-400">Hover or focus a move to inspect it.</p>
+              <p className="mt-1 font-game text-sm text-slate-500 dark:text-slate-400"><span className="move-touch-help sm:hidden">Open Move details to inspect before attacking.</span><span className="move-pointer-help hidden sm:inline">Hover or focus a move to inspect it.</span></p>
             </div>
             {props.busy && <span className="inline-flex items-center gap-2 font-game text-base font-semibold text-slate-500 dark:text-slate-400"><span className="h-2 w-2 animate-pulse bg-brand-500" /> Resolving turn</span>}
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="battle-move-grid grid gap-2 sm:gap-3">
             {props.moves.map((move, index) => (
               <MoveButton
                 key={move.id}
@@ -854,7 +854,7 @@ function CombatantPanel({ pokemon, hp, maxHp, player = false, boss = false }: { 
   const percentage = Math.max(0, Math.min(100, (hp / Math.max(maxHp, 1)) * 100))
   const color = percentage > 55 ? 'bg-emerald-400' : percentage > 25 ? 'bg-amber-400' : 'bg-red-500'
   return (
-    <div className="game-dialog rounded-md p-3.5 sm:p-4">
+    <div className="game-dialog rounded-md p-2.5 sm:p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
@@ -884,32 +884,33 @@ function MoveButton({ move, index, effectiveness, disabled, onClick }: { move: B
         ? `${effectiveness}× not very effective`
         : 'Normal effectiveness'
   return (
-    <div className="group relative">
+    <div className="group relative min-w-0">
       <button
         onClick={onClick}
         disabled={disabled}
         aria-describedby={tooltipId}
-        className="game-button-shadow relative min-h-20 w-full overflow-hidden rounded-md border-2 border-slate-300 bg-white p-4 text-left text-slate-900 transition hover:-translate-y-0.5 hover:border-amber-400 focus-visible:border-amber-400 disabled:cursor-wait disabled:opacity-50 dark:border-slate-800 dark:bg-[#24314b] dark:text-white dark:hover:border-yellow-300 dark:focus-visible:border-yellow-300"
+        className="battle-move-button game-button-shadow relative w-full overflow-hidden rounded-md border-2 border-slate-300 bg-white p-3 pl-4 text-left text-slate-900 transition hover:-translate-y-0.5 hover:border-amber-400 focus-visible:border-amber-400 disabled:cursor-wait disabled:opacity-50 sm:p-4 dark:border-slate-800 dark:bg-[#24314b] dark:text-white dark:hover:border-yellow-300 dark:focus-visible:border-yellow-300"
         style={{ '--move-color': color } as React.CSSProperties}
       >
         <span className="absolute inset-y-0 left-0 w-2 bg-[var(--move-color)]" />
         <span className="absolute -right-8 -top-10 h-24 w-24 rounded-full bg-[var(--move-color)] opacity-10 blur-2xl transition group-hover:opacity-20" />
-        <span className="relative flex items-center justify-between gap-3">
-          <span className="flex items-center gap-3">
-            <span className="pixel-label flex h-7 w-7 shrink-0 items-center justify-center rounded-sm border border-slate-300 bg-slate-100 text-[8px] text-amber-700 dark:border-white/25 dark:bg-black/20 dark:text-yellow-200">{index + 1}</span>
-            <span>
-              <span className="block font-game text-xl font-extrabold leading-none">{move.name}</span>
-              <span className="mt-1.5 block font-game text-sm font-semibold capitalize text-slate-600 dark:text-sky-100/65">{move.type} · {move.category}</span>
-            </span>
-          </span>
-          <span className="pixel-label text-right text-[7px] text-slate-600 dark:text-sky-100/60"><span className="mb-1 block text-[9px] text-slate-900 dark:text-white">{move.power}</span>{move.accuracy}%</span>
+        <span className="battle-move-content relative">
+          <span className="battle-move-name font-game text-lg font-extrabold leading-tight sm:text-xl">{move.name}</span>
+          <span className="pixel-label flex h-7 w-7 shrink-0 items-center justify-center rounded-sm border border-slate-300 bg-slate-100 text-[8px] text-amber-700 dark:border-white/25 dark:bg-black/20 dark:text-yellow-200">{index + 1}</span>
+          <span className="battle-move-meta font-game text-sm font-semibold capitalize leading-tight text-slate-600 dark:text-sky-100/65">{move.type} · {move.category}</span>
+          <span className="pixel-label hidden text-right text-[7px] text-slate-600 sm:block dark:text-sky-100/60"><span className="mb-1 block text-[9px] text-slate-900 dark:text-white">{move.power}</span>{move.accuracy}%</span>
         </span>
       </button>
+
+      <details className="move-details mt-2 text-sm sm:hidden">
+        <summary className="flex min-h-11 cursor-pointer items-center font-game font-bold">Move details</summary>
+        <div className="space-y-2 pb-2"><p>{move.description}</p><p>Power {move.power} · Accuracy {move.accuracy}%</p><p>{effectivenessText}</p></div>
+      </details>
 
       <span
         id={tooltipId}
         role="tooltip"
-        className="pointer-events-none invisible absolute bottom-[calc(100%+10px)] left-1/2 z-50 w-72 -translate-x-1/2 rounded-md border-2 border-yellow-300/70 bg-[#101a2e] p-3.5 text-left text-white opacity-0 shadow-2xl transition duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+        className="move-tooltip pointer-events-none invisible absolute bottom-[calc(100%+10px)] left-1/2 z-50 hidden w-72 -translate-x-1/2 rounded-md border-2 border-yellow-300/70 bg-[#101a2e] p-3.5 text-left text-white opacity-0 shadow-2xl transition duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 sm:block"
       >
         <span className="flex items-center justify-between gap-3">
           <span className="font-game text-xl font-bold">{move.name}</span>

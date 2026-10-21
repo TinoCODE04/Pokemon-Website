@@ -133,7 +133,8 @@ export default function AbilitiesPage() {
         </div>
       </div>
 
-      <div className="mb-6 overflow-x-auto rounded-xl border border-slate-200 bg-white p-1.5 dark:border-white/10 dark:bg-white/[0.03]" aria-label="Filter abilities by first letter">
+      <p className="mb-2 text-sm text-slate-500 xl:hidden dark:text-slate-400">Swipe the letters to filter abilities.</p>
+      <div className="mb-6 overflow-x-auto overscroll-x-contain rounded-xl border border-slate-200 bg-white p-1.5 dark:border-white/10 dark:bg-white/[0.03]" aria-label="Filter abilities by first letter">
         <div className="flex min-w-max gap-1 xl:grid xl:min-w-0 xl:grid-cols-[repeat(27,minmax(0,1fr))]">
           {LETTERS.map((item) => {
             const active = letter === item

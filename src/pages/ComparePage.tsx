@@ -16,6 +16,7 @@ import { MAX_COMPARE, typeStyle } from '../constants/types'
 import { useCompare } from '../store/AppContext'
 import { useAllPokemon } from '../hooks/queries'
 import { useDebounce } from '../hooks/useDebounce'
+import { useDialogViewport } from '../hooks/useDialogViewport'
 import { cn } from '../utils/cn'
 import {
   getCompareColumnCount,
@@ -203,8 +204,8 @@ export default function ComparePage() {
 
       {/* Headers */}
       <div
-        className="grid gap-4 overflow-x-auto pb-2"
-        style={{ gridTemplateColumns: `repeat(${getCompareColumnCount(compare.length, MAX_COMPARE)}, minmax(220px, 1fr))` }}
+        className="grid min-w-0 gap-2 pb-2 sm:gap-4"
+        style={{ gridTemplateColumns: `repeat(${getCompareColumnCount(compare.length, MAX_COMPARE)}, minmax(0, 1fr))` }}
       >
         {queries.map((q, i) => {
           const p = q.data
@@ -215,7 +216,7 @@ export default function ComparePage() {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: i * 0.08 }}
-              className="card-surface relative flex flex-col items-center overflow-hidden p-5 text-center"
+              className="card-surface relative flex min-w-0 flex-col items-center overflow-hidden px-2 pb-4 pt-12 text-center sm:p-5 sm:pt-12"
               aria-busy={q.isPending}
               style={
                 p
@@ -227,19 +228,19 @@ export default function ComparePage() {
             >
               <button
                 onClick={() => removeFromCompare(compare[i])}
-                className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full text-slate-300 transition hover:bg-red-50 hover:text-red-500 dark:text-slate-600 dark:hover:bg-red-500/10"
+                className="absolute right-1 top-1 flex h-11 w-11 items-center justify-center rounded-full text-slate-500 transition hover:bg-red-50 hover:text-red-500 dark:text-slate-400 dark:hover:bg-red-500/10"
                 aria-label={`Remove ${p ? formatName(p.name) : formatDexNumber(compare[i])} from compare`}
               >
                 <X className="h-4 w-4" />
               </button>
               {q.isPending ? (
                 <div className="flex min-h-40 flex-col items-center justify-center">
-                  <div className="h-28 w-28 animate-pulse rounded-full bg-slate-200 dark:bg-white/10" />
+                  <div className="h-16 w-16 max-w-full animate-pulse rounded-full bg-slate-200 sm:h-28 sm:w-28 dark:bg-white/10" />
                   <p className="mt-3 font-mono text-xs font-semibold text-slate-400">{formatDexNumber(compare[i])}</p>
                   <p className="mt-1 text-xs text-slate-500" role="status">Loading Pokémon…</p>
                 </div>
               ) : q.isError || !p ? (
-                <div className="flex min-h-40 flex-col items-center justify-center px-4 text-center">
+                <div className="flex min-h-40 min-w-0 flex-col items-center justify-center text-center sm:px-4">
                   <p className="font-mono text-xs font-semibold text-slate-400">{formatDexNumber(compare[i])}</p>
                   <p className="text-sm font-bold text-slate-700 dark:text-slate-200">Could not load this Pokémon</p>
                   <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Check your connection and try again.</p>
@@ -259,11 +260,11 @@ export default function ComparePage() {
                       Highest total
                     </span>
                   )}
-                  <Link to={`/pokemon/${p.id}`} className="group">
+                  <Link to={`/pokemon/${p.id}`} className="group block w-full max-w-20 sm:max-w-32">
                     <img
                       src={bestArtwork(p.sprites) || artworkUrl(p.id)}
                       alt={formatName(p.name)}
-                      className="h-28 w-28 object-contain drop-shadow-md transition-transform group-hover:scale-110 sm:h-32 sm:w-32"
+                      className="aspect-square w-full object-contain drop-shadow-md transition-transform group-hover:scale-110"
                     />
                   </Link>
                   <span className="mt-1 font-mono text-xs font-semibold text-slate-400">
@@ -271,7 +272,7 @@ export default function ComparePage() {
                   </span>
                   <Link
                     to={`/pokemon/${p.id}`}
-                    className="font-display text-lg font-bold capitalize transition hover:text-brand-500"
+                    className="max-w-full font-display text-sm font-bold capitalize transition [overflow-wrap:anywhere] hover:text-brand-500 sm:text-lg"
                   >
                     {formatName(p.name)}
                   </Link>
@@ -280,7 +281,7 @@ export default function ComparePage() {
                       <TypeBadge key={t.type.name} type={t.type.name} size="sm" />
                     ))}
                   </div>
-                  <div className="mt-3 flex gap-4 text-xs text-slate-500 dark:text-slate-400">
+                  <div className="mt-3 flex flex-wrap justify-center gap-1 text-xs text-slate-500 sm:gap-4 dark:text-slate-400">
                     <span>{formatHeight(p.height)}</span>
                     <span>{formatWeight(p.weight)}</span>
                   </div>
@@ -296,7 +297,7 @@ export default function ComparePage() {
               browserTriggerRef.current = event.currentTarget
               setBrowserOpen(true)
             }}
-            className="group flex min-h-48 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-200 p-5 text-sm font-semibold text-slate-400 transition hover:border-brand-400 hover:bg-brand-500/5 hover:text-brand-500 dark:border-white/10 dark:hover:border-brand-500/60"
+            className="group flex min-h-48 min-w-0 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-200 p-2 text-sm font-semibold text-slate-500 transition hover:border-brand-400 hover:bg-brand-500/5 hover:text-brand-500 sm:p-5 dark:border-white/10 dark:hover:border-brand-500/60"
           >
             <span className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 transition group-hover:scale-105 dark:bg-white/5">
               <Plus className="h-5 w-5" />
@@ -362,14 +363,16 @@ export default function ComparePage() {
           </section>
 
           {/* Stat table */}
-          <section className="card-surface mt-6 overflow-x-auto p-5 sm:p-6">
-            <h2 className="mb-4 font-display text-lg font-bold">Base stats</h2>
-            <table className="w-full min-w-[420px] text-sm">
+          <section className="card-surface mt-6 min-w-0 p-4 sm:p-6">
+            <h2 id="compare-stats-heading" className="mb-2 font-display text-lg font-bold">Base stats</h2>
+            <p className="mb-3 text-sm text-slate-500 sm:hidden dark:text-slate-400">Swipe the table to compare every Pokémon. Stat names stay in view.</p>
+            <div className="compare-stats-scroll overflow-x-auto overscroll-x-contain" role="region" aria-labelledby="compare-stats-heading" tabIndex={0}>
+            <table className="w-full min-w-[480px] text-sm">
               <thead>
                 <tr className="border-b border-slate-100 text-left text-xs uppercase tracking-wide text-slate-400 dark:border-white/10">
-                  <th className="py-2 pr-4 font-bold">Stat</th>
+                  <th scope="col" className="py-2 pr-4 font-bold">Stat</th>
                   {pokemon.map((p) => (
-                    <th key={p.id} className="px-2 py-2 text-right font-bold capitalize">
+                    <th scope="col" key={p.id} className="max-w-44 break-words px-2 py-2 text-right font-bold capitalize">
                       {formatName(p.name)}
                     </th>
                   ))}
@@ -383,9 +386,9 @@ export default function ComparePage() {
                       key={name}
                       className="border-b border-slate-50 last:border-0 dark:border-white/5"
                     >
-                      <td className="py-2.5 pr-4 font-semibold text-slate-500 dark:text-slate-400">
+                      <th scope="row" className="py-2.5 pr-4 text-left font-semibold text-slate-500 dark:text-slate-400">
                         {statLabel(name)}
-                      </td>
+                      </th>
                       {pokemon.map((p) => {
                         const value =
                           p.stats.find((s) => s.stat.name === name)?.base_stat ?? 0
@@ -409,7 +412,7 @@ export default function ComparePage() {
                   )
                 })}
                 <tr className="border-t-2 border-slate-200 dark:border-white/15">
-                  <td className="py-3 pr-4 font-bold">Total</td>
+                  <th scope="row" className="py-3 pr-4 text-left font-bold">Total</th>
                   {pokemon.map((p) => (
                     <td key={p.id} className="px-2 py-3 text-right">
                       <span
@@ -427,6 +430,7 @@ export default function ComparePage() {
                 </tr>
               </tbody>
             </table>
+            </div>
           </section>
         </>
       )}
@@ -451,6 +455,8 @@ function PokemonBrowserDialog({
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const onCloseRef = useRef(onClose)
   const active = isPokemonBrowserActive(open, isFull)
+  const overlayRef = useRef<HTMLDivElement>(null)
+  useDialogViewport(overlayRef, active)
 
   useEffect(() => {
     onCloseRef.current = onClose
@@ -542,7 +548,8 @@ function PokemonBrowserDialog({
     <AnimatePresence>
       {active && (
         <motion.div
-          className="fixed inset-0 z-[80] flex items-end justify-center bg-slate-950/70 p-0 backdrop-blur-sm sm:items-center sm:p-5"
+          ref={overlayRef}
+          className="viewport-overlay fixed inset-0 z-[80] flex items-end justify-center bg-slate-950/70 p-0 backdrop-blur-sm sm:items-center sm:p-5"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -555,7 +562,7 @@ function PokemonBrowserDialog({
             role="dialog"
             aria-modal="true"
             aria-labelledby="pokemon-browser-title"
-            className="flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-t-3xl border border-slate-200 bg-slate-100 shadow-2xl dark:border-white/10 dark:bg-night-950 sm:max-h-[86vh] sm:rounded-3xl"
+            className="flex max-h-[92%] w-full max-w-6xl flex-col overflow-hidden rounded-t-2xl border border-slate-200 bg-slate-100 shadow-2xl dark:border-white/10 dark:bg-night-950 sm:max-h-[86%] sm:rounded-2xl"
             initial={{ opacity: 0, y: 28, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.98 }}
@@ -577,7 +584,7 @@ function PokemonBrowserDialog({
                 ref={closeButtonRef}
                 type="button"
                 onClick={onClose}
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-500 dark:border-white/10 dark:hover:bg-red-500/10"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-500 dark:border-white/10 dark:hover:bg-red-500/10"
                 aria-label="Close Pokémon browser"
               >
                 <X className="h-5 w-5" />
@@ -586,7 +593,7 @@ function PokemonBrowserDialog({
 
             <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
               {allPokemon.isLoading ? (
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6" aria-label="Loading Pokémon">
+                <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6" aria-label="Loading Pokémon">
                   {Array.from({ length: 12 }, (_, index) => (
                     <div key={index} className="h-36 animate-pulse rounded-2xl bg-slate-200 dark:bg-white/5" />
                   ))}
@@ -604,7 +611,7 @@ function PokemonBrowserDialog({
                   </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+                <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                   {paged.items.map((entry, index) => (
                     (() => {
                       const detailQuery = browserDetailQueries[index]
@@ -633,7 +640,7 @@ function PokemonBrowserDialog({
                           <span className="relative z-10 self-start font-mono text-xs font-bold text-slate-500 dark:text-slate-400">
                             {formatDexNumber(entry.id)}
                           </span>
-                          <span className="pokemon-stage relative mx-auto mt-1 flex h-28 w-28 items-center justify-center sm:h-32 sm:w-32">
+                          <span className="pokemon-stage relative mx-auto mt-1 flex aspect-square w-full max-w-28 items-center justify-center sm:max-w-32">
                             {style && (
                               <span
                                 className="absolute inset-2 rounded-full opacity-55 blur-2xl transition duration-300 group-hover:scale-110 group-hover:opacity-80"
@@ -658,7 +665,7 @@ function PokemonBrowserDialog({
                             {formatName(entry.name)}
                           </span>
                           {detail ? (
-                            <span className="relative z-10 mt-2 flex min-h-5 flex-nowrap justify-center gap-1">
+                            <span className="relative z-10 mt-2 flex min-h-5 flex-wrap justify-center gap-1">
                               {detail.types.map((type) => (
                                 <TypeBadge key={type.type.name} type={type.type.name} size="sm" className="shrink-0" />
                               ))}

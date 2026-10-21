@@ -151,7 +151,7 @@ export default function MovieDetailPage() {
             <h2 className="font-display text-xl font-bold">Movie facts</h2>
             <dl className="mt-3 divide-y divide-slate-200 dark:divide-white/10">
               {facts.map(([label, value]) => (
-                <div key={label} className="grid grid-cols-[100px_1fr] gap-3 py-3 text-sm">
+                <div key={label} className="grid grid-cols-1 gap-1 py-3 text-sm min-[420px]:grid-cols-[100px_minmax(0,1fr)] min-[420px]:gap-3">
                   <dt className="font-semibold text-slate-400">{label}</dt>
                   <dd className="font-medium text-slate-700 dark:text-slate-200">{value}</dd>
                 </div>

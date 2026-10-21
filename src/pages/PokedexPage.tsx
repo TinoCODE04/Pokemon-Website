@@ -6,6 +6,7 @@ import { extractId, PokeApiError } from '../api/pokeapi'
 import { getPokemon } from '../api/pokemon'
 import { getType } from '../api/types'
 import { Pagination } from '../components/filters/Pagination'
+import { ResponsiveFilters } from '../components/filters/ResponsiveFilters'
 import { LegendaryFilter, ResetFiltersButton, SortSelect, TypeFilter, type SortOption } from '../components/filters/Filters'
 import { PokemonCard, PokemonCardSkeleton, resourceToCardPokemon, toCardPokemon, type CardPokemon } from '../components/pokemon/PokemonCard'
 import { PokemonGrid } from '../components/pokemon/PokemonGrid'
@@ -199,7 +200,7 @@ export default function PokedexPage() {
               : 'Loading every Pokémon…'}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="hidden items-center gap-3 sm:flex">
           <SortSelect value={sort} onChange={(value) => { setSort(value); setPage(1) }} />
           <ResetFiltersButton
             visible={filtersActive}
@@ -214,6 +215,8 @@ export default function PokedexPage() {
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <input
+              type="search"
+              enterKeyHint="search"
               value={query}
               onChange={(e) => { setQuery(e.target.value); setPage(1) }}
               placeholder="Search by name or number…"
@@ -221,6 +224,16 @@ export default function PokedexPage() {
               aria-label="Search Pokémon"
             />
           </div>
+        </div>
+        <ResponsiveFilters
+          activeCount={Number(legendaryOnly) + selectedTypes.length + Number(genIndex !== 0) + Number(sort !== 'id-asc') + Number(Boolean(debouncedQuery.trim()))}
+          summary={[...selectedTypes, genIndex ? GENERATION_RANGES[genIndex].label : '', legendaryOnly ? 'Legendary' : ''].filter(Boolean).join(' · ')}
+          resultsLabel={allPokemon.isLoading || typeFilterQuery.isLoading ? 'results' : `${filtered.length.toLocaleString()} Pokémon`}
+          onReset={resetFilters}
+        >
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+          <label className="flex flex-col gap-2 text-sm font-semibold">
+          <span className="sm:sr-only">Generation</span>
           <select
             value={genIndex}
             onChange={(e) => { setGenIndex(Number(e.target.value)); setPage(1) }}
@@ -233,6 +246,8 @@ export default function PokedexPage() {
               </option>
             ))}
           </select>
+          </label>
+          <div className="sm:hidden"><SortSelect value={sort} onChange={(value) => { setSort(value); setPage(1) }} /></div>
         </div>
         <div className="flex flex-wrap items-center gap-3 border-b border-slate-200 pb-4 dark:border-white/10">
           <LegendaryFilter
@@ -247,6 +262,7 @@ export default function PokedexPage() {
             Applying the {selectedTypes[0]} type filter…
           </p>
         )}
+        </ResponsiveFilters>
       </div>
 
       {/* Grid */}
