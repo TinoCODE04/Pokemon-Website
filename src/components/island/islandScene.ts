@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js'
+import { downloadIslandModel } from '../../utils/islandDownload'
 
 export interface IslandPokemon { id: number; name: string }
 export interface IslandScene {
@@ -10,16 +11,18 @@ export interface IslandScene {
   zoom: (factor: number) => void
   rotate: (enabled: boolean) => void
   select: (id: number) => void
+  present: (visible: boolean) => void
 }
 
 export function createIslandScene(host: HTMLElement, callbacks: {
   ready: (pokemon: IslandPokemon[]) => void
   select: (pokemon: IslandPokemon) => void
   progress: (percent: number) => void
+  preparing: () => void
   error: () => void
-}): IslandScene {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' })
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
+}, options: { url: string; bytes: number; compact: boolean; rotating: boolean }): IslandScene {
+  const renderer = new THREE.WebGLRenderer({ antialias: !options.compact, alpha: true, powerPreference: 'low-power' })
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, options.compact ? 1 : 1.5))
   renderer.outputColorSpace = THREE.SRGBColorSpace
   renderer.toneMapping = THREE.ACESFilmicToneMapping
   renderer.toneMappingExposure = 1
@@ -36,7 +39,7 @@ export function createIslandScene(host: HTMLElement, callbacks: {
   controls.maxPolarAngle = Math.PI * 0.85
   controls.minPolarAngle = 0.08
   controls.autoRotateSpeed = 0.45
-  controls.autoRotate = !matchMedia('(prefers-reduced-motion: reduce)').matches
+  controls.autoRotate = options.rotating
   scene.add(new THREE.HemisphereLight(0xd5efff, 0x718465, 1.8))
   const sun = new THREE.DirectionalLight(0xfff0d2, 2.4)
   sun.position.set(-20, 45, -30)
@@ -58,6 +61,9 @@ export function createIslandScene(host: HTMLElement, callbacks: {
   const destination = new THREE.Vector3()
   const targetDestination = new THREE.Vector3()
   let transitioning = false
+  let presenting = !options.compact
+  const download = new AbortController()
+  const timeout = window.setTimeout(() => download.abort(new DOMException('Island download timed out', 'TimeoutError')), 45_000)
   const highlight = new THREE.BoxHelper(new THREE.Object3D(), 0xfbbf24)
   highlight.visible = false
   scene.add(highlight)
@@ -142,24 +148,41 @@ export function createIslandScene(host: HTMLElement, callbacks: {
     highlight.visible = true
     callbacks.select(entry.pokemon)
   }
-  new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).load('/models/pokemon-island.glb', (gltf) => {
-    if (disposed) { disposeModel(gltf.scene); return }
-    model = gltf.scene
-    scene.add(model)
-    model.traverse((object) => {
-      if (typeof object.userData.pokemonId === 'number') {
-        entries.set(object.userData.pokemonId, { pokemon: { id: object.userData.pokemonId, name: object.userData.pokemonName }, object })
-      }
-    })
-    const bounds = new THREE.Box3().setFromObject(model)
-    modelBounds.copy(bounds)
-    bounds.getCenter(center)
-    radius = bounds.getBoundingSphere(new THREE.Sphere()).radius
-    reset()
-    callbacks.ready([...entries.values()].map((entry) => entry.pokemon).sort((a, b) => a.name.localeCompare(b.name)))
-  }, (event) => {
-    if (!disposed && event.total) callbacks.progress(Math.round(event.loaded / event.total * 100))
-  }, () => { if (!disposed) callbacks.error() })
+  const load = async () => {
+    try {
+      const bytes = await downloadIslandModel(options.url, { signal: download.signal, expectedBytes: options.bytes, onProgress: (value) => { if (!disposed) callbacks.progress(value) } })
+      window.clearTimeout(timeout)
+      if (disposed) return
+      callbacks.preparing()
+      // Paint the preparation state before model decoding and shader compilation.
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+      if (disposed) return
+      const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).parseAsync(bytes, '/models/')
+      if (disposed) { disposeModel(gltf.scene); return }
+      model = gltf.scene
+      scene.add(model)
+      model.traverse((object) => {
+        if (typeof object.userData.pokemonId === 'number') {
+          entries.set(object.userData.pokemonId, { pokemon: { id: object.userData.pokemonId, name: object.userData.pokemonName }, object })
+        }
+      })
+      const bounds = new THREE.Box3().setFromObject(model)
+      modelBounds.copy(bounds)
+      bounds.getCenter(center)
+      radius = bounds.getBoundingSphere(new THREE.Sphere()).radius
+      reset()
+      await renderer.compileAsync(scene, camera)
+      if (disposed) return
+      renderer.render(scene, camera)
+      callbacks.ready([...entries.values()].map((entry) => entry.pokemon).sort((a, b) => a.name.localeCompare(b.name)))
+      if (presenting) renderer.setAnimationLoop(renderFrame)
+    } catch {
+      if (!disposed) callbacks.error()
+    } finally {
+      window.clearTimeout(timeout)
+    }
+  }
+  void load()
 
   const hit = (event: PointerEvent) => {
     if (!model) return undefined
@@ -196,7 +219,7 @@ export function createIslandScene(host: HTMLElement, callbacks: {
   canvas.addEventListener('pointercancel', onCancel)
   canvas.addEventListener('webglcontextlost', onLost)
   let last = 0
-  renderer.setAnimationLoop((time) => {
+  function renderFrame(time: number) {
     if (disposed || !visible || document.hidden || time - last < 30) return
     const delta = Math.min((time - last) / 1000, 0.1)
     last = time
@@ -207,10 +230,11 @@ export function createIslandScene(host: HTMLElement, callbacks: {
     }
     controls.update(delta)
     renderer.render(scene, camera)
-  })
+  }
   return {
     reset,
     select,
+    present: (enabled) => { presenting = enabled; if (model) renderer.setAnimationLoop(enabled ? renderFrame : null) },
     rotate: (enabled) => { controls.autoRotate = enabled },
     zoom: (factor) => {
       transitioning = false
@@ -220,7 +244,10 @@ export function createIslandScene(host: HTMLElement, callbacks: {
       controls.update()
     },
     dispose: () => {
+      if (disposed) return
       disposed = true
+      download.abort()
+      window.clearTimeout(timeout)
       renderer.setAnimationLoop(null)
       observer.disconnect()
       intersection.disconnect()

@@ -1,6 +1,9 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { ISLAND_PREVIEW } from '../src/data/islandPreview.ts'
+import { ISLAND_ASSETS } from '../src/data/islandAssets.ts'
 
 test('shipped island preserves 34 selectable Pokémon and stays within the web budget', () => {
   const bytes = readFileSync('public/models/pokemon-island.glb')
@@ -16,4 +19,35 @@ test('shipped island preserves 34 selectable Pokémon and stays within the web b
   const colored = json.materials.filter((material: { pbrMetallicRoughness?: { baseColorFactor?: number[] } }) =>
     material.pbrMetallicRoughness?.baseColorFactor?.slice(0, 3).some((value: number) => value < 0.8))
   assert.ok(colored.length > 40, 'Blender procedural colors must survive as GLB PBR colors')
+})
+
+test('mobile and desktop island profiles preserve all Pokémon with smaller versioned downloads', () => {
+  for (const profile of ['mobile', 'desktop']) {
+    const asset = ISLAND_ASSETS[profile as keyof typeof ISLAND_ASSETS]
+    const name = asset.url.split('/').at(-1)!
+    assert.match(name, new RegExp(`^pokemon-island-${profile}-[a-f0-9]{12}\\.glb$`))
+    const bytes = readFileSync(`public/models/${name}`)
+    assert.equal(asset.bytes, bytes.byteLength)
+    assert.ok(name.includes(createHash('sha256').update(bytes).digest('hex').slice(0, 12)))
+    const json = JSON.parse(bytes.subarray(20, 20 + bytes.readUInt32LE(12)).toString())
+    const original = readFileSync('public/models/pokemon-island.glb')
+    const originalJson = JSON.parse(original.subarray(20, 20 + original.readUInt32LE(12)).toString())
+    const ids = (data: typeof json) => data.nodes.filter((node: { extras?: { pokemonId?: number } }) => node.extras?.pokemonId).map((node: { extras: { pokemonId: number } }) => node.extras.pokemonId).sort()
+    assert.deepEqual(ids(json), ids(originalJson))
+    assert.ok(bytes.length < (profile === 'mobile' ? 4 : 8) * 1024 * 1024)
+    const triangles = json.meshes.flatMap((mesh: { primitives: { indices: number }[] }) => mesh.primitives).reduce((total: number, primitive: { indices: number }) => total + json.accessors[primitive.indices].count / 3, 0)
+    assert.ok(triangles < (profile === 'mobile' ? 400_000 : 900_000), `${profile}: ${triangles} triangles`)
+    assert.equal(asset.triangles, triangles)
+    assert.ok(json.materials.length > 40, 'retain the authored color palette')
+    const texturedTriangles = (data: typeof json) => data.meshes.flatMap((mesh: { primitives: { material: number; indices: number }[] }) => mesh.primitives).filter((primitive: { material: number }) => data.materials[primitive.material]?.pbrMetallicRoughness?.baseColorTexture).reduce((total: number, primitive: { indices: number }) => total + data.accessors[primitive.indices].count / 3, 0)
+    assert.equal(texturedTriangles(json), texturedTriangles(originalJson), 'water topology must survive simplification')
+  }
+})
+
+test('the no-download preview covers all 34 real Pokémon inside the poster', () => {
+  const bytes = readFileSync('public/models/pokemon-island.glb')
+  const json = JSON.parse(bytes.subarray(20, 20 + bytes.readUInt32LE(12)).toString())
+  const modelIds = json.nodes.filter((node: { extras?: { pokemonId?: number } }) => node.extras?.pokemonId).map((node: { extras: { pokemonId: number } }) => node.extras.pokemonId).sort()
+  assert.deepEqual(ISLAND_PREVIEW.pokemon.map((entry) => entry.id).sort(), modelIds)
+  for (const entry of ISLAND_PREVIEW.pokemon) assert.ok(entry.x > 0 && entry.x < 100 && entry.y > 0 && entry.y < 100, entry.name)
 })

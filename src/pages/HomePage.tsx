@@ -50,6 +50,8 @@ const FEATURE_TILES = [
     to: '/pokedex',
     icon: Grid3X3,
     title: 'Complete Pokédex',
+    mobileTitle: 'Pokédex',
+    mobileText: 'All nine generations, stats and evolutions.',
     text: 'Every Pokémon from all nine generations, with artwork, stats, evolutions and moves.',
     accent: 'from-brand-500/15 to-brand-500/5 text-brand-500',
   },
@@ -57,6 +59,8 @@ const FEATURE_TILES = [
     to: '/types',
     icon: Swords,
     title: 'Type matchups',
+    mobileTitle: 'Type matchups',
+    mobileText: 'All 18 types and matchup charts.',
     text: 'Explore all 18 types with full offensive and defensive effectiveness charts.',
     accent: 'from-sky-500/15 to-sky-500/5 text-sky-500',
   },
@@ -64,6 +68,8 @@ const FEATURE_TILES = [
     to: '/compare',
     icon: GitCompareArrows,
     title: 'Side-by-side compare',
+    mobileTitle: 'Compare',
+    mobileText: 'Compare up to three Pokémon.',
     text: 'Put up to three Pokémon head to head across every base stat.',
     accent: 'from-violet-500/15 to-violet-500/5 text-violet-500',
   },
@@ -71,6 +77,8 @@ const FEATURE_TILES = [
     to: '/favorites',
     icon: Heart,
     title: 'Your favorites',
+    mobileTitle: 'Favorites',
+    mobileText: 'Your collection, saved on this device.',
     text: 'Build a personal collection that stays saved on this device.',
     accent: 'from-rose-500/15 to-rose-500/5 text-rose-500',
   },
@@ -291,8 +299,8 @@ export default function HomePage() {
       <IslandExplorer />
 
       {/* Feature tiles */}
-      <section className="container-app py-14">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="container-app py-8 sm:py-14" aria-label="Explore Pokémon World">
+        <div className="grid auto-rows-fr grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {FEATURE_TILES.map((tile, i) => (
             <motion.div
               key={tile.to}
@@ -303,16 +311,16 @@ export default function HomePage() {
             >
               <Link
                 to={tile.to}
-                className="card-surface group flex h-full flex-col gap-3 p-5 transition-shadow hover:shadow-lg"
+                className="card-surface group flex h-full flex-col gap-2 p-3 transition-shadow hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 sm:gap-3 sm:p-5"
               >
                 <span
-                  className={`flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${tile.accent}`}
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br sm:h-11 sm:w-11 sm:rounded-xl ${tile.accent}`}
                 >
-                  <tile.icon className="h-5 w-5" />
+                  <tile.icon className="h-4 w-4 sm:h-5 sm:w-5" />
                 </span>
-                <h3 className="font-display font-bold">{tile.title}</h3>
-                <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">{tile.text}</p>
-                <span className="mt-auto inline-flex items-center gap-1 pt-1 text-xs font-bold text-brand-500 opacity-0 transition group-hover:opacity-100">
+                <h3 className="font-display text-sm leading-5 font-bold sm:text-base sm:leading-6"><span className="sm:hidden">{tile.mobileTitle}</span><span className="hidden sm:inline">{tile.title}</span></h3>
+                <p className="text-xs leading-relaxed text-slate-500 sm:text-sm dark:text-slate-400"><span className="sm:hidden">{tile.mobileText}</span><span className="hidden sm:inline">{tile.text}</span></p>
+                <span className="mt-auto hidden items-center gap-1 pt-1 text-xs font-bold text-brand-500 opacity-0 transition group-hover:opacity-100 group-focus-visible:opacity-100 sm:inline-flex">
                   Explore <ArrowRight className="h-3.5 w-3.5" />
                 </span>
               </Link>

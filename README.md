@@ -30,7 +30,7 @@ A clean, responsive Pokémon world powered by [PokéAPI](https://pokeapi.co/). B
 - Phone pagination provides previous/next buttons and a page selector.
 - Global search fills the phone screen and adapts to the visible viewport when the keyboard opens.
 - Comparison selections fit the page; the detailed stat table scrolls independently with stat names pinned.
-- On narrow screens, touch devices, or data-saving connections, the 3D island loads only after **Enter 3D island**. Touch exploration opens an expanded view; Close remains available during loading or errors.
+- The island preview and all 34 Pokémon selections work without downloading 3D. Mobile/touch and constrained connections load a 2.46 MB lightweight model only after **Enter 3D island**, with cancellable progress; fullscreen is optional after it is ready. Desktop uses a 4.12 MB standard profile. See [asset pipeline and performance measurements](docs/island-explorer.md).
 - Touch game controls have larger targets. Battle move details can be expanded before attacking, including in landscape orientation.
 
 The layouts target current mobile browsers. Real-device Safari/Chrome checks are still useful for keyboard, display cutouts, fullscreen availability, and device performance.
