@@ -21,8 +21,9 @@ export function createIslandScene(host: HTMLElement, callbacks: {
   preparing: () => void
   error: () => void
 }, options: { url: string; bytes: number; compact: boolean; rotating: boolean }): IslandScene {
-  const renderer = new THREE.WebGLRenderer({ antialias: !options.compact, alpha: true, powerPreference: 'low-power' })
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, options.compact ? 1 : 1.5))
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' })
+  // Keep fine edges readable on phone displays without rendering at unbounded DPR.
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   renderer.outputColorSpace = THREE.SRGBColorSpace
   renderer.toneMapping = THREE.ACESFilmicToneMapping
   renderer.toneMappingExposure = 1
@@ -63,7 +64,7 @@ export function createIslandScene(host: HTMLElement, callbacks: {
   let transitioning = false
   let presenting = !options.compact
   const download = new AbortController()
-  const timeout = window.setTimeout(() => download.abort(new DOMException('Island download timed out', 'TimeoutError')), 45_000)
+  const timeout = window.setTimeout(() => download.abort(new DOMException('Island download timed out', 'TimeoutError')), 120_000)
   const highlight = new THREE.BoxHelper(new THREE.Object3D(), 0xfbbf24)
   highlight.visible = false
   scene.add(highlight)

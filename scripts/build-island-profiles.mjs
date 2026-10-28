@@ -14,12 +14,13 @@ const source = 'public/models/pokemon-island.glb'
 const original = await readFile(source)
 const sourceHash = createHash('sha256').update(original).digest('hex')
 const profiles = {}
-for (const [name, ratio, error] of [['mobile', 0.12, 0.003], ['desktop', 0.32, 0.0015]]) {
+// Light keeps a tight error budget; Standard preserves all source triangles.
+for (const [name, ratio, error] of [['mobile', 0.55, 0.0002], ['desktop', 1, 0]]) {
   const document = await io.read(source)
   await document.transform(dedup(), weld())
   for (const primitive of document.getRoot().listMeshes().flatMap(mesh => mesh.listPrimitives())) {
     // The small textured water surface costs little and needs its original topology.
-    if (!primitive.getMaterial()?.getBaseColorTexture()) simplifyPrimitive(primitive, { simplifier: MeshoptSimplifier, ratio, error })
+    if (ratio < 1 && !primitive.getMaterial()?.getBaseColorTexture()) simplifyPrimitive(primitive, { simplifier: MeshoptSimplifier, ratio, error })
   }
   await document.transform(prune(), meshopt({ encoder: MeshoptEncoder, level: 'high', quantizePosition: 16 }))
   const bytes = await io.writeBinary(document)

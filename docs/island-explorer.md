@@ -9,8 +9,8 @@ for reference. Production uses content-hashed profiles from `src/data/islandAsse
 
 | Profile | Download bytes | Triangles |
 | --- | ---: | ---: |
-| Mobile / touch / constrained connection | 2,460,356 | 366,238 |
-| Desktop standard | 4,124,464 | 774,153 |
+| Light — mobile / touch / constrained connection | 7,282,676 | 1,574,199 |
+| Standard — desktop default, also selectable on mobile | 9,153,144 | 2,080,502 |
 | Original | 15,364,064 | 2,080,502 |
 
 All profiles preserve 34 individually selectable Pokémon and authored material colors.
@@ -35,9 +35,14 @@ The optimizer reduces geometry, transfers procedural base colors, compresses the
 water texture, and moves large intermediate files into ignored `output/island/`.
 No external CDN or API is required to load the island.
 
-The profile builder simplifies geometry with explicit error budgets, keeps the
-textured water topology intact, and uses 16-bit position precision to avoid thin
-surface artifacts. Filenames contain their SHA-256 prefix. Remove superseded
+The higher-detail profiles replace the earlier 2.46 MB / 4.12 MB variants as of
+2026-10-28. Light uses a 0.55 target ratio and a strict 0.0002 error budget,
+retaining about 76% of the original triangles. Standard skips simplification
+entirely and preserves all original triangles; deduplication, vertex welding and
+Meshopt packaging reduce its download to about 9.15 MB without further decimation.
+Both use quantization, so neither is claimed to be bit-identical to the source.
+The builder keeps textured water topology intact and uses 16-bit position
+precision to avoid thin surface artifacts. Filenames contain their SHA-256 prefix. Remove superseded
 profile files after generating replacements; retain the original GLB.
 The preview exporter projects Pokémon centers using the source camera at the
 poster's 1400 × 850 resolution. Neither script saves the Blender source.
@@ -63,12 +68,15 @@ poster's 1400 × 850 resolution. Neither script saves the Blender source.
   profile can be chosen explicitly; the original is never downloaded automatically.
 - Download displays real byte progress, then a separate preparation state. Ready
   follows decoding, shader compilation and the initial render. The download has
-  a 45-second timeout. Cancel aborts the network stream and disposes the scene;
+  a 120-second timeout for the larger, higher-detail downloads. Cancel aborts the network stream and disposes the scene;
   retry creates a fresh scene. Loading never forces fullscreen.
 - On mobile, Open 3D expands the prepared scene; returning inline pauses its
   render loop. Use preview releases GPU resources completely. Rendering also
-  pauses offscreen and in hidden tabs. DPR is capped at 1 on mobile/touch and 1.5
-  on desktop, with approximately 30 fps maximum. Mobile disables MSAA.
+  pauses offscreen and in hidden tabs. DPR is capped at 2 on both mobile and
+  desktop, with approximately 30 fps maximum. Antialiasing is enabled on both.
+  Higher-density phone screens render at twice the CSS canvas dimensions rather
+  than the old 1× mobile resolution. These settings prioritize visual detail;
+  performance still depends on the user's device.
 - Unmount cancels pending downloads and disposes resources and event listeners.
   Load/WebGL errors preserve the clickable poster and picker, with a retry control.
 
@@ -79,18 +87,20 @@ immutable headers only for versioned profile filenames; other hosts should
 provide equivalent headers. The original and fixed-name poster are not marked
 immutable. Changed model bytes produce a new URL. No deployment was performed.
 
-Local Chrome measurements, 5 Mbps downstream / 80 ms latency, DPR 1, cold model
-URLs and the Three.js runtime preloaded (desktop GPU, not a real-phone benchmark):
+Local Chrome measurements for the current profiles, 5 Mbps downstream / 80 ms
+latency, 390 × 640 phone viewport, device DPR 3 / render DPR 2, cold model URLs
+and the Three.js runtime preloaded (desktop GPU emulation, not a real-phone benchmark):
 
 | Profile | Model download | Preparation / first render | Model readiness |
 | --- | ---: | ---: | ---: |
-| Original | 25.40 s | 1.04 s | 26.44 s |
-| Mobile | 4.21 s | 0.26 s | 4.47 s |
-| Desktop standard | 6.98 s | 0.39 s | 7.37 s |
+| Light | 12.12 s | 0.56 s | 12.68 s |
+| Standard | 15.34 s | 0.59 s | 15.93 s |
 
-Repeated versioned-profile fetches transferred zero network bytes in the browser
-cache check. These timings exclude other page/runtime resources and do not
-guarantee live-host performance. Verify deployed headers after publishing.
+These higher-detail profiles intentionally trade the previous small downloads
+for more geometry and sharper rendering. Timings exclude other page/runtime
+resources and do not guarantee live-host performance. Caching still depends on
+the host's response headers; verify immutable-cache headers and reuse on the
+deployed host after publishing.
 
 Validation covers 320–667px touch layouts, real network cancellation, failed-load
 retry, preview entries for all 34 Pokémon, optional fullscreen, mobile DPR,
