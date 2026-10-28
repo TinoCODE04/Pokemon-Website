@@ -135,6 +135,23 @@
   }
   .mobile-dialog-footer { padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); }
 
+  .mobile-dialog-menu {
+    inset: calc(var(--dialog-top, 0px) + max(72px, env(safe-area-inset-top))) max(12px, env(safe-area-inset-right)) auto auto;
+    margin: 0;
+    width: min(24rem, calc(100% - 24px));
+    max-height: min(76dvh, calc(var(--dialog-height, 100dvh) - 88px));
+    border-radius: 20px;
+  }
+  .mobile-dialog-menu::backdrop { background: rgb(2 6 23 / 0.42); }
+  .mobile-dialog-menu[open] { animation: mobile-menu-enter 180ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+  @keyframes mobile-menu-enter {
+    from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-dialog-menu[open] { animation: none; }
+  }
+
   .dot-grid {
     background-image: radial-gradient(circle, rgb(100 116 139 / 0.16) 1px, transparent 1px);
     background-size: 22px 22px;
@@ -402,6 +419,29 @@
   top: var(--dialog-top, 0px);
   bottom: auto;
   height: var(--dialog-height, 100dvh);
+}
+
+.search-overlay {
+  padding: max(72px, calc(env(safe-area-inset-top) + 64px)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+}
+.search-backdrop {
+  background: rgb(2 6 23 / 0.1);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(2px);
+}
+.search-panel {
+  max-height: min(calc(var(--dialog-height, 100dvh) * 0.55), calc(var(--dialog-height, 100dvh) - 88px));
+  background: rgb(255 255 255 / 0.86);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+.search-results { max-height: min(17rem, calc(var(--dialog-height, 100dvh) * 0.36)); }
+.dark .search-backdrop { background: rgb(2 6 23 / 0.2); }
+.dark .search-panel { background: rgb(13 20 37 / 0.88); }
+@media (min-width: 768px) {
+  .search-overlay { padding: 8dvh 16px 16px; }
+  .search-panel { max-height: calc(var(--dialog-height, 100dvh) - 16dvh); }
+  .search-results { max-height: 20rem; }
 }
 
 .compare-stats-scroll th:first-child {

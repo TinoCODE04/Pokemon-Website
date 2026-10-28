@@ -7,11 +7,10 @@ import {
   GitCompareArrows,
   Grid3X3,
   Heart,
-  Search,
   Sparkles,
   Swords,
 } from 'lucide-react'
-import { useState, type FormEvent } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { extractId } from '../api/pokeapi'
 import { getPokemon } from '../api/pokemon'
@@ -23,6 +22,7 @@ import { PokemonCard, PokemonCardSkeleton, toCardPokemon } from '../components/p
 import { PokemonGrid } from '../components/pokemon/PokemonGrid'
 import IslandExplorer from '../components/island/IslandExplorer'
 import { Seo } from '../components/Seo'
+import { HomeSearch } from '../components/search/HomeSearch'
 
 type HeroTrick = 'roar' | 'bounce' | 'spin' | 'levitate' | 'dash-right' | 'dash-left'
 
@@ -90,7 +90,6 @@ export default function HomePage() {
   const { data: generations } = useGenerations()
   const { data: speciesCount } = usePokemonCount()
   const [randomizing, setRandomizing] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
   const [recentlyViewed] = useLocalStorage<number[]>(RECENT_KEY, [])
   const recentQueries = useQueries({
     queries: recentlyViewed.map((id) => ({
@@ -108,12 +107,6 @@ export default function HomePage() {
     setRandomizing(true)
     const pick = allPokemon.results[Math.floor(Math.random() * allPokemon.results.length)]
     window.setTimeout(() => navigate(`/pokemon/${extractId(pick)}`), 250)
-  }
-
-  const searchPokedex = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const query = searchQuery.trim()
-    navigate(query ? `/pokedex?q=${encodeURIComponent(query)}` : '/pokedex')
   }
 
   return (
@@ -139,8 +132,8 @@ export default function HomePage() {
         }}
       />
       {/* Hero */}
-      <section className="hero-atmosphere relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 opacity-40" aria-hidden>
+      <section className="hero-atmosphere relative z-20 overflow-x-clip">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-40" aria-hidden>
           <div className="absolute -right-24 -top-32 h-96 w-96 rounded-full border border-brand-500/15" />
           <div className="absolute -right-8 -top-16 h-72 w-72 rounded-full border border-sky-400/10" />
         </div>
@@ -178,32 +171,7 @@ export default function HomePage() {
               evolutions, master type matchups, and compare your favorites side by side.
             </motion.p>
 
-            <motion.form
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.22 }}
-              onSubmit={searchPokedex}
-              className="mt-7 flex max-w-xl items-center gap-2 rounded-2xl border border-slate-200 bg-white/90 p-2 shadow-xl shadow-slate-900/5 backdrop-blur dark:border-white/15 dark:bg-white/8 dark:shadow-black/20"
-            >
-              <Search className="ml-2 h-5 w-5 shrink-0 text-slate-400" />
-              <input
-                type="search"
-                enterKeyHint="search"
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder="Search by name or Pokédex number"
-                aria-label="Search the Pokédex"
-                className="h-11 min-w-0 flex-1 bg-transparent px-1 text-base outline-none placeholder:text-slate-400"
-              />
-              <button
-                type="submit"
-                aria-label="Search the Pokédex"
-                className="inline-flex h-11 w-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-brand-500 px-3 text-sm font-bold text-white shadow-md shadow-brand-500/25 transition hover:bg-brand-600 sm:w-auto sm:px-5"
-              >
-                <span className="hidden sm:inline">Search</span>
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            </motion.form>
+            <HomeSearch />
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}

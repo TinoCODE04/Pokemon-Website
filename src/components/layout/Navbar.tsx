@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { GitCompareArrows, Heart, Menu, Moon, Search, Sun, X } from 'lucide-react'
+import { ArrowRight, BookOpen, Crown, Film, Gamepad2, GitCompareArrows, Heart, House, Info, Layers3, Menu, Moon, Search, Sun, Swords, X, Zap } from 'lucide-react'
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { useFavorites } from '../../store/AppContext'
@@ -8,17 +8,22 @@ import { cn } from '../../utils/cn'
 import { MobileDialog } from '../ui/MobileDialog'
 
 const NAV_LINKS = [
-  { to: '/', label: 'Home' },
-  { to: '/pokedex', label: 'Pokédex' },
-  { to: '/rankings', label: 'Top Rank' },
-  { to: '/types', label: 'Types' },
-  { to: '/generations', label: 'Generations' },
-  { to: '/abilities', label: 'Abilities' },
-  { to: '/compare', label: 'Compare' },
-  { to: '/games', label: 'Games' },
-  { to: '/movies', label: 'Movies' },
-  { to: '/favorites', label: 'Favorites' },
-  { to: '/about', label: 'About us' },
+  { to: '/', label: 'Home', icon: House, tone: 'text-brand-500' },
+  { to: '/pokedex', label: 'Pokédex', icon: BookOpen, tone: 'text-brand-500' },
+  { to: '/rankings', label: 'Top Rank', icon: Crown, tone: 'text-amber-600 dark:text-amber-400' },
+  { to: '/types', label: 'Types', icon: Swords, tone: 'text-sky-600 dark:text-sky-400' },
+  { to: '/generations', label: 'Generations', icon: Layers3, tone: 'text-emerald-600 dark:text-emerald-400' },
+  { to: '/abilities', label: 'Abilities', icon: Zap, tone: 'text-violet-600 dark:text-violet-400' },
+  { to: '/compare', label: 'Compare', icon: GitCompareArrows, tone: 'text-violet-600 dark:text-violet-400' },
+  { to: '/games', label: 'Games', icon: Gamepad2, tone: 'text-sky-600 dark:text-sky-400' },
+  { to: '/movies', label: 'Movies', icon: Film, tone: 'text-amber-600 dark:text-amber-400' },
+  { to: '/favorites', label: 'Favorites', icon: Heart, tone: 'text-rose-600 dark:text-rose-400' },
+  { to: '/about', label: 'About us', icon: Info, tone: 'text-slate-500' },
+]
+
+const MOBILE_NAV_GROUPS = [
+  { label: 'Discover', links: NAV_LINKS.slice(0, 6) },
+  { label: 'Play & collect', links: NAV_LINKS.slice(6, 10) },
 ]
 
 export function PokeballMark({ className }: { className?: string }) {
@@ -181,27 +186,41 @@ export function Navbar({ onOpenSearch, isHomePage = false }: { onOpenSearch: () 
         </div>
       </div>
 
-      <MobileDialog open={mobileOpen} onClose={() => setMobileOpen(false)} title="Menu" variant="drawer" desktopQuery="(min-width: 768px)">
-            <nav className="grid gap-1" aria-label="Mobile navigation">
-              {NAV_LINKS.map((link) => (
-                <NavLink
-                  key={link.to}
-                  to={link.to}
-                  end={link.to === '/'}
-                  onClick={() => setMobileOpen(false)}
-                  className={({ isActive }) =>
-                    cn(
-                      'flex min-h-12 items-center rounded-xl px-4 py-3 text-base font-medium transition-colors',
-                      isActive
-                        ? 'bg-brand-500/10 text-brand-600 dark:bg-brand-500/20 dark:text-brand-300'
-                        : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/5',
-                    )
-                  }
-                >
-                  {link.label}
-                </NavLink>
-              ))}
-            </nav>
+      <MobileDialog
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        title="Menu"
+        titleIcon={<PokeballMark className="h-7 w-7 shrink-0" />}
+        variant="menu"
+        desktopQuery="(min-width: 768px)"
+        footer={<div className="flex items-center justify-between gap-3">
+          <NavLink to="/about" onClick={() => setMobileOpen(false)} className={({ isActive }) => cn('flex min-h-11 flex-1 items-center gap-2.5 rounded-lg px-2 text-sm font-semibold transition-colors hover:bg-slate-100 dark:hover:bg-white/5', isActive ? 'text-brand-600 dark:text-brand-300' : 'text-slate-600 dark:text-slate-300')}>
+            <Info className="h-4 w-4" />About us<ArrowRight className="ml-auto h-4 w-4" />
+          </NavLink>
+          <button type="button" onClick={toggle} aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition-colors hover:border-brand-300 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
+            {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
+        </div>}
+      >
+        <nav className="space-y-5" aria-label="Mobile navigation">
+          {MOBILE_NAV_GROUPS.map(group => (
+            <div key={group.label}>
+              <p className="mb-2 px-1 text-xs font-semibold text-slate-500 dark:text-slate-400">{group.label}</p>
+              <div className="grid grid-cols-2 gap-2">
+                {group.links.map(link => (
+                  <NavLink key={link.to} to={link.to} end={link.to === '/'} onClick={() => setMobileOpen(false)} className={({ isActive }) => cn(
+                    'flex min-h-[52px] items-center gap-2 rounded-xl border px-2 py-2.5 text-[13px] font-semibold transition-[background-color,border-color,transform] active:scale-[0.98] min-[360px]:text-sm',
+                    isActive ? 'border-brand-500/20 bg-brand-500/10 text-brand-600 dark:border-brand-400/25 dark:bg-brand-500/15 dark:text-brand-300' : 'border-transparent bg-slate-50 text-slate-700 hover:border-slate-200 hover:bg-slate-100 dark:bg-white/5 dark:text-slate-200 dark:hover:border-white/15 dark:hover:bg-white/10',
+                  )}>
+                    <span className={cn('flex h-6 w-6 shrink-0 items-center justify-center', link.tone)}><link.icon className="h-[18px] w-[18px]" /></span>
+                    <span className="min-w-0">{link.label}</span>
+                    {link.to === '/favorites' && favorites.length > 0 && <span className="ml-auto text-xs tabular-nums text-rose-600 dark:text-rose-400">{favorites.length > 99 ? '99+' : favorites.length}</span>}
+                  </NavLink>
+                ))}
+              </div>
+            </div>
+          ))}
+        </nav>
       </MobileDialog>
     </header>
   )

@@ -19,6 +19,7 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
   const [activeIndex, setActiveIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const dialogRef = useRef<HTMLDivElement>(null)
+  const resultsRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
   const previousFocusRef = useRef<HTMLElement | null>(null)
   const navigate = useNavigate()
@@ -72,6 +73,16 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
   useEffect(() => setActiveIndex(0), [debounced])
 
   useEffect(() => {
+    const container = resultsRef.current
+    const option = container?.querySelectorAll('button')[activeIndex]
+    if (!container || !option) return
+    if (option.offsetTop < container.scrollTop) container.scrollTop = option.offsetTop
+    else if (option.offsetTop + option.offsetHeight > container.scrollTop + container.clientHeight) {
+      container.scrollTop = option.offsetTop + option.offsetHeight - container.clientHeight
+    }
+  }, [activeIndex, results])
+
+  useEffect(() => {
     if (!open) return
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
@@ -93,15 +104,17 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
           }
         }
       }
-      if (e.key === 'ArrowDown') {
+      if (e.target !== inputRef.current || e.isComposing) return
+      if (e.key === 'ArrowDown' && results.length) {
         e.preventDefault()
         setActiveIndex((i) => Math.min(i + 1, results.length - 1))
       }
-      if (e.key === 'ArrowUp') {
+      if (e.key === 'ArrowUp' && results.length) {
         e.preventDefault()
         setActiveIndex((i) => Math.max(i - 1, 0))
       }
       if (e.key === 'Enter' && results[activeIndex]) {
+        e.preventDefault()
         go(results[activeIndex])
       }
     }
@@ -120,24 +133,21 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
       {open && (
         <motion.div
           ref={overlayRef}
-          className="viewport-overlay fixed inset-0 z-50 flex items-start justify-center sm:p-4 sm:pt-[8vh]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          className="viewport-overlay search-overlay fixed inset-0 z-50 flex items-start justify-center"
         >
-          <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-sm" onClick={onClose} />
+          <div className="search-backdrop absolute inset-0" aria-hidden="true" onClick={onClose} />
           <motion.div
             ref={dialogRef}
             initial={{ opacity: 0, scale: 0.96, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -10 }}
             transition={{ duration: 0.16 }}
-            className="relative flex h-full max-h-full w-full max-w-xl flex-col overflow-hidden border border-slate-200 bg-white shadow-2xl sm:h-auto sm:rounded-2xl dark:border-white/10 dark:bg-night-900"
+            className="search-panel relative flex w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-white/70 shadow-xl shadow-slate-900/15 dark:border-white/15 dark:shadow-black/30"
             role="dialog"
             aria-modal="true"
             aria-label="Search Pokémon"
           >
-            <div className="flex shrink-0 items-center gap-2 border-b border-slate-200 px-3 pt-[env(safe-area-inset-top)] sm:gap-3 sm:px-4 dark:border-white/10">
+            <div className="flex shrink-0 items-center gap-2 border-b border-slate-200/70 px-3 sm:gap-3 sm:px-4 dark:border-white/10">
               <Search className="h-5 w-5 shrink-0 text-slate-400" />
               <input
                 ref={inputRef}
@@ -147,7 +157,8 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
                 aria-label="Search by name or number"
                 type="search"
                 enterKeyHint="search"
-                className="h-14 min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-slate-400"
+                autoComplete="off"
+                className="h-14 min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-slate-600 dark:placeholder:text-slate-400"
               />
               {isLoading && <Loader2 className="h-4 w-4 animate-spin text-slate-400" />}
               <button
@@ -159,26 +170,26 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
               </button>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:max-h-80">
+            <div ref={resultsRef} className="search-results relative min-h-0 flex-1 overflow-y-auto overscroll-contain p-2">
               <p className="sr-only" aria-live="polite">
                 {query.trim() ? `${results.length} search results` : 'Enter a name or number to search'}
               </p>
               {query.trim() === '' && (
-                <p className="px-3 py-6 text-center text-sm text-slate-400">
+                <p className="px-3 py-4 text-center text-sm text-slate-600 dark:text-slate-300">
                   Start typing to search across every Pokémon.
                 </p>
               )}
               {query.trim() !== '' && results.length === 0 && !isLoading && (
-                <p className="px-3 py-6 text-center text-sm text-slate-400">
+                <p className="px-3 py-4 text-center text-sm text-slate-600 dark:text-slate-300">
                   No Pokémon found for &ldquo;{query}&rdquo;.
                 </p>
               )}
-              {results.map((entry, i) => (
+              {query.trim() !== '' && results.map((entry, i) => (
                 <button
                   key={entry.id}
                   onClick={() => go(entry)}
                   onMouseEnter={() => setActiveIndex(i)}
-                  className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
+                  className={`flex min-h-14 w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
                     i === activeIndex ? 'bg-brand-500/10 dark:bg-brand-500/15' : ''
                   }`}
                 >
@@ -200,7 +211,7 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
                   />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold capitalize">{formatName(entry.name)}</p>
-                    <p className="font-mono text-xs text-slate-400">{formatDexNumber(entry.id)}</p>
+                    <p className="font-mono text-xs text-slate-600 dark:text-slate-400">{formatDexNumber(entry.id)}</p>
                   </div>
                   <ArrowRight
                     className={`h-4 w-4 shrink-0 transition ${
@@ -211,7 +222,7 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
               ))}
             </div>
 
-            <div className="hidden shrink-0 items-center gap-4 border-t border-slate-200 px-4 py-2.5 text-[11px] text-slate-400 sm:flex dark:border-white/10">
+            <div className="hidden shrink-0 items-center gap-4 border-t border-slate-200 px-4 py-2.5 text-[11px] text-slate-600 md:flex dark:border-white/10 dark:text-slate-400">
               <span className="flex items-center gap-1.5">
                 <kbd className="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-sans dark:border-white/10 dark:bg-white/5">↑↓</kbd>
                 navigate
